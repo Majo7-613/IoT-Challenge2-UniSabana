@@ -16,13 +16,12 @@ A través de una lógica de fusión embebida, la información procesada se despl
 
 ```text
 ├── src/
-│   └── main.ino          # Código fuente principal en C++ (Arduino)
+│   └── main.ino          # Código fuente en C++ (Arduino)
 ├── wokwi/
-│   ├── diagram.json      # Configuración de conexiones físicas en el simulador Wokwi
-│   └── wokwi.toml        # Archivo de entorno para la integración de la simulación
-├── README.md             # Archivo de presentación del repositorio de código
-└── LICENSE               # Licencia de uso académico
+│   └── diagram.json      # Configuración del circuito en Wokwi
+└── README.md             # Presentación del repositorio
 ```
+
 
 ## Requisitos de Hardware y Librerías
 ### Componentes Empleados
@@ -34,12 +33,12 @@ A través de una lógica de fusión embebida, la información procesada se despl
 * Visualización Local: Pantalla LCD 20x4 I2C (0x27)
 * Alarma In Situ: Buzzer Pasivo (Pin D8)
 
-### Librerías Requeridas en la IDE / Wokwi
+## Librerías Requeridas en la IDE / Wokwi
 * LiquidCrystal_I2C.h (Frank de Brabander)
 * Adafruit_BMP085.h (Adafruit)
 * DHT.h / DHT_sensor_library (Adafruit)
 
-Documentación Técnica Completa (Wiki)
+## Documentación Técnica Completa (Wiki)
 Toda la documentación detallada del proyecto (contextualización, requerimientos, arquitectura, esquemáticos, matrices de pruebas, análisis de resultados, modelo de negocio y declaración de IA) se encuentra organizada en la Wiki del Repositorio.
 
 ## Integrantes del Equipo
