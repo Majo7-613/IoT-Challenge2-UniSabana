@@ -1,0 +1,11 @@
+# Compilación de PlatformIO y configuración local del editor
+.pio/
+.vscode/
+
+# Credenciales: nunca se suben al repositorio (usar secrets.example.h como plantilla)
+secrets.h
+
+# Respaldos y temporales
+*.bak
+*.tmp
+~$*
