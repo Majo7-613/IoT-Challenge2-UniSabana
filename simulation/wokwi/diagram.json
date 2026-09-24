@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "author": "Equipo 7 - IoT Challenge #2",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-hc-sr04", "id": "nivel", "top": -160, "left": -180, "attrs": { "distance": "100" } },
+    { "type": "wokwi-dht22", "id": "dht", "top": -150, "left": 160, "attrs": { "temperature": "18", "humidity": "70" } },
+    { "type": "board-bmp180", "id": "bmp", "top": 140, "left": 220, "attrs": { "temperature": "18", "pressure": "75000" } },
+    { "type": "wokwi-potentiometer", "id": "guva", "top": 190, "left": -190, "attrs": { "value": "100" } },
+    { "type": "wokwi-lcd2004", "id": "lcd", "top": -330, "left": 20, "attrs": { "pins": "i2c" } },
+    { "type": "wokwi-buzzer", "id": "buzzer", "top": 250, "left": 40, "attrs": { "volume": "0.1" } }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+
+    [ "nivel:VCC", "esp:5V", "red", [] ],
+    [ "nivel:GND", "esp:GND.1", "black", [] ],
+    [ "nivel:TRIG", "esp:26", "orange", [] ],
+    [ "nivel:ECHO", "esp:27", "yellow", [] ],
+
+    [ "dht:VCC", "esp:3V3", "red", [] ],
+    [ "dht:GND", "esp:GND.2", "black", [] ],
+    [ "dht:SDA", "esp:4", "green", [] ],
+
+    [ "bmp:VCC", "esp:3V3", "red", [] ],
+    [ "bmp:GND", "esp:GND.3", "black", [] ],
+    [ "bmp:SDA", "esp:21", "blue", [] ],
+    [ "bmp:SCL", "esp:22", "violet", [] ],
+
+    [ "lcd:VCC", "esp:5V", "red", [] ],
+    [ "lcd:GND", "esp:GND.3", "black", [] ],
+    [ "lcd:SDA", "esp:21", "blue", [] ],
+    [ "lcd:SCL", "esp:22", "violet", [] ],
+
+    [ "guva:VCC", "esp:3V3", "red", [] ],
+    [ "guva:GND", "esp:GND.1", "black", [] ],
+    [ "guva:SIG", "esp:34", "cyan", [] ],
+
+    [ "buzzer:1", "esp:GND.2", "black", [] ],
+    [ "buzzer:2", "esp:25", "magenta", [] ]
+  ],
+  "dependencies": {}
+}

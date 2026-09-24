@@ -9,8 +9,7 @@
  *    siempre recibe la instantánea más reciente.
  *  - mtxDatos protege el estado publicado; quien lo lee copia la estructura y
  *    libera el mutex enseguida.
- *  - mtxI2C protegerá el bus I2C compartido por el BMP180 y la LCD (se usa a
- *    partir del paso 2).
+ *  - mtxI2C protege el bus I2C compartido por el BMP180 y la LCD.
  */
 #include "tareas.h"
 
@@ -26,6 +25,7 @@
 
 #include "config.h"
 #include "registro.h"
+#include "sensores.h"
 
 namespace {
 
@@ -41,7 +41,7 @@ TaskHandle_t hRed       = nullptr;
 
 QueueHandle_t     qSnapshot = nullptr;  ///< tSensores → tFusion (longitud 1).
 SemaphoreHandle_t mtxDatos  = nullptr;  ///< Protege estadoPublicado.
-SemaphoreHandle_t mtxI2C    = nullptr;  ///< Protegerá el bus I2C (paso 2).
+SemaphoreHandle_t mtxI2C    = nullptr;  ///< Protege el bus I2C (BMP180 y LCD).
 
 hw_timer_t* temporizador = nullptr;
 
@@ -72,11 +72,24 @@ void IRAM_ATTR isrTemporizador() {
 // Tareas
 // ---------------------------------------------------------------------------
 
+/** Registra en una línea las lecturas y el estado de cada sensor. */
+void registrarLecturas(const Lecturas& l) {
+    registrar("tSensores",
+              "d=%.1f cm (%s, %u/%u ecos, %s) | T=%.1f C HR=%.1f %% (%s) | "
+              "P=%.1f hPa T=%.1f C (%s) | UV=%.0f mV ~%.1f (%s)",
+              l.distanciaCm, textoEstado(l.estadoNivel),
+              static_cast<unsigned>(l.ecosValidos), static_cast<unsigned>(HCSR04_ECOS_POR_CICLO),
+              textoCompensacion(l.compensacion),
+              l.temperaturaDhtC, l.humedadPct, textoEstado(l.estadoDht),
+              l.presionHpa, l.temperaturaBmpC, textoEstado(l.estadoBmp),
+              l.uvMilivoltios, l.uvIndice, textoEstado(l.estadoUv));
+}
+
 /**
  * @brief Tarea de adquisición, despertada por la ISR.
  *
- * Paso 1: mide el periodo real entre ciclos, cuenta los ciclos fuera de
- * tolerancia y las notificaciones acumuladas, y entrega la instantánea.
+ * Mide el periodo real entre ciclos, cuenta los ciclos fuera de tolerancia y
+ * las notificaciones acumuladas, lee los sensores y entrega la instantánea.
  */
 void tareaSensores(void*) {
     uint32_t ciclo = 0;
@@ -97,10 +110,12 @@ void tareaSensores(void*) {
         instantanea.ciclosPerdidos = (pendientes > 1) ? (pendientes - 1) : 0;
         instantanea.cicloDht22 = (ciclo % DHT22_CADA_N_CICLOS) == 0;
 
-        // Paso 2: aquí se leen HC-SR04 (mediana de 5 ecos), BMP180 y GUVA en
-        // cada ciclo, y el DHT22 cuando instantanea.cicloDht22 es true.
+        // HC-SR04 (mediana de 5 ecos), BMP180 y GUVA en cada ciclo; DHT22
+        // cada DHT22_CADA_N_CICLOS ciclos.
+        sensoresLeer(instantanea.cicloDht22, instantanea.lecturas);
 
         xQueueOverwrite(qSnapshot, &instantanea);
+        registrarLecturas(instantanea.lecturas);
 
         if (marcaAnteriorUs == 0) {
             registrar("tSensores", "ciclo %" PRIu32 " (primer ciclo)", ciclo);
@@ -124,7 +139,7 @@ void tareaSensores(void*) {
 /**
  * @brief Tarea de fusión: recibe cada instantánea y publica el estado.
  *
- * Paso 1: solo copia la instantánea como estado publicado. En el paso 4 se
+ * Paso 2: solo copia la instantánea como estado publicado. En el paso 4 se
  * agregan la tendencia, el VPD, la ET0 y la clasificación del estado de alerta.
  */
 void tareaFusion(void*) {
@@ -140,9 +155,12 @@ void tareaFusion(void*) {
         hayEstadoPublicado = true;
         xSemaphoreGive(mtxDatos);
 
-        registrar("tFusion", "estado publicado del ciclo %" PRIu32
-                  " (latencia desde la adquisición: %.3f ms)",
-                  recibida.ciclo, latenciaUs / 1000.0);
+        // Una línea cada 10 ciclos para no saturar el registro.
+        if (recibida.ciclo % 10 == 0) {
+            registrar("tFusion", "estado publicado del ciclo %" PRIu32
+                      " (latencia desde la adquisición: %.3f ms)",
+                      recibida.ciclo, latenciaUs / 1000.0);
+        }
     }
 }
 
@@ -291,6 +309,9 @@ bool tareasIniciar() {
         registrar("tareas", "ERROR: no se pudieron crear la cola o los mutex");
         return false;
     }
+
+    // Los sensores se inician antes de crear las tareas.
+    sensoresIniciar(mtxI2C);
 
     // Las tareas se crean antes del temporizador para que la ISR encuentre
     // listo el manejador de tSensores.

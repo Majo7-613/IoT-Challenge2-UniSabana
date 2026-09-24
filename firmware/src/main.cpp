@@ -5,10 +5,11 @@
  * Nodo de monitoreo del nivel de agua y de variables meteorológicas para un
  * punto de almacenamiento en Sabana Centro (ESP32-DevKitC V4).
  *
- * Paso 1 (esqueleto): crea las tareas FreeRTOS y el temporizador de 1 Hz que
- * despierta la adquisición, y registra su actividad por el puerto serie.
- * Criterio de "hecho": el registro muestra 1 ciclo por segundo, estable,
- * durante 10 minutos (ver PLAN_DE_TRABAJO.md, "Orden de implementación").
+ * Paso 2 (sensores): el temporizador de 1 Hz despierta la adquisición, que lee
+ * el HC-SR04, el DHT22, el BMP180 y el GUVA-S12SD y asigna a cada sensor un
+ * estado OK, VIEJO o FALLA. Criterio de "hecho": cada lectura tiene su estado
+ * y el sistema sobrevive a desconectar un sensor (PLAN_DE_TRABAJO.md,
+ * "Orden de implementación").
  */
 #include <Arduino.h>
 #include <esp_arduino_version.h>
@@ -21,7 +22,13 @@ void setup() {
     Serial.begin(SERIAL_BAUDIOS);
     registroIniciar();
 
-    registrar("main", "Firmware IoT Challenge #2 — paso 1 (esqueleto)");
+    registrar("main", "Firmware IoT Challenge #2 — paso 2 (sensores)%s",
+#ifdef SIMULACION
+              " [SIMULACIÓN]"
+#else
+              ""
+#endif
+    );
     registrar("main", "Núcleo Arduino ESP32 %d.%d.%d, ESP-IDF %s",
               ESP_ARDUINO_VERSION_MAJOR, ESP_ARDUINO_VERSION_MINOR,
               ESP_ARDUINO_VERSION_PATCH, ESP.getSdkVersion());

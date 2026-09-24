@@ -14,7 +14,7 @@
 namespace {
 
 /** Longitud máxima del mensaje de una línea (sin la marca de tiempo). */
-constexpr size_t LONGITUD_MENSAJE = 160;
+constexpr size_t LONGITUD_MENSAJE = 256;
 
 /** Mutex que serializa el acceso al puerto serie. */
 SemaphoreHandle_t mtxSerial = nullptr;

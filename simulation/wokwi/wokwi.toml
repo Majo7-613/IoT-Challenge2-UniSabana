@@ -1,0 +1,7 @@
+# Simulación en Wokwi del firmware (entorno "wokwi" de PlatformIO).
+# Compilar antes con:  pio run -d firmware -e wokwi
+# y abrir diagram.json con la extensión de Wokwi para VS Code.
+[wokwi]
+version = 1
+firmware = "../../firmware/.pio/build/wokwi/firmware.bin"
+elf = "../../firmware/.pio/build/wokwi/firmware.elf"

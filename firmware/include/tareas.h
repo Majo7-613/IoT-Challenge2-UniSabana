@@ -11,8 +11,8 @@
  *  - tHistorico: cada 5 s y cada 5 min guarda registros en los búferes.
  *  - tRed:       cada 5 s supervisa el Wi-Fi.
  *
- * Paso 1 (esqueleto): las tareas solo registran su actividad por el puerto
- * serie; no leen sensores ni usan la red.
+ * Paso 2: tSensores lee los sensores y registra sus lecturas y estados; las
+ * demás tareas solo registran su actividad por el puerto serie.
  */
 #pragma once
 

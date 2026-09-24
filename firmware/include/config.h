@@ -61,6 +61,45 @@ constexpr uint8_t HCSR04_ECOS_POR_CICLO = 5;
  */
 constexpr uint32_t HCSR04_TIMEOUT_ECO_US = 25000;
 
+/** Pausa entre ecos: la hoja de datos recomienda un ciclo de medición de más de 60 ms. */
+constexpr uint32_t HCSR04_PAUSA_ENTRE_ECOS_MS = 60;
+
+/** Ecos válidos mínimos (mayoría de 5) para aceptar la mediana del ciclo. */
+constexpr uint8_t HCSR04_ECOS_MINIMOS = 3;
+
+/** Rango de medición del HC-SR04 según su hoja de datos. */
+constexpr float HCSR04_DISTANCIA_MIN_CM = 2.0f;
+constexpr float HCSR04_DISTANCIA_MAX_CM = 400.0f;
+
+// ============================================================================
+// Rangos válidos de los sensores (hojas de datos). Fuera de rango → FALLA.
+// ============================================================================
+
+constexpr float DHT22_T_MIN_C    = -40.0f;
+constexpr float DHT22_T_MAX_C    = 80.0f;
+constexpr float BMP180_P_MIN_HPA = 300.0f;
+constexpr float BMP180_P_MAX_HPA = 1100.0f;
+constexpr float BMP180_T_MIN_C   = -40.0f;
+constexpr float BMP180_T_MAX_C   = 85.0f;
+
+/** Espera máxima por el mutex del bus I2C antes de omitir la lectura del ciclo. */
+constexpr uint32_t I2C_ESPERA_MUTEX_MS = 100;
+
+/**
+ * Entrada analógica del GUVA-S12SD. En el hardware, la salida del módulo es de
+ * aproximadamente 0 a 1 V y se usa la atenuación de 2.5 dB (hasta ~1250 mV).
+ * En la simulación (SIMULACION), un potenciómetro entrega de 0 a 3.3 V y se
+ * usa la atenuación de 11 dB. Una lectura en el tope de la escala se toma
+ * como saturación (FALLA).
+ */
+#ifdef SIMULACION
+constexpr adc_attenuation_t GUVA_ATENUACION = ADC_11db;
+constexpr float             GUVA_MAX_MV     = 3300.0f;
+#else
+constexpr adc_attenuation_t GUVA_ATENUACION = ADC_2_5db;
+constexpr float             GUVA_MAX_MV     = 1250.0f;
+#endif
+
 // ============================================================================
 // Compensación térmica de la velocidad del sonido: c = 331.3 + 0.606·T [m/s]
 // T se toma del DHT22; si está en FALLA, del BMP180; si ambos fallan, se usa
@@ -105,7 +144,7 @@ constexpr UBaseType_t PRIORIDAD_HMI       = 2;
 constexpr UBaseType_t PRIORIDAD_HISTORICO = 1;
 constexpr UBaseType_t PRIORIDAD_RED       = 1;
 
-constexpr uint32_t PILA_SENSORES  = 4096;
+constexpr uint32_t PILA_SENSORES  = 6144;  ///< Mayor: sensores y formato de la línea de lecturas.
 constexpr uint32_t PILA_FUSION    = 4096;
 constexpr uint32_t PILA_HMI       = 4096;
 constexpr uint32_t PILA_HISTORICO = 4096;
