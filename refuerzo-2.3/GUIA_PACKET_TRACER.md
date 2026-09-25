@@ -1,53 +1,50 @@
 # Guía de Packet Tracer — Actividad de refuerzo 2.3
 
-Guía paso a paso para construir y validar en Cisco Packet Tracer 8.x la red de monitoreo hídrico de la página de Wiki «Actividad de refuerzo 2.3 — Conectividad IoT».
+Guía para reconstruir y validar en **Cisco Packet Tracer 9.0.0.810** la red de monitoreo hídrico de la actividad. Describe la topología que se construyó y se validó (archivo `red-sabana-centro.pkt`); los resultados están en [`PAGINA_WIKI_REFUERZO.md`](PAGINA_WIKI_REFUERZO.md), sección 8.
 
-> **Cómo leer esta guía.** Los comandos de Cisco IOS (configuración de routers) son estándar. Los nombres de menús, módulos y plantillas de Packet Tracer marcados con **(verificar en PT)** no se pudieron confirmar en una fuente pública: compruébalos en tu versión de Packet Tracer y corrige la guía si difieren. Anota la versión exacta de Packet Tracer (menú *Help → About*) para la Wiki.
+> **Simplificación frente al diseño.** El diseño tiene una SBC gateway por municipio. En la simulación, el router inalámbrico de cada municipio cumple la función de gateway: enruta hacia el proveedor de Internet y aplica NAT. El gateway SBC con broker local queda en el diseño real, no simulado (ver la sección 5 de esta guía).
 
-## 0. Qué se va a construir
+## 0. Qué se construyó
 
-* **Chía:** dos nodos (`chia-01`, `chia-02`) y el gateway SBC, conectados por Wi-Fi al router inalámbrico de Chía.
-* **Cajicá:** un nodo (`cajica-01`) y el gateway SBC, conectados por Wi-Fi al router inalámbrico de Cajicá.
-* **ISP:** un router que une los dos municipios con la red de la plataforma.
-* **Nube:** un switch con el broker MQTT (SBC), el cliente de la plataforma (SBC) y el servidor web del tablero (Server-PT).
-* **Usuario:** un PC con navegador.
-
-(El diagrama definitivo del ecosistema está en Mermaid en la Wiki; este esquema solo orienta el montaje.)
+* **Chía:** router inalámbrico WRT300N con dos nodos (`chia-01`, `chia-02`) y el teléfono del usuario de la alcaldía.
+* **Cajicá:** router inalámbrico WRT300N con un nodo (`cajica-01`).
+* **ISP:** router 2911 que une los dos municipios con la red de la nube.
+* **Nube:** switch 2960 con un punto de acceso, el broker MQTT (SBC-PT), la Plataforma (SBC-PT) y el servidor web del tablero (Server-PT).
 
 ## 1. Dispositivos
 
-| Rol | Dispositivo de Packet Tracer | Cantidad |
+| Rol | Nombre en el `.pkt` | Dispositivo de Packet Tracer |
 | :--- | :--- | :--- |
-| Router inalámbrico de cada municipio | Home Gateway o router inalámbrico WRT300N **(verificar en PT cuál permite IP estática en la WAN)** | 2 |
-| Router del proveedor de Internet (ISP) | Router 2911 (o cualquiera con 3 interfaces) | 1 |
-| Switch de la nube | Switch 2960 | 1 |
-| Nodos de monitoreo | SBC-PT (o MCU-PT) con adaptador inalámbrico | 3 |
-| Gateway de cada municipio | SBC-PT | 2 |
-| Broker MQTT de la plataforma | SBC-PT | 1 |
-| Cliente de la plataforma (suscriptor) | SBC-PT | 1 |
-| Servidor web del tablero | Server-PT | 1 |
-| Usuario final | PC-PT (o Smartphone) | 1 |
+| Router inalámbrico de Chía (gateway del municipio) | Router-Chia | WRT300N |
+| Router inalámbrico de Cajicá (gateway del municipio) | Router-Cajica | WRT300N |
+| Router del proveedor de Internet | ISP | Router 2911 |
+| Switch de la nube | SW-Nube | Switch 2960 |
+| Punto de acceso de la nube | AP-Nube | AccessPoint-PT |
+| Nodos de monitoreo | chia-01, chia-02, cajica-01 | SBC-PT |
+| Broker MQTT | broker | SBC-PT |
+| Cliente de la plataforma | Plataforma | SBC-PT |
+| Servidor web del tablero | Servidor-Web | Server-PT |
+| Usuario final | Usuario-Alcaldia | Smart Phone |
 
-**Adaptador inalámbrico de las SBC/MCU:** en el dispositivo, botón *Advanced* → pestaña *I/O Config* → *Network Adapter* → elegir el módulo inalámbrico (por ejemplo `PT-IOT-NM-1W`) **(verificar en PT)**.
+**Por qué hay un punto de acceso en la nube:** en Packet Tracer 9, la SBC-PT solo trae una interfaz inalámbrica (Wireless3) y Bluetooth; no se puede cablear al switch. El broker y la Plataforma se asocian por Wi-Fi al AP-Nube, que está cableado al SW-Nube.
 
 ## 2. Direccionamiento
 
 | Dispositivo | Interfaz | Dirección | Puerta de enlace |
 | :--- | :--- | :--- | :--- |
-| Router inalámbrico Chía | LAN | 192.168.10.1/24 | — |
-| Router inalámbrico Chía | Internet (WAN) | 10.0.0.1/30 | 10.0.0.2 |
-| Gateway SBC Chía | Wi-Fi | 192.168.10.2/24 (estática) | 192.168.10.1 |
-| Nodos de Chía | Wi-Fi | DHCP (192.168.10.100 en adelante) | 192.168.10.1 |
-| Router inalámbrico Cajicá | LAN | 192.168.20.1/24 | — |
-| Router inalámbrico Cajicá | Internet (WAN) | 10.0.0.5/30 | 10.0.0.6 |
-| Gateway SBC Cajicá | Wi-Fi | 192.168.20.2/24 (estática) | 192.168.20.1 |
-| Nodo de Cajicá | Wi-Fi | DHCP (192.168.20.100 en adelante) | 192.168.20.1 |
-| Router ISP | G0/0 (hacia Chía) | 10.0.0.2/30 | — |
-| Router ISP | G0/1 (hacia Cajicá) | 10.0.0.6/30 | — |
-| Router ISP | G0/2 (hacia la nube) | 200.10.10.1/24 | — |
-| Broker MQTT | Ethernet | 200.10.10.10/24 | 200.10.10.1 |
-| Plataforma (suscriptor) | Ethernet | 200.10.10.20/24 | 200.10.10.1 |
-| Servidor web | Ethernet | 200.10.10.30/24 | 200.10.10.1 |
+| Router-Chia | Internet (WAN) | 10.0.0.1/30 | 10.0.0.2 |
+| Router-Chia | LAN | 192.168.10.1/24, SSID `WLAN-Chia` | — |
+| chia-01, chia-02 | Wireless | DHCP (rango desde 192.168.10.100, 50 usuarios) | 192.168.10.1 |
+| Usuario-Alcaldia | Wireless | DHCP en `WLAN-Chia` | 192.168.10.1 |
+| Router-Cajica | Internet (WAN) | 10.0.0.5/30 | 10.0.0.6 |
+| Router-Cajica | LAN | 192.168.20.1/24, SSID `WLAN-Cajica` | — |
+| cajica-01 | Wireless | 192.168.20.10/24 (estática) | 192.168.20.1 |
+| ISP | g0/0 (hacia Chía) | 10.0.0.2/30 | — |
+| ISP | g0/1 (hacia Cajicá) | 10.0.0.6/30 | — |
+| ISP | g0/2 (hacia la nube) | 200.10.10.1/24 | — |
+| broker | Wireless (AP-Nube) | 200.10.10.10/24 | 200.10.10.1 |
+| Plataforma | Wireless (AP-Nube) | 200.10.10.20/24 | 200.10.10.1 |
+| Servidor-Web | FastEthernet (SW-Nube) | 200.10.10.30/24 | 200.10.10.1 |
 
 ## 3. Configuración paso a paso
 
@@ -73,110 +70,108 @@ end
 write memory
 ```
 
-> Si los routers inalámbricos hacen NAT en su WAN (lo habitual en un Home Gateway), el ISP solo verá las direcciones 10.0.0.1 y 10.0.0.5, y las rutas hacia 192.168.x.0 no se usarán. Funciona igual para MQTT, porque los clientes inician la conexión hacia el broker. Anótalo en la Wiki si es tu caso.
+Como los WRT300N hacen NAT en su WAN, el ISP ve el tráfico de cada municipio con la dirección 10.0.0.1 o 10.0.0.5. MQTT funciona igual, porque los clientes inician la conexión hacia el broker. Verificar con `show ip interface brief` (g0/0, g0/1 y g0/2 en *up/up*) y `show ip route` (rutas `S` a las dos LAN).
 
 ### 3.2. Routers inalámbricos de Chía y Cajicá (interfaz gráfica)
 
-1. Pestaña *Config* → *Internet*: IP estática 10.0.0.1/30, puerta de enlace 10.0.0.2 (Cajicá: 10.0.0.5/30 y 10.0.0.6).
-2. *LAN*: 192.168.10.1/24 (Cajicá: 192.168.20.1/24).
-3. *DHCP*: activado, desde 192.168.10.100 (Cajicá: 192.168.20.100).
-4. *Wireless*: SSID `WLAN-Chia` (Cajicá: `WLAN-Cajica`) y seguridad WPA2-PSK con una clave de prueba.
-5. Cablear la WAN de cada router a la interfaz correspondiente del router ISP.
+1. *Config* o *GUI* → *Internet Setup*: IP estática 10.0.0.1/30 con puerta de enlace 10.0.0.2 (Cajicá: 10.0.0.5/30 y 10.0.0.6).
+2. *Network Setup*: IP de la LAN 192.168.10.1/24 (Cajicá: 192.168.20.1/24).
+3. **DHCP de Chía:** al cambiar la IP de la LAN, revisar el rango: dirección inicial .100 y 50 usuarios como máximo (ver la falla 2 de la sección 6).
+4. *Wireless*: SSID `WLAN-Chia` (Cajicá: `WLAN-Cajica`) y la seguridad elegida; los nodos deben usar exactamente el mismo SSID, tipo de seguridad y clave (falla 1).
+5. Cablear el puerto *Internet* de cada router a la interfaz correspondiente del ISP.
+
+En Packet Tracer 9, la interfaz gráfica del WRT300N muestra algunas etiquetas en blanco sobre blanco: seleccionar el texto o revisar cada campo con cuidado.
 
 ### 3.3. Red de la nube
 
-Conectar el broker, la plataforma y el servidor web al switch, y el switch a G0/2 del router ISP. Configurar IP y puerta de enlace estáticas según la tabla del paso 2 (pestaña *Config* de cada dispositivo).
+1. Cablear el SW-Nube a g0/2 del ISP, y el AP-Nube y el Servidor-Web al SW-Nube.
+2. AP-Nube: SSID `Nube`, sin autenticación.
+3. broker y Plataforma: *Config* → interfaz inalámbrica asociada a `Nube`, IP y puerta de enlace estáticas según la tabla del paso 2.
+4. Servidor-Web: IP y puerta de enlace estáticas según la tabla del paso 2.
 
-### 3.4. Nodos y gateways (SBC)
+### 3.4. Nodos
 
-1. Cambiar el adaptador a inalámbrico (paso 1).
-2. *Config* → interfaz inalámbrica: SSID y clave del municipio.
-3. Nodos: IP por DHCP. Gateways: IP estática según la tabla.
-4. Verificar con `ping` desde el escritorio (si la SBC tiene *Desktop* → *Command Prompt*) o desde el PC del usuario **(verificar en PT)**.
+1. *Config* → interfaz inalámbrica: SSID y seguridad del municipio.
+2. chia-01 y chia-02 por DHCP; cajica-01 con IP estática 192.168.20.10/24 y puerta de enlace 192.168.20.1.
+3. Verificar con `ping 200.10.10.10`. El primer `ping` de cada nodo pierde 1 de 4 paquetes por la resolución ARP inicial.
 
 ### 3.5. Broker MQTT
 
-Packet Tracer trae el broker y el cliente MQTT como proyectos de ejemplo en la pestaña *Programming* de la SBC-PT, y un botón *Install to Desktop* los agrega como aplicaciones del *Desktop*.
+1. En el broker: *Programming* → proyecto **«MQTT Broker/Client - (Python)»** → *Install to Desktop*.
+2. *Desktop* → aplicación del broker: crear los usuarios autorizados `nodo` / `clave-nodo` y `plataforma` / `clave-plataforma` y encenderlo.
+3. Las secciones *Clients*, *Subscriptions* y *Event Log* del broker muestran los clientes conectados, sus suscripciones y los paquetes recibidos.
 
-1. En la SBC del broker (200.10.10.10): *Programming* → nuevo proyecto a partir de la plantilla **MQTT Broker** **(verificar el nombre exacto de la plantilla en PT)**.
-2. Abrir el proyecto y pulsar *Install to Desktop*.
-3. *Desktop* → aplicación **MQTT Broker**: puerto 1883, crear el usuario y la clave que usarán los clientes (por ejemplo `nodo` / `clave-nodo`) y encenderlo.
+### 3.6. Clientes MQTT (aplicación de escritorio)
 
-### 3.6. Clientes MQTT
+En cada SBC cliente (nodos y Plataforma): *Programming* → proyecto «MQTT Broker/Client - (Python)» → *Install to Desktop* → *Desktop* → aplicación *MQTT Client*. Conectar al broker 200.10.10.10 con el usuario que corresponda y luego:
 
-**Opción A (recomendada para la demostración): aplicación de escritorio.** En cada SBC cliente: *Programming* → plantilla **MQTT Client** → *Install to Desktop* → *Desktop* → **MQTT Client**. Llenar la dirección del broker (200.10.10.10), el usuario y la clave, y conectar. Después:
+| Cliente | Acción | Tópico | QoS | Carga |
+| :--- | :--- | :--- | :--- | :--- |
+| Plataforma | Suscribirse | `sabana/#` | 0 | — |
+| chia-01, chia-02, cajica-01 | Publicar | `sabana/{municipio}/{nodo}/telemetria` | 0 | `{"nivel_cm":…,"t_c":…,"hr":…,"p_hpa":…,"uv":…,"vpd_kpa":…,"origen":"simulado"}` |
+| chia-01 | Publicar | `sabana/chia/chia-01/alerta` | 1 | `{"estado":"ALERTA","causa":"descenso+VPD","origen":"simulado"}` |
+| chia-01 | Suscribirse | `sabana/chia/chia-01/cmd/desactivar_alarma` | — | — |
+| Plataforma | Publicar | `sabana/chia/chia-01/cmd/desactivar_alarma` | 1 | `{"orden":"desactivar_alarma"}` |
 
-| Cliente | Acción | Tópico |
+La aplicación *MQTT Client* de Packet Tracer 9 **no permite configurar la última voluntad (LWT)**: el CONNECT se registra con `"will":{}`. Por eso el tópico `.../estado` no se valida en la simulación.
+
+Los scripts de `scripts/` son una alternativa a la aplicación de escritorio para enviar telemetría periódica. No se usaron en la validación, y para usarlos hay que adaptar sus llamadas MQTT a la API de Packet Tracer (ver `scripts/README.md`).
+
+### 3.7. Tablero del usuario (HTTP)
+
+En el Servidor-Web: *Services* → *HTTP* activado; `index.html` con una página estática que describe el tablero y los tópicos (no muestra datos en vivo). Desde el Usuario-Alcaldia: *Desktop* → *Web Browser* → `http://200.10.10.30`.
+
+## 4. Pruebas
+
+| # | Prueba | Qué debe verse | Captura |
+| :--- | :--- | :--- | :--- |
+| P1 | `ping 200.10.10.10` desde un nodo | Respuestas ICMP | `03-ping-nodo-broker.png` |
+| P2 | Conexión de la Plataforma | CONNECT y CONNACK con `returnCode 0` | `05-connect-connack.png`, `05b-simulacion-mqtt.png` |
+| P3 | Suscripción de la Plataforma | SUBSCRIBE y SUBACK a `sabana/#` | `06-subscribe.png` |
+| P4 | Telemetría de chia-01 | PUBLISH del nodo y mensaje en la Plataforma | `07-publish-telemetria-a.png`, `07-publish-telemetria-b.png` |
+| P5 | Telemetría de los dos municipios | Mensajes de Chía y Cajicá en la Plataforma | `07b-telemetria-dos-municipios-a.png`, `-b.png`, `05c-plataforma-event-log.png` |
+| P6 | Alerta con QoS 1 | PUBLISH y PUBACK | `08-alerta-qos1-a.png`, `-b.png`, `-c.png` |
+| P7 | Orden de desactivar la alarma | PUBLISH de la Plataforma, PUBACK y recepción en chia-01 | `10-orden-desactivar-a.png`, `-b.png` |
+| P8 | Estado y LWT | No aplica en Packet Tracer 9 (sin LWT) | — |
+| P9 | Acceso del usuario | Página del Servidor-Web en el navegador | `11-http-usuario.png` |
+
+En el modo *Simulation*, filtrar por los protocolos de interés (ICMP, TCP, DHCP, HTTP) y avanzar con *Capture/Forward*.
+
+## 5. Diseño real frente a la simulación
+
+| Elemento | Diseño real | Simulación |
 | :--- | :--- | :--- |
-| Plataforma (200.10.10.20) | Suscribirse | `sabana/+/+/telemetria`, `sabana/+/+/alerta`, `sabana/+/+/estado` |
-| Nodo chia-01 | Publicar | `sabana/chia/chia-01/telemetria` con el JSON de ejemplo de la Wiki |
-| Nodo chia-01 | Publicar | `sabana/chia/chia-01/alerta` con `{"estado":"ALERTA","causa":"descenso+VPD"}` |
-| Nodo chia-01 | Suscribirse | `sabana/chia/chia-01/cmd/desactivar_alarma` |
-| Plataforma | Publicar | `sabana/chia/chia-01/cmd/desactivar_alarma` con `{"orden":"desactivar"}` |
+| Gateway del municipio | SBC con broker local que reenvía `sabana/{municipio}/#` al broker de la nube | Router inalámbrico WRT300N con NAT |
+| Estado de conexión | LWT `offline` y `online` retenidos en `.../estado` | No simulado: la aplicación no permite LWT |
+| Seguridad de MQTT | TLS en el puerto 8883 y credenciales por nodo | Puerto 1883; credenciales visibles en texto plano en el CONNECT |
+| Red de la nube | Servidor cableado o servicio en la nube | Punto de acceso sin autenticación, por la limitación de la SBC-PT |
+| Datos | Mediciones de los sensores | Valores escritos a mano, marcados `"origen":"simulado"` |
 
-Si la aplicación permite configurar la última voluntad (LWT), usar tópico `sabana/chia/chia-01/estado`, mensaje `offline`, QoS 1 y retenido **(verificar en PT si la app lo permite; si no, documentarlo como limitación de la simulación)**.
+## 6. Fallas encontradas (troubleshooting)
 
-**Opción B: scripts de Python** (`refuerzo-2.3/scripts/`). Envían telemetría periódica y reenvían por el gateway. Requieren adaptar las llamadas MQTT a la API del proyecto de ejemplo *MQTT Client* de Packet Tracer (ver `scripts/README.md`).
+| # | Síntoma | Causa | Solución |
+| :--- | :--- | :--- | :--- |
+| 1 | Los nodos de Chía no se asociaban al router. | Seguridad Wi-Fi distinta entre el router y las SBC. | Igualar el SSID y la seguridad. |
+| 2 | Nodos con IPv4 0.0.0.0. | Tras cambiar la IP de la LAN, el DHCP del WRT300N quedó con inicio en 1 y 1 usuario como máximo. | Rango desde .100 con 50 usuarios y renovar el DHCP. |
+| 3 | La SBC gateway de Chía (IP estática) no respondía y la interfaz gráfica del router de Cajicá no dejaba configurar el DHCP. | No determinada dentro del simulador. | Router como gateway e IP estática en cajica-01. |
 
-### 3.7. Gateway de cada municipio
+## 7. Capturas
 
-En el diseño, cada gateway reúne los mensajes de su WLAN y los reenvía a la nube. En Packet Tracer hay dos formas de representarlo:
+En `capturas/`:
 
-1. **Reenvío con script** (`scripts/gateway_reenvio.py`): la SBC del gateway se suscribe a `sabana/chia/#` en un broker local y republica en el broker de la nube. Requiere que Packet Tracer permita un broker en el gateway y dos conexiones de cliente en el mismo script **(verificar en PT)**.
-2. **Simplificación:** si lo anterior no es posible, los nodos publican directamente en el broker de la nube y el router inalámbrico del municipio cumple la función de gateway hacia Internet. Declararlo en la Wiki como simplificación de la simulación.
-
-### 3.8. Tablero del usuario (HTTP)
-
-En el Server-PT (200.10.10.30): *Services* → *HTTP* → activado; editar `index.html` con una página que describa el tablero de la plataforma (en la simulación no muestra datos en vivo). Desde el PC del usuario: *Desktop* → *Web Browser* → `http://200.10.10.30`.
-
-## 4. Pruebas en el modo Simulation
-
-1. Pasar al modo *Simulation* (esquina inferior derecha).
-2. En *Edit Filters*, dejar solo los protocolos de interés: ICMP, TCP, DHCP, HTTP y MQTT si aparece en la lista **(verificar en PT)**.
-3. Ejecutar cada prueba y avanzar con *Capture/Forward* hasta ver el paquete llegar.
-
-| # | Prueba | Qué debe verse |
+| Archivo | Contenido | Estado |
 | :--- | :--- | :--- |
-| P1 | `ping 200.10.10.10` desde un nodo de Chía | Respuestas ICMP (primero en modo *Realtime*) |
-| P2 | Conexión de cada cliente MQTT | Paquetes CONNECT del cliente y CONNACK del broker |
-| P3 | Suscripción de la plataforma | SUBSCRIBE y SUBACK |
-| P4 | Publicación de telemetría de Chía y de Cajicá | PUBLISH del nodo al broker y del broker a la plataforma |
-| P5 | Alerta con QoS 1 | PUBLISH y PUBACK |
-| P6 | Estado y LWT | Al desconectar un nodo (por ejemplo, apagando su adaptador), la plataforma recibe `offline` |
-| P7 | Orden de desactivar la alarma | PUBLISH de la plataforma al broker y del broker al nodo |
-| P8 | Acceso del usuario | Petición HTTP del PC y respuesta del servidor web |
-
-## 5. Resolución de problemas (provocar y corregir 3 fallas)
-
-Provocar al menos tres fallas, capturar el síntoma, corregir y capturar el resultado. Sugerencias:
-
-| Falla provocada | Síntoma esperado | Corrección |
-| :--- | :--- | :--- |
-| Puerta de enlace errónea en un nodo | `ping` al broker falla; el nodo no conecta | Corregir la puerta de enlace |
-| Falta la ruta estática en el router ISP (si no hay NAT) | Sin respuesta desde la nube hacia el municipio | Agregar `ip route` |
-| Tópico mal escrito en el nodo (`sabana/chia/chia-01/telemetira`) | La plataforma no recibe la telemetría aunque el nodo publica | Corregir el tópico |
-| Usuario o clave MQTT errónea | El broker rechaza la conexión | Usar las credenciales creadas en el broker |
-| SSID o clave Wi-Fi errónea | El nodo no se asocia al router | Corregir la configuración inalámbrica |
-
-Registrar cada falla en la tabla de la sección 9 de la página de Wiki: síntoma, causa, solución y capturas de antes y después.
-
-## 6. Lista de capturas
-
-Guardar en `refuerzo-2.3/capturas/` con estos nombres:
-
-- [ ] `01-topologia.png` — topología completa en modo lógico.
-- [ ] `02-direccionamiento-router-isp.png` — `show ip interface brief` y `show ip route` del router ISP.
-- [ ] `03-ping-nodo-broker.png` — prueba P1.
-- [ ] `04-broker-config.png` — aplicación MQTT Broker configurada.
-- [ ] `05-connect-connack.png` — prueba P2 en modo Simulation.
-- [ ] `06-subscribe.png` — prueba P3.
-- [ ] `07-publish-telemetria.png` — prueba P4 (mensaje recibido en la plataforma).
-- [ ] `08-alerta-qos1.png` — prueba P5.
-- [ ] `09-lwt-offline.png` — prueba P6 (o nota de limitación).
-- [ ] `10-orden-desactivar.png` — prueba P7.
-- [ ] `11-http-usuario.png` — prueba P8.
-- [ ] `12-falla1-antes.png` / `13-falla1-despues.png`
-- [ ] `14-falla2-antes.png` / `15-falla2-despues.png`
-- [ ] `16-falla3-antes.png` / `17-falla3-despues.png`
-
-Guardar también el archivo de Packet Tracer como `refuerzo-2.3/red-sabana-centro.pkt`.
+| `01-topologia.png` | Topología completa en modo lógico | No tomada |
+| `02-direccionamiento-router-isp.png` | `show ip interface brief` y `show ip route` del ISP | Tomada antes de conectar los enlaces WAN (g0/0 y g0/1 *down*, sin rutas estáticas) |
+| `03-ping-nodo-broker.png` | P1 | No tomada |
+| `04-broker-config.png` | Aplicación del broker con los usuarios | No tomada |
+| `05-connect-connack.png` | P2, registro de la Plataforma | Tomada |
+| `05b-simulacion-mqtt.png` | P2 en el modo Simulation | No tomada |
+| `05c-plataforma-event-log.png` | Registro completo de la Plataforma (P3, P5, P6, P7 y `"will":{}`) | Tomada |
+| `06-subscribe.png` | P3 | Tomada |
+| `07-publish-telemetria-a.png` / `-b.png` | P4: publicación en chia-01 / mensaje en la Plataforma | Tomadas |
+| `07b-telemetria-dos-municipios-a.png` / `-b.png` | P5: registro de la Plataforma / publicación en cajica-01 | Tomadas |
+| `08-alerta-qos1-a.png` / `-b.png` / `-c.png` | P6: publicación / registro de chia-01 con PUBACK / mensaje en la Plataforma | Tomadas |
+| `10-orden-desactivar-a.png` / `-b.png` | P7: publicación en la Plataforma / suscripción de chia-01 | Tomadas |
+| `11-http-usuario.png` | P9 | Tomada |
+| Fallas 1 a 3, antes y después | Troubleshooting | No tomadas |
