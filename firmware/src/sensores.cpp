@@ -38,6 +38,7 @@ public:
         if (valido) {
             estado_ = EstadoSensor::OK;
             ciclosDesdeValida_ = 0;
+            iniciado_ = true;
         } else {
             estado_ = EstadoSensor::FALLA;
             ciclosDesdeValida_++;
@@ -54,10 +55,14 @@ public:
 
     EstadoSensor estado() const { return estado_; }
 
+    /** false hasta la primera lectura válida desde el arranque. */
+    bool iniciado() const { return iniciado_; }
+
 private:
     // Al arrancar no hay ninguna lectura válida: el sensor empieza como VIEJO.
     EstadoSensor estado_ = EstadoSensor::VIEJO;
     uint32_t ciclosDesdeValida_ = SENSOR_CICLOS_PARA_VIEJO + 1;
+    bool iniciado_ = false;
 };
 
 // ---------------------------------------------------------------------------
@@ -75,10 +80,10 @@ SeguimientoSensor segBmp;
 SeguimientoSensor segUv;
 
 /** Últimas lecturas válidas (NAN si nunca las hubo). */
-Lecturas ultimas = {NAN, 0, FuenteCompensacion::POR_DEFECTO, EstadoSensor::VIEJO,
-                    NAN, NAN, EstadoSensor::VIEJO,
-                    NAN, NAN, EstadoSensor::VIEJO,
-                    NAN, NAN, EstadoSensor::VIEJO};
+Lecturas ultimas = {NAN, 0, FuenteCompensacion::POR_DEFECTO, EstadoSensor::VIEJO, false,
+                    NAN, NAN, EstadoSensor::VIEJO, false,
+                    NAN, NAN, EstadoSensor::VIEJO, false,
+                    NAN, NAN, EstadoSensor::VIEJO, false};
 
 // ---------------------------------------------------------------------------
 // Utilidades
@@ -298,5 +303,9 @@ void sensoresLeer(bool leerDht22, Lecturas& salida) {
     ultimas.estadoDht = segDht.estado();
     ultimas.estadoBmp = segBmp.estado();
     ultimas.estadoUv = segUv.estado();
+    ultimas.iniciadoNivel = segNivel.iniciado();
+    ultimas.iniciadoDht = segDht.iniciado();
+    ultimas.iniciadoBmp = segBmp.iniciado();
+    ultimas.iniciadoUv = segUv.iniciado();
     salida = ultimas;
 }

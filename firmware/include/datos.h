@@ -11,6 +11,8 @@
 
 #include <Arduino.h>
 
+#include "estados.h"
+
 /**
  * @brief Estado de un sensor, independiente del estado de alerta.
  *
@@ -44,21 +46,25 @@ struct Lecturas {
     uint8_t            ecosValidos;    ///< Ecos válidos del ciclo (de HCSR04_ECOS_POR_CICLO).
     FuenteCompensacion compensacion;   ///< Temperatura usada para la velocidad del sonido.
     EstadoSensor       estadoNivel;
+    bool               iniciadoNivel;  ///< false hasta la primera lectura válida (se muestra INICIANDO).
 
     // DHT22: temperatura y humedad relativa (cada DHT22_CADA_N_CICLOS ciclos).
     float        temperaturaDhtC;
     float        humedadPct;
     EstadoSensor estadoDht;
+    bool         iniciadoDht;
 
     // BMP180: presión (se muestra y se guarda; no entra a la decisión) y temperatura.
     float        presionHpa;
     float        temperaturaBmpC;
     EstadoSensor estadoBmp;
+    bool         iniciadoBmp;
 
     // GUVA-S12SD: tensión de salida y conversión inicial a índice UV.
     float        uvMilivoltios;
     float        uvIndice;             ///< Aproximación Vout [V] × 10, a caracterizar en la Wiki (4.2).
     EstadoSensor estadoUv;
+    bool         iniciadoUv;
 };
 
 /**
@@ -70,4 +76,28 @@ struct Snapshot {
     uint32_t ciclosPerdidos;  ///< Notificaciones acumuladas que no se atendieron a tiempo.
     bool     cicloDht22;      ///< true si en este ciclo se intentó leer el DHT22.
     Lecturas lecturas;        ///< Lecturas de los sensores del ciclo.
+};
+
+/**
+ * @brief Magnitudes calculadas por tFusion a partir de una instantánea.
+ */
+struct Derivados {
+    float nivelCm;             ///< Nivel de agua (NAN si no hay distancia válida o geometría).
+    float nivelPct;            ///< Nivel en % de la altura útil (sin recortar).
+    bool  nivelValido;         ///< true si el nivel de este ciclo es utilizable.
+    float pendienteCmMin;      ///< Tendencia del nivel por regresión lineal.
+    bool  pendienteValida;     ///< false si la ventana no tiene suficientes muestras.
+    float vpdKpa;              ///< Indicador de demanda evaporativa.
+    bool  vpdValido;
+    float et0MmDia;            ///< Estimación diaria de evaporación potencial de referencia.
+    bool  et0Disponible;       ///< Requiere 24 h de temperaturas y el día del año.
+    EstadoAlerta estado;       ///< Estado publicado (incluye INICIANDO y FALLA_NIVEL).
+    uint8_t      causas;       ///< Combinación de CausaAlerta.
+    bool         alarmaDesactivada;  ///< Desactivada desde el tablero; se rearma si empeora.
+};
+
+/** Estado completo que publica tFusion y leen las demás tareas. */
+struct EstadoPublicado {
+    Snapshot  instantanea;
+    Derivados derivados;
 };

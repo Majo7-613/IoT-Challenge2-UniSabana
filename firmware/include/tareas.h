@@ -29,4 +29,11 @@ bool tareasIniciar();
  * @param destino Estructura donde se copia el estado.
  * @return true si ya existe un estado publicado.
  */
-bool leerEstadoPublicado(Snapshot& destino);
+bool leerEstadoPublicado(EstadoPublicado& destino);
+
+/**
+ * @brief Informa el día del año (1–366), necesario para la radiación
+ *        extraterrestre de la ET0. Mientras no se conozca, la ET0 no está
+ *        disponible. La fuente de la fecha se define en el paso 5 (red).
+ */
+void tareasFijarDiaDelAnio(int diaDelAnio);

@@ -14,6 +14,7 @@
 #include "tareas.h"
 
 #include <Arduino.h>
+#include <cmath>
 #include <cstdlib>
 #include <esp_arduino_version.h>
 #include <esp_timer.h>
@@ -24,6 +25,8 @@
 #include <inttypes.h>
 
 #include "config.h"
+#include "evaporacion.h"
+#include "nivel.h"
 #include "registro.h"
 #include "sensores.h"
 
@@ -45,8 +48,13 @@ SemaphoreHandle_t mtxI2C    = nullptr;  ///< Protege el bus I2C (BMP180 y LCD).
 
 hw_timer_t* temporizador = nullptr;
 
-Snapshot estadoPublicado{};    ///< Último estado publicado por tFusion.
-bool     hayEstadoPublicado = false;
+EstadoPublicado estadoPublicado{};  ///< Último estado publicado por tFusion.
+bool            hayEstadoPublicado = false;
+
+// Estado propio de tFusion (se declaran globales por su tamaño).
+nivel::Tendencia             tendencia(param::TENDENCIA_VENTANA_S);
+evaporacion::ExtremosDiarios extremosTemperatura;
+volatile int                 diaDelAnio = 0;  ///< 0: todavía desconocido.
 
 // ---------------------------------------------------------------------------
 // Rutina de servicio de interrupción del temporizador
@@ -137,10 +145,50 @@ void tareaSensores(void*) {
 }
 
 /**
- * @brief Tarea de fusión: recibe cada instantánea y publica el estado.
+ * @brief Calcula el nivel, la tendencia, el VPD y la ET0 de una instantánea.
+ */
+Derivados calcularDerivados(const Snapshot& s) {
+    static const nivel::Geometria geometria{param::ALTURA_MONTAJE_CM, param::ALTURA_UTIL_CM};
+    const Lecturas& l = s.lecturas;
+    Derivados d{};
+
+    // Nivel y tendencia: solo con lecturas de nivel en OK.
+    d.nivelValido = l.estadoNivel == EstadoSensor::OK;
+    d.nivelCm = nivel::nivelCm(l.distanciaCm, geometria);
+    d.nivelPct = nivel::nivelFraccion(d.nivelCm, geometria) * 100.0f;
+    tendencia.agregar(static_cast<float>(s.marcaTiempoUs / 1e6), d.nivelCm, d.nivelValido);
+    d.pendienteValida = tendencia.pendienteCmMin(d.pendienteCmMin);
+    if (!d.pendienteValida) {
+        d.pendienteCmMin = NAN;
+    }
+
+    // VPD: indicador de demanda evaporativa, con temperatura y humedad del DHT22.
+    const bool dhtOk = l.estadoDht == EstadoSensor::OK;
+    d.vpdKpa = dhtOk ? evaporacion::vpdKpa(l.temperaturaDhtC, l.humedadPct) : NAN;
+    d.vpdValido = !std::isnan(d.vpdKpa);
+
+    // ET0: extremos de 24 h de la temperatura del DHT22 y radiación extraterrestre.
+    const uint32_t tiempoS = static_cast<uint32_t>(s.marcaTiempoUs / 1000000);
+    if (dhtOk && s.cicloDht22) {
+        extremosTemperatura.agregar(tiempoS, l.temperaturaDhtC);
+    } else {
+        extremosTemperatura.avanzar(tiempoS);
+    }
+    const int dia = diaDelAnio;
+    float tMax = NAN, tMin = NAN;
+    d.et0Disponible = dia > 0 && extremosTemperatura.extremos(tMax, tMin);
+    d.et0MmDia = d.et0Disponible
+        ? evaporacion::et0HargreavesMmDia(
+              tMax, tMin, evaporacion::radiacionExtraterrestreMJ(SITIO_LATITUD_GRADOS, dia))
+        : NAN;
+    return d;
+}
+
+/**
+ * @brief Tarea de fusión: recibe cada instantánea, calcula y publica el estado.
  *
- * Paso 2: solo copia la instantánea como estado publicado. En el paso 4 se
- * agregan la tendencia, el VPD, la ET0 y la clasificación del estado de alerta.
+ * Paso 3: calcula el nivel, la tendencia, el VPD y la ET0. El estado solo
+ * refleja la disponibilidad del nivel; la clasificación se agrega en el paso 4.
  */
 void tareaFusion(void*) {
     Snapshot recibida{};
@@ -148,18 +196,28 @@ void tareaFusion(void*) {
         if (xQueueReceive(qSnapshot, &recibida, portMAX_DELAY) != pdTRUE) {
             continue;
         }
+        Derivados d = calcularDerivados(recibida);
+        const Lecturas& l = recibida.lecturas;
+        d.estado = !l.iniciadoNivel ? EstadoAlerta::INICIANDO
+                 : (d.nivelValido ? EstadoAlerta::NORMAL : EstadoAlerta::FALLA_NIVEL);
+        d.causas = CAUSA_NINGUNA;
+        d.alarmaDesactivada = false;
         const int64_t latenciaUs = esp_timer_get_time() - recibida.marcaTiempoUs;
 
         xSemaphoreTake(mtxDatos, portMAX_DELAY);
-        estadoPublicado = recibida;
+        estadoPublicado.instantanea = recibida;
+        estadoPublicado.derivados = d;
         hayEstadoPublicado = true;
         xSemaphoreGive(mtxDatos);
 
         // Una línea cada 10 ciclos para no saturar el registro.
         if (recibida.ciclo % 10 == 0) {
-            registrar("tFusion", "estado publicado del ciclo %" PRIu32
-                      " (latencia desde la adquisición: %.3f ms)",
-                      recibida.ciclo, latenciaUs / 1000.0);
+            registrar("tFusion",
+                      "ciclo %" PRIu32 ": nivel=%.1f cm (%.0f %%) tendencia=%.2f cm/min "
+                      "VPD=%.2f kPa ET0=%s latencia=%.3f ms",
+                      recibida.ciclo, d.nivelCm, d.nivelPct, d.pendienteCmMin, d.vpdKpa,
+                      d.et0Disponible ? "disponible" : "no disponible (24 h y fecha)",
+                      latenciaUs / 1000.0);
         }
     }
 }
@@ -174,7 +232,7 @@ void tareaHmi(void*) {
     const TickType_t periodo = pdMS_TO_TICKS(HMI_PERIODO_MS);
     const uint32_t iteracionesPorSegundo = 1000 / HMI_PERIODO_MS;
     uint32_t iteracion = 0;
-    Snapshot copia{};
+    EstadoPublicado copia{};
 
     for (;;) {
         vTaskDelayUntil(&ultimoDespertar, periodo);
@@ -182,7 +240,7 @@ void tareaHmi(void*) {
         const bool hayDato = leerEstadoPublicado(copia);
         if (iteracion % iteracionesPorSegundo == 0) {
             if (hayDato) {
-                registrar("tHMI", "mostraría el ciclo %" PRIu32, copia.ciclo);
+                registrar("tHMI", "mostraría el ciclo %" PRIu32, copia.instantanea.ciclo);
             } else {
                 registrar("tHMI", "sin estado publicado todavía");
             }
@@ -201,7 +259,7 @@ void tareaHistorico(void*) {
     const uint32_t rapidosPorLento =
         HISTORICO_LENTO_PERIODO_MS / HISTORICO_RAPIDO_PERIODO_MS;
     uint32_t iteracion = 0;
-    Snapshot copia{};
+    EstadoPublicado copia{};
 
     for (;;) {
         vTaskDelayUntil(&ultimoDespertar, periodo);
@@ -209,9 +267,9 @@ void tareaHistorico(void*) {
         if (!leerEstadoPublicado(copia)) {
             continue;
         }
-        registrar("tHistorico", "registro rápido del ciclo %" PRIu32, copia.ciclo);
+        registrar("tHistorico", "registro rápido del ciclo %" PRIu32, copia.instantanea.ciclo);
         if (iteracion % rapidosPorLento == 0) {
-            registrar("tHistorico", "registro lento del ciclo %" PRIu32, copia.ciclo);
+            registrar("tHistorico", "registro lento del ciclo %" PRIu32, copia.instantanea.ciclo);
         }
     }
 }
@@ -288,7 +346,13 @@ bool iniciarTemporizador() {
 // Interfaz pública
 // ---------------------------------------------------------------------------
 
-bool leerEstadoPublicado(Snapshot& destino) {
+void tareasFijarDiaDelAnio(int dia) {
+    if (dia >= 1 && dia <= 366) {
+        diaDelAnio = dia;
+    }
+}
+
+bool leerEstadoPublicado(EstadoPublicado& destino) {
     if (mtxDatos == nullptr) {
         return false;
     }

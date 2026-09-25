@@ -187,6 +187,10 @@ constexpr uint32_t BUZZER_FALLA_PERIODO_MS  = 10000;
 #endif
 
 namespace demo {
+// Recipiente de demostración de 30 cm de altura útil, con el HC-SR04 montado
+// 5 cm por encima del borde (valores de demostración declarados).
+constexpr float    ALTURA_MONTAJE_CM          = 35.0f; ///< Sensor → fondo útil.
+constexpr float    ALTURA_UTIL_CM             = 30.0f; ///< Altura de agua = 100 %.
 constexpr uint32_t TENDENCIA_VENTANA_S        = 60;    ///< Ventana de la regresión.
 constexpr float    DESCENSO_PENDIENTE_CM_MIN  = -1.0f; ///< Pendiente ≤ este valor…
 constexpr uint32_t DESCENSO_SOSTENIDO_S       = 30;    ///< …durante este tiempo seguido.
@@ -201,8 +205,19 @@ constexpr float    VPD_HISTERESIS_KPA         = 0.2f;
 
 namespace campo {
 constexpr uint32_t TENDENCIA_VENTANA_S = 300;  ///< 5 min.
-// Umbrales de nivel, descenso, temperatura y VPD: Pendiente (ver arriba).
+// Pendiente (Simón mide el recipiente, la caja y la fijación): altura de
+// montaje y altura útil. Umbrales de nivel, descenso, temperatura y VPD:
+// Pendiente (ver arriba). Mientras falten, el modo CAMPO no compila.
 }  // namespace campo
+
+#if MODO_DEMOSTRACION
+namespace param = demo;  ///< Parámetros activos.
+#else
+#error "Modo CAMPO: faltan la geometría y los umbrales de campo (Pendiente). Compilar con MODO_DEMOSTRACION=1."
+#endif
+
+/** Latitud del caso de estudio (Chía, Sabana Centro), para la radiación extraterrestre. */
+constexpr float SITIO_LATITUD_GRADOS = 4.86f;
 
 /** Índice UV ≥ 6: categoría "alto" del Índice UV Solar Mundial (OMS). */
 constexpr float UV_INDICE_ALTO = 6.0f;
