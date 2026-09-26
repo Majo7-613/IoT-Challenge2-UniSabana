@@ -16,13 +16,13 @@ Guía para reconstruir y validar en **Cisco Packet Tracer 9.0.0.810** la red de 
 | Rol | Nombre en el `.pkt` | Dispositivo de Packet Tracer |
 | :--- | :--- | :--- |
 | Router inalámbrico de Chía (gateway del municipio) | Router-Chia | WRT300N |
-| Router inalámbrico de Cajicá (gateway del municipio) | Router-Cajica | WRT300N |
+| Router inalámbrico de Cajicá (gateway del municipio) | Router-Cajica (visible como «Wireless Router1») | WRT300N |
 | Router del proveedor de Internet | ISP | Router 2911 |
 | Switch de la nube | SW-Nube | Switch 2960 |
 | Punto de acceso de la nube | AP-Nube | AccessPoint-PT |
-| Nodos de monitoreo | chia-01, chia-02, cajica-01 | SBC-PT |
+| Nodos de monitoreo | chia-01, chia-02, cajica-01 (visibles como `chia1`, `chia2`, `cajica1`) | SBC-PT |
 | Broker MQTT | broker | SBC-PT |
-| Cliente de la plataforma | Plataforma | SBC-PT |
+| Cliente de la plataforma | Plataforma (visible como `platform`) | SBC-PT |
 | Servidor web del tablero | Servidor-Web | Server-PT |
 | Usuario final | Usuario-Alcaldia | Smart Phone |
 
@@ -153,7 +153,7 @@ En el modo *Simulation*, filtrar por los protocolos de interés (ICMP, TCP, DHCP
 | :--- | :--- | :--- | :--- |
 | 1 | Los nodos de Chía no se asociaban al router. | Seguridad Wi-Fi distinta entre el router y las SBC. | Igualar el SSID y la seguridad. |
 | 2 | Nodos con IPv4 0.0.0.0. | Tras cambiar la IP de la LAN, el DHCP del WRT300N quedó con inicio en 1 y 1 usuario como máximo. | Rango desde .100 con 50 usuarios y renovar el DHCP. |
-| 3 | La SBC gateway de Chía (IP estática) no respondía y la interfaz gráfica del router de Cajicá no dejaba configurar el DHCP. | No determinada dentro del simulador. | Router como gateway e IP estática en cajica-01. |
+| 3 | La SBC gateway de Chía (IP estática) no respondía y la interfaz gráfica del router de Cajicá no dejaba configurar el DHCP. | No determinada. Hipótesis no verificada: IP o puerta de enlace, o seguridad inalámbrica, de las SBC gateway. | Router como gateway e IP estática en cajica-01. |
 
 ## 7. Capturas
 
@@ -161,10 +161,10 @@ En `capturas/`:
 
 | Archivo | Contenido | Estado |
 | :--- | :--- | :--- |
-| `01-topologia.png` | Topología completa en modo lógico | No tomada |
-| `02-direccionamiento-router-isp.png` | `show ip interface brief` y `show ip route` del ISP | Tomada antes de conectar los enlaces WAN (g0/0 y g0/1 *down*, sin rutas estáticas) |
-| `03-ping-nodo-broker.png` | P1 | No tomada |
-| `04-broker-config.png` | Aplicación del broker con los usuarios | No tomada |
+| `01-topologia.png` | Topología completa en modo lógico | Tomada |
+| `02-direccionamiento-router-isp.png` | `show ip interface brief` y `show ip route` del ISP | Tomada |
+| `03-ping-nodo-broker.png` | P1 | Tomada |
+| `04-broker-config.png` | Aplicación del broker con los usuarios | Tomada |
 | `05-connect-connack.png` | P2, registro de la Plataforma | Tomada |
 | `05b-simulacion-mqtt.png` | P2 en el modo Simulation | No tomada |
 | `05c-plataforma-event-log.png` | Registro completo de la Plataforma (P3, P5, P6, P7 y `"will":{}`) | Tomada |
@@ -173,5 +173,6 @@ En `capturas/`:
 | `07b-telemetria-dos-municipios-a.png` / `-b.png` | P5: registro de la Plataforma / publicación en cajica-01 | Tomadas |
 | `08-alerta-qos1-a.png` / `-b.png` / `-c.png` | P6: publicación / registro de chia-01 con PUBACK / mensaje en la Plataforma | Tomadas |
 | `10-orden-desactivar-a.png` / `-b.png` | P7: publicación en la Plataforma / suscripción de chia-01 | Tomadas |
+| `10c` | P7: recepción de la orden en el registro de chia-01 | No tomada |
 | `11-http-usuario.png` | P9 | Tomada |
 | Fallas 1 a 3, antes y después | Troubleshooting | No tomadas |

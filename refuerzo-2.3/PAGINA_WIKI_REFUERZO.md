@@ -167,23 +167,24 @@ flowchart LR
 | Enlace Cajicá – ISP | 10.0.0.4/30 | Router-Cajica (WAN 10.0.0.5), ISP g0/1 (10.0.0.6) |
 | Red de la nube | 200.10.10.0/24 | ISP g0/2 (200.10.10.1, puerta de enlace); SW-Nube; AP-Nube (SSID Nube, sin autenticación); broker (200.10.10.10); Plataforma (200.10.10.20); Servidor-Web (200.10.10.30) |
 
+* **Nombres visibles en Packet Tracer:** en el archivo `.pkt`, los nodos se llaman `chia1`, `chia2` y `cajica1`, la Plataforma se llama `platform` y el Router-Cajica aparece como «Wireless Router1». Esta página usa los nombres del diseño.
 * **ISP:** router 2911 con rutas estáticas a 192.168.10.0/24 y 192.168.20.0/24.
 * **AP-Nube:** en Packet Tracer 9, la SBC-PT solo trae interfaz inalámbrica y Bluetooth, así que el broker y la Plataforma se conectan a la red de la nube por un punto de acceso.
 * **MQTT:** el broker y los clientes son las aplicaciones de Packet Tracer 9 instaladas desde la pestaña *Programming*, proyecto «MQTT Broker/Client - (Python)», con *Install to Desktop*. El broker tiene dos usuarios autorizados, `nodo` y `plataforma`, cada uno con su contraseña.
 
-Capturas: topología completa (01-topologia): no tomada. [Direccionamiento del ISP](capturas/02-direccionamiento-router-isp.png): la captura se tomó antes de conectar los enlaces WAN; en ella g0/0 y g0/1 aparecen *down* y la tabla de rutas todavía no muestra las rutas estáticas. Configuración del broker (04-broker-config): no tomada.
+Capturas: [topología completa](capturas/01-topologia.png); [direccionamiento del ISP](capturas/02-direccionamiento-router-isp.png), con g0/0, g0/1 y g0/2 en *up/up*, las redes conectadas 10.0.0.0/30, 10.0.0.4/30 y 200.10.10.0/24 y las rutas estáticas a 192.168.10.0/24 (vía 10.0.0.1) y 192.168.20.0/24 (vía 10.0.0.5); [usuarios autorizados del broker](capturas/04-broker-config.png).
 
 ### 8.2. Pruebas realizadas
 
 | # | Prueba | Resultado esperado | Resultado observado | Evidencia |
 | :--- | :--- | :--- | :--- | :--- |
-| P1 | `ping` de un nodo al broker | Respuestas del broker | El nodo recibió respuestas. En el primer `ping` de cada nodo se pierde 1 de 4 paquetes, por la resolución ARP inicial. | 03-ping-nodo-broker: no tomada |
+| P1 | `ping` de un nodo al broker | Respuestas del broker | chia-01 (192.168.10.100/24, puerta de enlace 192.168.10.1, asignadas por DHCP) recibió 4 de 4 respuestas del broker, sin pérdidas. En el primer `ping` de cada nodo se pierde 1 de 4 paquetes, por la resolución ARP inicial. | [03](capturas/03-ping-nodo-broker.png) |
 | P2 | Conexión de la Plataforma al broker | CONNECT y CONNACK con código 0 | CONNECT con protocolo MQTT 3.1.1, usuario `plataforma`, y CONNACK con `returnCode 0`. | [05](capturas/05-connect-connack.png) · simulación de los paquetes (05b-simulacion-mqtt): no tomada |
 | P3 | Suscripción de la Plataforma | SUBSCRIBE y SUBACK a `sabana/#` | Suscripción aceptada: SUBSCRIBE y SUBACK a `sabana/#`. | [06](capturas/06-subscribe.png) · [05c](capturas/05c-plataforma-event-log.png) |
 | P4 | Telemetría de un nodo | La Plataforma recibe el PUBLISH de chia-01 | chia-01 publicó en `sabana/chia/chia-01/telemetria` con QoS 0 y la Plataforma recibió el mensaje. | [07-a](capturas/07-publish-telemetria-a.png) (publicación en chia-01) · [07-b](capturas/07-publish-telemetria-b.png) (mensaje en la Plataforma) |
 | P5 | Telemetría de los dos municipios | La Plataforma recibe los mensajes de Chía y Cajicá | La Plataforma recibió la telemetría de chia-01, chia-02 y cajica-01 con una sola suscripción. | [07b-a](capturas/07b-telemetria-dos-municipios-a.png) · [07b-b](capturas/07b-telemetria-dos-municipios-b.png) (publicación en cajica-01) · [05c](capturas/05c-plataforma-event-log.png) |
 | P6 | Alerta con QoS 1 | PUBLISH con QoS 1 y confirmación PUBACK | chia-01 publicó `{"estado":"ALERTA","causa":"descenso+VPD"}` con QoS 1 y recibió PUBACK; la Plataforma recibió la alerta. | [08-a](capturas/08-alerta-qos1-a.png) (publicación) · [08-b](capturas/08-alerta-qos1-b.png) (registro de chia-01 con PUBACK) · [08-c](capturas/08-alerta-qos1-c.png) (mensaje en la Plataforma) |
-| P7 | Orden de desactivar la alarma | chia-01 recibe la orden publicada por la Plataforma | La Plataforma publicó en `sabana/chia/chia-01/cmd/desactivar_alarma` con QoS 1 y recibió PUBACK; chia-01, suscrito a ese tópico, recibió la orden. | [10-a](capturas/10-orden-desactivar-a.png) (publicación en la Plataforma) · [10-b](capturas/10-orden-desactivar-b.png) (suscripción de chia-01) · [05c](capturas/05c-plataforma-event-log.png) (PUBACK). La recepción en chia-01 no tiene captura. |
+| P7 | Orden de desactivar la alarma | chia-01 recibe la orden publicada por la Plataforma | La Plataforma publicó en `sabana/chia/chia-01/cmd/desactivar_alarma` con QoS 1 y recibió PUBACK; chia-01, suscrito a ese tópico, recibió la orden. | [10-a](capturas/10-orden-desactivar-a.png) (publicación en la Plataforma) · [10-b](capturas/10-orden-desactivar-b.png) (suscripción de chia-01) · [05c](capturas/05c-plataforma-event-log.png) (PUBACK). Recepción en el registro de chia-01 (10c): no tomada. |
 | P8 | Estado retenido y LWT | Al desconectar un nodo, la Plataforma recibe `offline` | No se pudo probar: la aplicación *MQTT Client* de Packet Tracer no permite configurar la LWT (ver 8.4). | [05c](capturas/05c-plataforma-event-log.png) (`"will":{}` en el CONNECT) |
 | P9 | Acceso del usuario por HTTP | El navegador del Usuario-Alcaldia abre el tablero | El Usuario-Alcaldia, conectado a WLAN-Chia, abrió `http://200.10.10.30` y vio la página del tablero. | [11](capturas/11-http-usuario.png) |
 
@@ -208,13 +209,22 @@ La página del Servidor-Web es estática: presenta el tablero y los tópicos, pe
 | **Red de la nube sin autenticación Wi-Fi:** el AP-Nube no tiene seguridad. | Sección 8.1 | La plataforma se aloja en un servidor cableado o en un servicio en la nube; no depende de un punto de acceso abierto. |
 | **Datos simulados:** los nodos no tienen sensores; los valores se escriben a mano en la aplicación. | Carga `"origen":"simulado"` en todas las capturas | Cada nodo publica las mediciones de sus sensores. |
 
+### 8.5. Variante con MCU y sensores IoT (autor: Pablo)
+
+Pablo Tamayo construyó una variante de la red en el archivo [`variante-pablo/dolordedientes-mqtt.pkt`](variante-pablo/dolordedientes-mqtt.pkt). **No se ejecutó para esta entrega y su validación queda pendiente.**
+
+* **Topología:** dos sitios, con Router-SitioA y Router-SitioB unidos por fibra (10.0.0.0/30). Cada sitio tiene un gateway DLC100 con WPA2: `IOT-SITIOA` (192.168.10.0/24) e `IOT-SITIOB` (192.168.20.0/24). Los nodos son MCU con los sensores IoT de Packet Tracer (agua, humedad, temperatura y ambiente). El Server0 (192.168.100.10) es el broker MQTT y un smartphone hace de tablero.
+* **MQTT:** usuarios `nodoA`, `nodoB` y `tablero`. Los MCU publican cada 30 s en `sabanacentro/sitioX/{nivel,temperatura,humedad,presion,radiacion_uv}` y en `sabanacentro/sitioX/alerta` («escasez» si el nivel es menor que 5), todo con QoS 0, y se suscriben a `sabanacentro/sitioX/alarma/control`. El tablero se suscribe a `sabanacentro/#`.
+* **Diferencias con la red principal:** la publicación es automática, a partir de las variables de entorno de Packet Tracer, lo que la hace más realista que escribir los mensajes a mano. En cambio, usa QoS 0 en todos los tópicos, no usa mensajes retenidos y no tiene evidencias capturadas.
+* **Observación:** el script del broker agrega los usuarios, pero no llama a `mqttbroker.enable_service()`, así que el broker arranca deshabilitado hasta activarlo en la interfaz gráfica.
+
 ## 9. Troubleshooting
 
 | # | Síntoma | Causa | Solución | Evidencia |
 | :--- | :--- | :--- | :--- | :--- |
 | 1 | Los nodos de Chía no se asociaban al router inalámbrico. | La seguridad Wi-Fi configurada en el router y en las SBC no coincidía. | Igualar el SSID y la seguridad en el router y en los nodos. | Captura de antes y después: no tomada |
 | 2 | Los nodos quedaban con la dirección IPv4 0.0.0.0. | Tras cambiar la IP de la LAN, el rango del DHCP del WRT300N quedó con inicio en 1 y un máximo de 1 usuario. Además, en Packet Tracer 9 la interfaz gráfica del WRT300N muestra las etiquetas en blanco sobre blanco, lo que dificultó ver el error. | Configurar el rango del DHCP desde la dirección .100, con 50 usuarios, y renovar el DHCP en cada nodo. | Captura de antes y después: no tomada |
-| 3 | La SBC gateway de Chía, con IP estática, no respondía, y la interfaz gráfica del router de Cajicá no dejaba configurar el DHCP. | No se determinó la causa dentro del simulador. | Simplificar la topología: el router inalámbrico cumple la función de gateway y cajica-01 usa IP estática 192.168.20.10. | Captura de antes y después: no tomada |
+| 3 | La SBC gateway de Chía, con IP estática, no respondía, y la interfaz gráfica del router de Cajicá no dejaba configurar el DHCP. | Causa no determinada. Hipótesis no verificada: la IP o la puerta de enlace, o la seguridad inalámbrica, de las SBC gateway. | Simplificar la topología: el router inalámbrico cumple la función de gateway y cajica-01 usa IP estática 192.168.20.10. | Captura de antes y después: no tomada |
 
 ## 10. Relación con el prototipo del Challenge #2
 

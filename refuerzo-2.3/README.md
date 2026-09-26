@@ -9,6 +9,7 @@ Diseño y validación en Cisco Packet Tracer 9.0.0.810 de una red de nodos de mo
 | [`capturas/`](capturas/) | Evidencia de la validación |
 | [`GUIA_PACKET_TRACER.md`](GUIA_PACKET_TRACER.md) | Cómo reconstruir la topología y repetir las pruebas |
 | [`GUION_VIDEO.md`](GUION_VIDEO.md) | Guion del video de 5 minutos |
+| [`variante-pablo/`](variante-pablo/) | Variante con MCU y sensores IoT de Packet Tracer (autor: Pablo); no ejecutada para esta entrega |
 | [`scripts/`](scripts/) | Scripts de Python alternativos a la aplicación *MQTT Client* (no usados en la validación) |
 
 Los datos de los nodos son simulados y cada mensaje lo declara con `"origen":"simulado"`.
