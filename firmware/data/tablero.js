@@ -44,6 +44,12 @@
     uv_alto: 'Índice UV alto',
   };
   const ESTADOS_DESACTIVABLES = ['ALERTA', 'CRITICO'];
+  // Texto de la fuente de compensación de la velocidad del sonido (sensores.cpp).
+  const TEXTO_COMPENSACION = {
+    'T DHT22': 'Velocidad del sonido compensada con la temperatura del DHT22',
+    'T BMP180': 'Velocidad del sonido compensada con la temperatura del BMP180',
+    'compensación por defecto': 'Velocidad del sonido con 20 °C por defecto (sin temperatura medida)',
+  };
 
   // -------------------------------------------------------------------------
   // Utilidades
@@ -92,7 +98,7 @@
       valor: (j) => numero(j.nivel.cm, 1),
       detalle: (j) => numero(j.nivel.pct, 0) + ' % de la altura útil · tendencia ' +
         (j.nivel.tendencia_cm_min === null ? 'no disponible' : numero(j.nivel.tendencia_cm_min, 2) + ' cm/min'),
-      extra: (j) => 'Compensación: ' + j.nivel.compensacion,
+      extra: (j) => TEXTO_COMPENSACION[j.nivel.compensacion] || 'Compensación: ' + j.nivel.compensacion,
     },
     {
       id: 'temperatura', titulo: 'Temperatura', subtitulo: 'DHT22', unidad: '°C', sensor: (j) => j.dht22,
@@ -205,8 +211,10 @@
     }
 
     $('alarma-desactivada').hidden = !j.alarma_desactivada;
-    const desactivable = ESTADOS_DESACTIVABLES.includes(j.estado) && !j.alarma_desactivada;
+    const estadoConAlarma = ESTADOS_DESACTIVABLES.includes(j.estado);
+    const desactivable = estadoConAlarma && !j.alarma_desactivada;
     $('boton-desactivar').disabled = !desactivable || orden !== null;
+    $('boton-nota').hidden = estadoConAlarma;
 
     if (orden) {
       if (j.alarma_desactivada) {

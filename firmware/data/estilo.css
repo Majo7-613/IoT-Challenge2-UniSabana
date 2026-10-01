@@ -139,6 +139,8 @@ main {
   background: #ffffff; color: var(--texto); font-weight: 700; font-size: 0.85rem;
 }
 .orden-mensaje { font-size: 0.85rem; min-height: 1.2em; max-width: 280px; }
+.boton-nota { font-size: 0.8rem; opacity: 0.9; }
+.orden-mensaje:empty { display: none; }
 
 .boton-desactivar, .boton-secundario {
   font: inherit; font-weight: 700;

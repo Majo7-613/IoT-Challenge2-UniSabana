@@ -57,7 +57,7 @@ ESCENARIOS = {
                         t=22.6, hr=56, p=751.8, uv=4.4, sensores={}),
     "ALERTA": dict(estado="ALERTA", causas=["nivel_preventivo", "descenso", "vpd_alto", "temperatura_alta", "uv_alto"],
                    pct=31, tendencia=-1.32, t=30.8, hr=38, p=750.9, uv=7.4, sensores={}),
-    "CRITICO": dict(estado="CRITICO", causas=["nivel_critico", "nivel_preventivo", "descenso", "vpd_alto"],
+    "CRITICO": dict(estado="CRITICO", causas=["nivel_critico", "descenso", "vpd_alto"],
                     pct=16, tendencia=-1.12, t=28.7, hr=35, p=750.6, uv=5.2, sensores={"guva": "VIEJO"}),
     "FALLA_NIVEL": dict(estado="FALLA NIVEL", causas=[], pct=None, tendencia=None, t=20.1, hr=61,
                         p=752.0, uv=2.6, sensores={"nivel": "FALLA"}),
