@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<!--
+  Tablero de monitoreo hídrico (Sabana Centro).
+  Lo sirve el ESP32 desde LittleFS (pio run -t uploadfs); no usa recursos de
+  Internet. Diseño y rutas de la API: Wiki 2.5.4.
+-->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tablero de monitoreo hídrico</title>
+<script>
+  // Los archivos del tablero pasan por el mismo control de acceso que la API,
+  // así que se piden con el token del dispositivo tomado de la dirección
+  // (/?token=…). El navegador reenvía la autenticación Digest por su cuenta.
+  window.TABLERO_TOKEN = new URLSearchParams(location.search).get('token') || '';
+  window.TABLERO_Q = '?token=' + encodeURIComponent(window.TABLERO_TOKEN);
+  document.write('<link rel="stylesheet" href="estilo.css' + window.TABLERO_Q + '">');
+</script>
+</head>
+<body>
+
+<div id="banda-simulada" class="banda-simulada" hidden>
+  DATOS SIMULADOS · servidor de prueba local, sin ESP32 ni sensores
+</div>
+
+<header class="encabezado">
+  <div>
+    <h1>Tablero de monitoreo hídrico</h1>
+    <p class="subtitulo">Sabana Centro · nodo de monitoreo</p>
+  </div>
+  <div class="conexion">
+    <span id="conexion" class="conexion__estado conexion--reconectando">
+      <span class="punto" aria-hidden="true"></span><span id="conexion-texto">Conectando…</span>
+    </span>
+    <span id="wifi" class="conexion__wifi">Wi-Fi: —</span>
+  </div>
+</header>
+
+<main>
+  <section id="estado" class="estado estado--INICIANDO" aria-live="polite">
+    <div class="estado__principal">
+      <span id="estado-icono" class="estado__icono" aria-hidden="true">…</span>
+      <div>
+        <p class="estado__rotulo">Estado de alerta</p>
+        <p id="estado-nombre" class="estado__nombre">INICIANDO</p>
+      </div>
+    </div>
+    <ul id="estado-causas" class="estado__causas"></ul>
+    <div class="estado__alarma">
+      <span id="alarma-desactivada" class="etiqueta-desactivada" hidden>Alarma física desactivada</span>
+      <button id="boton-desactivar" class="boton-desactivar" type="button" disabled>Desactivar alarma física</button>
+      <p id="orden-mensaje" class="orden-mensaje" role="status"></p>
+    </div>
+  </section>
+
+  <section aria-labelledby="titulo-valores">
+    <h2 id="titulo-valores">Valores actuales</h2>
+    <div id="tarjetas" class="tarjetas"></div>
+  </section>
+
+  <section aria-labelledby="titulo-historico" class="historico">
+    <div class="historico__cabecera">
+      <h2 id="titulo-historico">Histórico</h2>
+      <div class="pestanas" role="tablist">
+        <button id="pestana-rapido" role="tab" aria-selected="true" data-bufer="rapido">Últimos 10 min</button>
+        <button id="pestana-lento" role="tab" aria-selected="false" data-bufer="lento">Últimas 24 h</button>
+      </div>
+    </div>
+    <p id="historico-nota" class="historico__nota"></p>
+    <div class="graficas">
+      <figure class="grafica">
+        <figcaption>Nivel del agua (% de la altura útil)</figcaption>
+        <div class="grafica__lienzo"><canvas id="grafica-nivel"></canvas></div>
+      </figure>
+      <figure class="grafica">
+        <figcaption>Temperatura y humedad relativa</figcaption>
+        <div class="grafica__lienzo"><canvas id="grafica-clima"></canvas></div>
+      </figure>
+      <figure class="grafica">
+        <figcaption>VPD e índice UV</figcaption>
+        <div class="grafica__lienzo"><canvas id="grafica-vpd"></canvas></div>
+      </figure>
+    </div>
+  </section>
+</main>
+
+<footer class="pie">
+  <span id="pie-ciclo">Ciclo —</span>
+  <span id="pie-arranque">Equipo encendido hace —</span>
+  <span id="pie-hora">Hora —</span>
+</footer>
+
+<dialog id="dialogo-desactivar" class="dialogo">
+  <form method="dialog">
+    <h2>¿Desactivar la alarma física?</h2>
+    <p>El buzzer se silencia mientras el estado no empeore. Si el estado pasa de ALERTA a CRÍTICO, la alarma se vuelve a activar sola. La LCD sigue mostrando el estado.</p>
+    <div class="dialogo__botones">
+      <button value="cancelar" class="boton-secundario">Cancelar</button>
+      <button value="confirmar" class="boton-desactivar">Desactivar</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+  document.write('<script src="lib/chart.umd.min.js' + window.TABLERO_Q + '"><\/script>');
+  document.write('<script src="tablero.js' + window.TABLERO_Q + '"><\/script>');
+</script>
+</body>
+</html>

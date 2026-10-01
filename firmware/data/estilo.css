@@ -1,0 +1,246 @@
+/*
+ * Estilos del tablero de monitoreo hídrico.
+ * Fuentes del sistema y sin recursos externos. El estado de alerta siempre se
+ * muestra con texto e ícono, además del color.
+ */
+
+:root {
+  /* Colores de los estados de alerta (aprobados por el equipo). */
+  --normal: #2e7d32;
+  --advertencia: #f9a825;
+  --alerta: #ef6c00;
+  --critico: #c62828;
+  --falla: #6a1b9a;
+  --iniciando: #607d8b;
+
+  /* Estados de los sensores. */
+  --sensor-ok: #2e7d32;
+  --sensor-viejo: #b26a00;
+  --sensor-falla: #c62828;
+  --sensor-iniciando: #607d8b;
+
+  --fondo: #f3f5f7;
+  --superficie: #ffffff;
+  --borde: #d8dee4;
+  --texto: #1b1f24;
+  --texto-suave: #57606a;
+  --acento: #1565c0;
+  --radio: 10px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+h1, h2, p { margin: 0; }
+h2 { font-size: 1.1rem; margin-bottom: 0.6rem; }
+
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px 24px;
+  display: grid;
+  gap: 20px;
+}
+
+/* --- Banda de datos simulados ------------------------------------------- */
+
+.banda-simulada {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 8px 16px;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #1b1f24;
+  background: repeating-linear-gradient(-45deg, #ffd54f 0 14px, #ffe082 14px 28px);
+  border-bottom: 2px solid #1b1f24;
+}
+
+/* --- Encabezado ---------------------------------------------------------- */
+
+.encabezado {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px 16px;
+}
+.encabezado h1 { font-size: 1.35rem; }
+.subtitulo { color: var(--texto-suave); font-size: 0.9rem; }
+
+.conexion { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 0.9rem; }
+.conexion__estado {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 999px;
+  background: var(--superficie); border: 1px solid var(--borde);
+}
+.conexion__wifi { color: var(--texto-suave); }
+.punto { width: 10px; height: 10px; border-radius: 50%; background: var(--iniciando); }
+.conexion--en-vivo .punto { background: var(--normal); }
+.conexion--reconectando .punto { background: var(--advertencia); }
+.conexion--sin-datos .punto { background: var(--critico); }
+
+/* --- Estado de alerta ---------------------------------------------------- */
+
+.estado {
+  border-radius: var(--radio);
+  padding: 18px 20px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px 24px;
+  align-items: center;
+  color: #ffffff;
+  background: var(--iniciando);
+}
+.estado--NORMAL      { background: var(--normal); }
+.estado--ADVERTENCIA { background: var(--advertencia); color: var(--texto); }
+.estado--ALERTA      { background: var(--alerta); color: var(--texto); }
+.estado--CRITICO     { background: var(--critico); animation: pulso 2s ease-in-out infinite; }
+.estado--FALLA_NIVEL { background: var(--falla); }
+.estado--INICIANDO   { background: var(--iniciando); }
+
+@keyframes pulso {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(198, 40, 40, 0.55); }
+  50%      { box-shadow: 0 0 0 10px rgba(198, 40, 40, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .estado--CRITICO { animation: none; }
+}
+
+.estado__principal { display: flex; align-items: center; gap: 14px; }
+.estado__icono {
+  width: 52px; height: 52px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 1.7rem; font-weight: 800;
+  border: 3px solid currentColor;
+}
+.estado__rotulo { font-size: 0.85rem; opacity: 0.9; }
+.estado__nombre { font-size: 1.9rem; font-weight: 800; letter-spacing: 0.02em; }
+
+.estado__causas { margin: 0; padding-left: 1.1rem; font-weight: 600; }
+.estado__causas li + li { margin-top: 2px; }
+.estado__causas .sin-causas { list-style: none; margin-left: -1.1rem; font-weight: 400; }
+
+.estado__alarma { display: grid; gap: 6px; justify-items: end; text-align: right; }
+.etiqueta-desactivada {
+  padding: 3px 10px; border-radius: 999px;
+  background: #ffffff; color: var(--texto); font-weight: 700; font-size: 0.85rem;
+}
+.orden-mensaje { font-size: 0.85rem; min-height: 1.2em; max-width: 280px; }
+
+.boton-desactivar, .boton-secundario {
+  font: inherit; font-weight: 700;
+  padding: 10px 16px; border-radius: 8px; cursor: pointer;
+  border: 2px solid #1b1f24;
+}
+.boton-desactivar { background: #ffffff; color: #1b1f24; }
+.boton-desactivar:disabled { cursor: not-allowed; opacity: 0.55; }
+.boton-secundario { background: transparent; color: inherit; border-color: var(--borde); }
+
+/* --- Tarjetas de valores actuales --------------------------------------- */
+
+.tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+.tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 14px;
+  display: grid;
+  gap: 4px;
+  align-content: start;
+}
+.tarjeta__cabecera { display: flex; justify-content: space-between; align-items: start; gap: 8px; }
+.tarjeta__titulo { font-weight: 700; }
+.tarjeta__subtitulo { color: var(--texto-suave); font-size: 0.8rem; }
+.tarjeta__valor { font-size: 1.9rem; font-weight: 750; font-variant-numeric: tabular-nums; }
+.tarjeta__unidad { font-size: 1rem; font-weight: 500; color: var(--texto-suave); margin-left: 4px; }
+.tarjeta__detalle { font-size: 0.85rem; color: var(--texto-suave); }
+.tarjeta__edad { font-size: 0.8rem; color: var(--texto-suave); }
+
+.insignia {
+  flex: none;
+  font-size: 0.72rem; font-weight: 700;
+  padding: 2px 8px; border-radius: 999px;
+  color: #ffffff; background: var(--sensor-iniciando);
+}
+.insignia--OK        { background: var(--sensor-ok); }
+.insignia--VIEJO     { background: var(--sensor-viejo); }
+.insignia--FALLA     { background: var(--sensor-falla); }
+.insignia--INICIANDO { background: var(--sensor-iniciando); }
+.insignia--NEUTRA    { background: var(--texto-suave); }
+
+/* --- Histórico ----------------------------------------------------------- */
+
+.historico__cabecera {
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px;
+}
+.historico__cabecera h2 { margin-bottom: 0; }
+.historico__nota { color: var(--texto-suave); font-size: 0.85rem; margin: 6px 0 10px; }
+
+.pestanas { display: inline-flex; border: 1px solid var(--borde); border-radius: 8px; overflow: hidden; }
+.pestanas button {
+  font: inherit; font-size: 0.9rem;
+  padding: 6px 14px; border: 0; cursor: pointer;
+  background: var(--superficie); color: var(--texto);
+}
+.pestanas button[aria-selected="true"] { background: var(--acento); color: #ffffff; font-weight: 700; }
+
+.graficas { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 12px; }
+.grafica {
+  margin: 0;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 12px;
+}
+.grafica figcaption { font-weight: 700; font-size: 0.9rem; margin-bottom: 6px; }
+.grafica__lienzo { position: relative; height: 230px; }
+
+/* --- Pie ----------------------------------------------------------------- */
+
+.pie {
+  max-width: 1200px; margin: 0 auto; padding: 12px 16px 24px;
+  display: flex; flex-wrap: wrap; gap: 6px 20px;
+  color: var(--texto-suave); font-size: 0.85rem;
+}
+
+/* --- Diálogo ------------------------------------------------------------- */
+
+.dialogo { border: 0; border-radius: var(--radio); padding: 20px; max-width: 420px; }
+.dialogo::backdrop { background: rgba(0, 0, 0, 0.45); }
+.dialogo p { margin: 10px 0 16px; }
+.dialogo__botones { display: flex; justify-content: flex-end; gap: 10px; }
+.dialogo .boton-desactivar { background: var(--critico); color: #ffffff; border-color: var(--critico); }
+
+/* --- Celular ------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .estado { grid-template-columns: 1fr; }
+  .estado__alarma { justify-items: stretch; text-align: left; }
+  .boton-desactivar { width: 100%; }
+  .orden-mensaje { max-width: none; }
+  .estado__nombre { font-size: 1.6rem; }
+  .tarjetas { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .tarjeta { padding: 10px; }
+  .tarjeta__valor { font-size: 1.5rem; }
+  .tarjeta--et0 { grid-column: span 2; }
+  .tarjeta__edad { font-size: 0.75rem; }
+  .graficas { grid-template-columns: 1fr; }
+  .grafica__lienzo { height: 200px; }
+}
