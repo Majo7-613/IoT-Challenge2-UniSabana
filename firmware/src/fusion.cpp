@@ -126,9 +126,13 @@ Resultado Clasificador::evaluar(const Entradas& e, bool solicitudDesactivacion) 
             r.estado = EstadoAlerta::NORMAL;
         }
 
-        // Causas activas, para mostrarlas en el tablero.
-        if (nivelCritico_)    r.causas |= CAUSA_NIVEL_CRITICO;
-        if (nivelPreventivo_) r.causas |= CAUSA_NIVEL_PREVENTIVO;
+        // Causas activas, para mostrarlas en el tablero. El nivel crítico
+        // implica el preventivo, así que se informa solo la causa más grave.
+        if (nivelCritico_) {
+            r.causas |= CAUSA_NIVEL_CRITICO;
+        } else if (nivelPreventivo_) {
+            r.causas |= CAUSA_NIVEL_PREVENTIVO;
+        }
         if (descenso_)        r.causas |= CAUSA_DESCENSO;
         if (vpdAlto_)         r.causas |= CAUSA_VPD_ALTO;
         if (temperaturaAlta_) r.causas |= CAUSA_T_ALTA;

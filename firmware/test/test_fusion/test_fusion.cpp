@@ -99,11 +99,16 @@ void test_histeresis_del_nivel() {
     fusion::Entradas e = normales(0);
 
     e.nivelPct = 20.0f;   // entra a crítico en el umbral
-    verificarEstado(EstadoAlerta::CRITICO, c.evaluar(e, false).estado);
+    fusion::Resultado r = c.evaluar(e, false);
+    verificarEstado(EstadoAlerta::CRITICO, r.estado);
+    // En crítico se informa solo la causa crítica, no también la preventiva.
+    TEST_ASSERT_EQUAL_UINT8(CAUSA_NIVEL_CRITICO, r.causas);
     e.nivelPct = 24.0f;   // no sale hasta superar 20 + 5
     verificarEstado(EstadoAlerta::CRITICO, c.evaluar(e, false).estado);
     e.nivelPct = 25.5f;   // sale de crítico; sigue bajo el preventivo
-    verificarEstado(EstadoAlerta::ADVERTENCIA, c.evaluar(e, false).estado);
+    r = c.evaluar(e, false);
+    verificarEstado(EstadoAlerta::ADVERTENCIA, r.estado);
+    TEST_ASSERT_EQUAL_UINT8(CAUSA_NIVEL_PREVENTIVO, r.causas);
     e.nivelPct = 44.0f;   // no sale del preventivo hasta superar 40 + 5
     verificarEstado(EstadoAlerta::ADVERTENCIA, c.evaluar(e, false).estado);
     e.nivelPct = 46.0f;
