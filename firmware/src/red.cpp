@@ -60,6 +60,17 @@ bool redConectada() {
     return WiFi.status() == WL_CONNECTED;
 }
 
+bool redHoraEpoca(uint32_t& epoca) {
+    const time_t ahora = time(nullptr);
+    struct tm utc {};
+    gmtime_r(&ahora, &utc);
+    if (utc.tm_year + 1900 < HORA_VALIDA_DESDE_ANIO) {
+        return false;
+    }
+    epoca = static_cast<uint32_t>(ahora);
+    return true;
+}
+
 void redSupervisar(uint32_t ahoraMs) {
     const bool conectada = redConectada();
 

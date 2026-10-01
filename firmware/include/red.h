@@ -26,3 +26,12 @@ void redSupervisar(uint32_t ahoraMs);
 
 /** true si el ESP32 está asociado a la WLAN y tiene dirección IP. */
 bool redConectada();
+
+/**
+ * @brief Hora de época (segundos desde 1970, UTC), si la hora es válida.
+ *
+ * La hora es válida cuando el NTP ya la fijó (año ≥ HORA_VALIDA_DESDE_ANIO).
+ * @param[out] epoca Hora de época; no se modifica si la hora no es válida.
+ * @return true si la hora es válida.
+ */
+bool redHoraEpoca(uint32_t& epoca);

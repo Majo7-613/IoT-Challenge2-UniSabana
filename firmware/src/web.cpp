@@ -12,6 +12,7 @@
 #include <ESPAsyncWebServer.h>
 #include <LittleFS.h>
 #include <WiFi.h>
+#include <esp_timer.h>
 #include <cmath>
 #include <cstdarg>
 #include <cstdio>
@@ -22,6 +23,7 @@
 #include "config.h"
 #include "credenciales.h"
 #include "historico.h"
+#include "red.h"
 #include "registro.h"
 #include "tareas.h"
 
@@ -96,10 +98,17 @@ bool jsonActual(const EstadoPublicado& e, char* bufer, size_t tamano) {
     const Derivados& d = e.derivados;
     Json j(bufer, tamano);
 
-    j.agregar("{\"ciclo\":%lu,\"t_s\":%lu,\"estado\":\"%s\",\"causas\":[",
+    j.agregar("{\"ciclo\":%lu,\"t_s\":%lu,",
               static_cast<unsigned long>(e.instantanea.ciclo),
-              static_cast<unsigned long>(e.instantanea.marcaTiempoUs / 1000000),
-              textoAlerta(d.estado));
+              static_cast<unsigned long>(e.instantanea.marcaTiempoUs / 1000000));
+    // Hora de época del envío si el NTP ya fijó la hora; si no, null.
+    uint32_t epoca = 0;
+    if (redHoraEpoca(epoca)) {
+        j.agregar("\"epoca\":%lu,", static_cast<unsigned long>(epoca));
+    } else {
+        j.agregar("\"epoca\":null,");
+    }
+    j.agregar("\"estado\":\"%s\",\"causas\":[", textoAlerta(d.estado));
     const struct { uint8_t bit; const char* nombre; } causas[] = {
         {CAUSA_NIVEL_CRITICO, "nivel_critico"}, {CAUSA_NIVEL_PREVENTIVO, "nivel_preventivo"},
         {CAUSA_DESCENSO, "descenso"},           {CAUSA_VPD_ALTO, "vpd_alto"},
@@ -294,10 +303,19 @@ void manejarHistorico(AsyncWebServerRequest* request) {
     }
     const size_t n = historicoCopiar(bufer, copia.get());
 
+    // ahora_s y ahora_epoca son el mismo instante: con ellos el tablero convierte
+    // el t_s de cada registro (tiempo desde el arranque) a hora local.
     AsyncResponseStream* respuesta = request->beginResponseStream("application/json");
-    respuesta->printf("{\"bufer\":\"%s\",\"periodo_s\":%lu,\"ahora_s\":%lu,\"registros\":[",
+    respuesta->printf("{\"bufer\":\"%s\",\"periodo_s\":%lu,\"ahora_s\":%lu,",
                       nombre.c_str(), static_cast<unsigned long>(historicoPeriodoS(bufer)),
-                      static_cast<unsigned long>(millis() / 1000));
+                      static_cast<unsigned long>(esp_timer_get_time() / 1000000));
+    uint32_t epoca = 0;
+    if (redHoraEpoca(epoca)) {
+        respuesta->printf("\"ahora_epoca\":%lu,", static_cast<unsigned long>(epoca));
+    } else {
+        respuesta->print("\"ahora_epoca\":null,");
+    }
+    respuesta->print("\"registros\":[");
     char a[16], b[16], c[16], d[16], e[16], f[16], g[16];
     for (size_t i = 0; i < n; i++) {
         const RegistroHistorico& r = copia[i];
