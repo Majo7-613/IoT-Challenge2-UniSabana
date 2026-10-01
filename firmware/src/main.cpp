@@ -5,11 +5,13 @@
  * Nodo de monitoreo del nivel de agua y de variables meteorológicas para un
  * punto de almacenamiento en Sabana Centro (ESP32-DevKitC V4).
  *
- * Paso 4 (fusión e interfaz local): a la adquisición con estado por sensor
- * (paso 2) y al cálculo del nivel, la tendencia, el VPD y la ET0 (paso 3) se
- * suman la clasificación del estado de alerta con histéresis, la LCD y el
- * buzzer. Criterio de "hecho": cada fila de la matriz de estados se reproduce
- * en Wokwi (PLAN_DE_TRABAJO.md, "Orden de implementación").
+ * Paso 5 (red y servidor): a la adquisición (paso 2), al nivel, la tendencia,
+ * el VPD y la ET0 (paso 3) y a la fusión con la LCD y el buzzer (paso 4) se
+ * suman el Wi-Fi en modo estación con reconexión, el servidor web del tablero
+ * con control de acceso (subred, token y Digest), el histórico y el
+ * WebSocket. Criterio de "hecho": el tablero muestra datos en vivo desde un
+ * celular, rechaza a un usuario sin credenciales y la desactivación de la
+ * alarma física funciona (PLAN_DE_TRABAJO.md, "Orden de implementación").
  */
 #include <Arduino.h>
 #include <esp_arduino_version.h>
@@ -22,7 +24,7 @@ void setup() {
     Serial.begin(SERIAL_BAUDIOS);
     registroIniciar();
 
-    registrar("main", "Firmware IoT Challenge #2 — paso 4 (fusión e interfaz local)%s",
+    registrar("main", "Firmware IoT Challenge #2 — paso 5 (red y tablero web)%s",
 #ifdef SIMULACION
               " [SIMULACIÓN]"
 #else

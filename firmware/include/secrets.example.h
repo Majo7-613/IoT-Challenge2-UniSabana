@@ -4,7 +4,8 @@
  *
  * Copiar este archivo como `secrets.h` (en la misma carpeta) y llenar los
  * valores reales. `secrets.h` está en .gitignore y nunca se sube al repositorio.
- * El paso 1 (esqueleto) todavía no lo usa.
+ * Si secrets.h no existe, el firmware compila con estos valores de ejemplo y
+ * lo advierte en el registro al arrancar.
  */
 #pragma once
 
@@ -15,3 +16,7 @@
 // Credenciales del tablero (autenticación Digest).
 #define TABLERO_USUARIO     "operador"
 #define TABLERO_CONTRASENA  "cambiar-esta-clave"
+
+// Un token por dispositivo autorizado (celular o PC del operador). Se envía
+// en el encabezado X-Token o en el parámetro ?token= de la URL.
+#define TABLERO_TOKENS {"token-dispositivo-1", "token-dispositivo-2"}

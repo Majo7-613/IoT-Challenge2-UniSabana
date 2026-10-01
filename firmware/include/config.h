@@ -151,7 +151,49 @@ constexpr uint32_t PILA_HISTORICO = 4096;
 constexpr uint32_t PILA_RED       = 4096;
 
 constexpr uint32_t HMI_PERIODO_MS = 250;   ///< Ciclo de la interfaz local (LCD, retroiluminación y patrón del buzzer).
-constexpr uint32_t RED_PERIODO_MS = 5000;  ///< Supervisión del Wi-Fi.
+constexpr uint32_t RED_TICK_MS    = 1000;  ///< Ciclo de tRed: difusión por WebSocket.
+constexpr uint32_t RED_PERIODO_MS = 5000;  ///< Supervisión del Wi-Fi (múltiplo de RED_TICK_MS).
+
+// ============================================================================
+// Red (Wi-Fi en modo estación) y hora
+// ============================================================================
+
+/** Sin conexión, se reintenta asociarse a la WLAN con este periodo. */
+constexpr uint32_t RED_REINTENTO_MS = 10000;
+
+/** Hora por NTP (solo si la WLAN tiene salida a Internet). Colombia: UTC−5, sin horario de verano. */
+constexpr long        ZONA_HORARIA_S = -5L * 3600L;
+constexpr const char* NTP_SERVIDOR_1 = "pool.ntp.org";
+constexpr const char* NTP_SERVIDOR_2 = "time.google.com";
+
+/** Año mínimo para considerar válida la hora (antes de NTP, el reloj empieza en 1970). */
+constexpr int HORA_VALIDA_DESDE_ANIO = 2026;
+
+// ============================================================================
+// Servidor web del tablero
+// ============================================================================
+
+constexpr uint16_t    WEB_PUERTO = 80;
+constexpr const char* WEB_REALM  = "Tablero Sabana Centro";  ///< Dominio de la autenticación Digest.
+
+/** Nombre del encabezado y del parámetro con el token del dispositivo. */
+constexpr const char* WEB_TOKEN_ENCABEZADO = "X-Token";
+constexpr const char* WEB_TOKEN_PARAMETRO  = "token";
+
+/** Clientes WebSocket simultáneos como máximo. */
+constexpr uint16_t WEB_MAX_CLIENTES_WS = 4;
+
+/**
+ * Filtro de subred del control de acceso. Solo se desactiva en el entorno
+ * wokwi (SIMULACION): el reenvío de puertos de Wokwi entrega las peticiones
+ * desde una dirección que no pertenece a la subred simulada. El token y la
+ * autenticación Digest siguen activos. Ajuste de simulación (Wiki 3.5 y 5.4).
+ */
+#ifdef SIMULACION
+constexpr bool WEB_FILTRO_SUBRED = false;
+#else
+constexpr bool WEB_FILTRO_SUBRED = true;
+#endif
 
 // ============================================================================
 // Alarma física (buzzer)

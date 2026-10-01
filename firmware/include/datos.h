@@ -65,6 +65,13 @@ struct Lecturas {
     float        uvIndice;             ///< Aproximación Vout [V] × 10, a caracterizar en la Wiki (4.2).
     EstadoSensor estadoUv;
     bool         iniciadoUv;
+
+    // Antigüedad de la última lectura válida de cada sensor, en ciclos de 1 s
+    // (0 = lectura válida en este ciclo). Sin sentido mientras no esté iniciado.
+    uint32_t edadNivelS;
+    uint32_t edadDhtS;
+    uint32_t edadBmpS;
+    uint32_t edadUvS;
 };
 
 /**

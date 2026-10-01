@@ -28,10 +28,13 @@
 #include "config.h"
 #include "evaporacion.h"
 #include "fusion.h"
+#include "historico.h"
 #include "hmi.h"
 #include "nivel.h"
+#include "red.h"
 #include "registro.h"
 #include "sensores.h"
+#include "web.h"
 
 namespace {
 
@@ -307,8 +310,6 @@ void tareaHmi(void*) {
 
 /**
  * @brief Tarea del histórico: registro rápido cada 5 s y lento cada 5 min.
- *
- * Paso 1: registra en el puerto serie el ciclo que guardaría en cada búfer.
  */
 void tareaHistorico(void*) {
     TickType_t ultimoDespertar = xTaskGetTickCount();
@@ -324,29 +325,43 @@ void tareaHistorico(void*) {
         if (!leerEstadoPublicado(copia)) {
             continue;
         }
-        registrar("tHistorico", "registro rápido del ciclo %" PRIu32, copia.instantanea.ciclo);
+        historicoAgregar(Bufer::RAPIDO, copia);
         if (iteracion % rapidosPorLento == 0) {
+            historicoAgregar(Bufer::LENTO, copia);
             registrar("tHistorico", "registro lento del ciclo %" PRIu32, copia.instantanea.ciclo);
         }
     }
 }
 
 /**
- * @brief Tarea de red: supervisa el Wi-Fi cada 5 s.
+ * @brief Tarea de red, cada RED_TICK_MS (1 s).
  *
- * Paso 1: solo informa la memoria libre, útil para detectar fugas durante la
- * prueba de 10 minutos. La conexión en modo estación se agrega en el paso 5.
+ * Difunde el estado por WebSocket en cada ciclo y supervisa el Wi-Fi cada
+ * RED_PERIODO_MS (reconexión, inicio del servidor y hora por NTP). Registra la
+ * memoria libre cada minuto, para detectar fugas en las pruebas largas.
  */
 void tareaRed(void*) {
     TickType_t ultimoDespertar = xTaskGetTickCount();
-    const TickType_t periodo = pdMS_TO_TICKS(RED_PERIODO_MS);
+    const TickType_t periodo = pdMS_TO_TICKS(RED_TICK_MS);
+    const uint32_t ticksPorSupervision = RED_PERIODO_MS / RED_TICK_MS;
+    const uint32_t ticksPorMemoria = 60000 / RED_TICK_MS;
+    uint32_t tick = 0;
 
+    redIniciar();
     for (;;) {
         vTaskDelayUntil(&ultimoDespertar, periodo);
-        registrar("tRed", "Wi-Fi sin configurar (paso 5). Heap libre: %" PRIu32
-                  " B, mínimo histórico: %" PRIu32 " B",
-                  static_cast<uint32_t>(ESP.getFreeHeap()),
-                  static_cast<uint32_t>(ESP.getMinFreeHeap()));
+        tick++;
+        if (tick % ticksPorSupervision == 0) {
+            redSupervisar(millis());
+        }
+        if (redConectada()) {
+            webDifundir();
+        }
+        if (tick % ticksPorMemoria == 0) {
+            registrar("tRed", "heap libre: %" PRIu32 " B, mínimo histórico: %" PRIu32 " B",
+                      static_cast<uint32_t>(ESP.getFreeHeap()),
+                      static_cast<uint32_t>(ESP.getMinFreeHeap()));
+        }
     }
 }
 
@@ -430,7 +445,7 @@ bool tareasIniciar() {
     qSnapshot = xQueueCreate(1, sizeof(Snapshot));
     mtxDatos = xSemaphoreCreateMutex();
     mtxI2C = xSemaphoreCreateMutex();
-    if (qSnapshot == nullptr || mtxDatos == nullptr || mtxI2C == nullptr) {
+    if (qSnapshot == nullptr || mtxDatos == nullptr || mtxI2C == nullptr || !historicoIniciar()) {
         registrar("tareas", "ERROR: no se pudieron crear la cola o los mutex");
         return false;
     }

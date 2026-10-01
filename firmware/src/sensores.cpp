@@ -58,6 +58,9 @@ public:
     /** false hasta la primera lectura válida desde el arranque. */
     bool iniciado() const { return iniciado_; }
 
+    /** Ciclos transcurridos desde la última lectura válida. */
+    uint32_t ciclosDesdeValida() const { return ciclosDesdeValida_; }
+
 private:
     // Al arrancar no hay ninguna lectura válida: el sensor empieza como VIEJO.
     EstadoSensor estado_ = EstadoSensor::VIEJO;
@@ -83,7 +86,8 @@ SeguimientoSensor segUv;
 Lecturas ultimas = {NAN, 0, FuenteCompensacion::POR_DEFECTO, EstadoSensor::VIEJO, false,
                     NAN, NAN, EstadoSensor::VIEJO, false,
                     NAN, NAN, EstadoSensor::VIEJO, false,
-                    NAN, NAN, EstadoSensor::VIEJO, false};
+                    NAN, NAN, EstadoSensor::VIEJO, false,
+                    0, 0, 0, 0};
 
 // ---------------------------------------------------------------------------
 // Utilidades
@@ -307,5 +311,9 @@ void sensoresLeer(bool leerDht22, Lecturas& salida) {
     ultimas.iniciadoDht = segDht.iniciado();
     ultimas.iniciadoBmp = segBmp.iniciado();
     ultimas.iniciadoUv = segUv.iniciado();
+    ultimas.edadNivelS = segNivel.ciclosDesdeValida();
+    ultimas.edadDhtS = segDht.ciclosDesdeValida();
+    ultimas.edadBmpS = segBmp.ciclosDesdeValida();
+    ultimas.edadUvS = segUv.ciclosDesdeValida();
     salida = ultimas;
 }

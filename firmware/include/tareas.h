@@ -9,11 +9,12 @@
  *  - tFusion:    recibe la instantánea, calcula el estado y lo publica.
  *  - tHMI:       cada 250 ms refresca la LCD y el patrón del buzzer.
  *  - tHistorico: cada 5 s y cada 5 min guarda registros en los búferes.
- *  - tRed:       cada 5 s supervisa el Wi-Fi.
+ *  - tRed:       cada 1 s difunde el estado por WebSocket; cada 5 s supervisa
+ *                el Wi-Fi (reconexión, servidor web y hora por NTP).
  *
- * Paso 4: tSensores lee los sensores; tFusion calcula el nivel, la tendencia,
- * el VPD, la ET0 y el estado de alerta; tHMI maneja la LCD y el buzzer.
- * tHistorico y tRed todavía solo registran su actividad (pasos 5 y 6).
+ * Paso 5: tSensores lee los sensores; tFusion calcula el nivel, la tendencia,
+ * el VPD, la ET0 y el estado de alerta; tHMI maneja la LCD y el buzzer;
+ * tHistorico llena los búferes; tRed mantiene el Wi-Fi y el tablero web.
  */
 #pragma once
 
@@ -40,7 +41,7 @@ bool leerEstadoPublicado(EstadoPublicado& destino);
 void tareasFijarDiaDelAnio(int diaDelAnio);
 
 /**
- * @brief Pide desactivar la alarma física (orden del tablero, paso 5).
+ * @brief Pide desactivar la alarma física (orden del tablero).
  *
  * Segura entre tareas: tFusion atiende la orden en su próximo ciclo y solo la
  * acepta en ALERTA o CRÍTICO. La alarma se rearma si el estado empeora.
