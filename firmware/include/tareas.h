@@ -11,8 +11,9 @@
  *  - tHistorico: cada 5 s y cada 5 min guarda registros en los búferes.
  *  - tRed:       cada 5 s supervisa el Wi-Fi.
  *
- * Paso 2: tSensores lee los sensores y registra sus lecturas y estados; las
- * demás tareas solo registran su actividad por el puerto serie.
+ * Paso 4: tSensores lee los sensores; tFusion calcula el nivel, la tendencia,
+ * el VPD, la ET0 y el estado de alerta; tHMI maneja la LCD y el buzzer.
+ * tHistorico y tRed todavía solo registran su actividad (pasos 5 y 6).
  */
 #pragma once
 
@@ -37,3 +38,11 @@ bool leerEstadoPublicado(EstadoPublicado& destino);
  *        disponible. La fuente de la fecha se define en el paso 5 (red).
  */
 void tareasFijarDiaDelAnio(int diaDelAnio);
+
+/**
+ * @brief Pide desactivar la alarma física (orden del tablero, paso 5).
+ *
+ * Segura entre tareas: tFusion atiende la orden en su próximo ciclo y solo la
+ * acepta en ALERTA o CRÍTICO. La alarma se rearma si el estado empeora.
+ */
+void tareasSolicitarDesactivarAlarma();

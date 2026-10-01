@@ -150,7 +150,7 @@ constexpr uint32_t PILA_HMI       = 4096;
 constexpr uint32_t PILA_HISTORICO = 4096;
 constexpr uint32_t PILA_RED       = 4096;
 
-constexpr uint32_t HMI_PERIODO_MS = 250;   ///< Refresco de LCD y patrón del buzzer.
+constexpr uint32_t HMI_PERIODO_MS = 250;   ///< Ciclo de la interfaz local (LCD, retroiluminación y patrón del buzzer).
 constexpr uint32_t RED_PERIODO_MS = 5000;  ///< Supervisión del Wi-Fi.
 
 // ============================================================================
@@ -164,14 +164,45 @@ constexpr uint16_t BUZZER_CRITICO_HZ        = 580;  ///< CRÍTICO: continuo.
 
 /**
  * FALLA NIVEL no es una alarma hídrica sino una falla técnica: 2 pitidos
- * cortos de 1 kHz cada 10 s. Duración del pitido y de la pausa entre ambos:
- * valores iniciales, pendientes de confirmar con el equipo.
+ * cortos de 1 kHz cada 10 s, con 100 ms de pitido y 100 ms de pausa entre
+ * ambos (confirmado por el equipo).
  */
 constexpr uint16_t BUZZER_FALLA_HZ          = 1000;
 constexpr uint8_t  BUZZER_FALLA_PITIDOS     = 2;
 constexpr uint16_t BUZZER_FALLA_PITIDO_MS   = 100;
 constexpr uint16_t BUZZER_FALLA_PAUSA_MS    = 100;
 constexpr uint32_t BUZZER_FALLA_PERIODO_MS  = 10000;
+
+/**
+ * Los patrones del buzzer los genera un temporizador de software (esp_timer)
+ * con este periodo, porque los pitidos de FALLA NIVEL (100 ms) son más cortos
+ * que el ciclo de tHMI (250 ms). Debe dividir exactamente las duraciones de
+ * los patrones.
+ */
+constexpr uint32_t BUZZER_TICK_MS = 50;
+
+/** Canal y resolución del periférico LEDC para el buzzer (núcleo 2.x). */
+constexpr uint8_t BUZZER_LEDC_CANAL      = 0;
+constexpr uint8_t BUZZER_LEDC_RESOLUCION = 8;
+
+// ============================================================================
+// Pantalla LCD 20x4 (expansor PCF8574)
+// ============================================================================
+
+constexpr uint8_t  LCD_COLUMNAS = 20;
+constexpr uint8_t  LCD_FILAS    = 4;
+
+/** Periodo de refresco del contenido de la LCD. */
+constexpr uint32_t LCD_REFRESCO_MS = 1000;
+
+/**
+ * Aviso visual en CRÍTICO: la retroiluminación parpadea con este semiperiodo
+ * (encendida y apagada). Valor inicial, pendiente de confirmar con el equipo.
+ */
+constexpr uint32_t LCD_PARPADEO_MS = 500;
+
+/** Si la LCD no responde, se reintenta su inicialización con este periodo. */
+constexpr uint32_t LCD_REINTENTO_MS = 10000;
 
 // ============================================================================
 // Parámetros de la lógica de fusión
@@ -194,6 +225,7 @@ constexpr float    ALTURA_UTIL_CM             = 30.0f; ///< Altura de agua = 100
 constexpr uint32_t TENDENCIA_VENTANA_S        = 60;    ///< Ventana de la regresión.
 constexpr float    DESCENSO_PENDIENTE_CM_MIN  = -1.0f; ///< Pendiente ≤ este valor…
 constexpr uint32_t DESCENSO_SOSTENIDO_S       = 30;    ///< …durante este tiempo seguido.
+constexpr float    DESCENSO_SALIDA_CM_MIN     = -0.5f; ///< Sale si la pendiente supera este valor el mismo tiempo.
 constexpr float    NIVEL_PREVENTIVO_FRACCION  = 0.40f; ///< De la altura útil.
 constexpr float    NIVEL_CRITICO_FRACCION     = 0.20f; ///< De la altura útil.
 constexpr float    NIVEL_HISTERESIS_FRACCION  = 0.05f; ///< De la altura útil.

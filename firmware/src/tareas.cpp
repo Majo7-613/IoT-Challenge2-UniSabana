@@ -14,6 +14,7 @@
 #include "tareas.h"
 
 #include <Arduino.h>
+#include <atomic>
 #include <cmath>
 #include <cstdlib>
 #include <esp_arduino_version.h>
@@ -26,6 +27,8 @@
 
 #include "config.h"
 #include "evaporacion.h"
+#include "fusion.h"
+#include "hmi.h"
 #include "nivel.h"
 #include "registro.h"
 #include "sensores.h"
@@ -55,6 +58,29 @@ bool            hayEstadoPublicado = false;
 nivel::Tendencia             tendencia(param::TENDENCIA_VENTANA_S);
 evaporacion::ExtremosDiarios extremosTemperatura;
 volatile int                 diaDelAnio = 0;  ///< 0: todavía desconocido.
+
+/** Parámetros de la clasificación a partir de los valores activos de config.h. */
+fusion::Parametros parametrosFusion() {
+    fusion::Parametros p{};
+    p.nivelCriticoPct = param::NIVEL_CRITICO_FRACCION * 100.0f;
+    p.nivelPreventivoPct = param::NIVEL_PREVENTIVO_FRACCION * 100.0f;
+    p.nivelHisteresisPct = param::NIVEL_HISTERESIS_FRACCION * 100.0f;
+    p.descensoEntradaCmMin = param::DESCENSO_PENDIENTE_CM_MIN;
+    p.descensoSalidaCmMin = param::DESCENSO_SALIDA_CM_MIN;
+    p.descensoSostenidoS = static_cast<float>(param::DESCENSO_SOSTENIDO_S);
+    p.temperaturaAltaC = param::T_ALTA_C;
+    p.temperaturaHisteresisC = param::T_HISTERESIS_C;
+    p.vpdAltoKpa = param::VPD_ALTO_KPA;
+    p.vpdHisteresisKpa = param::VPD_HISTERESIS_KPA;
+    p.uvAlto = UV_INDICE_ALTO;
+    p.uvHisteresis = UV_HISTERESIS_INDICE;
+    return p;
+}
+
+fusion::Clasificador clasificador(parametrosFusion());
+
+/** Orden de desactivar la alarma física, pendiente de atender por tFusion. */
+std::atomic<bool> solicitudDesactivar{false};
 
 // ---------------------------------------------------------------------------
 // Rutina de servicio de interrupción del temporizador
@@ -187,21 +213,50 @@ Derivados calcularDerivados(const Snapshot& s) {
 /**
  * @brief Tarea de fusión: recibe cada instantánea, calcula y publica el estado.
  *
- * Paso 3: calcula el nivel, la tendencia, el VPD y la ET0. El estado solo
- * refleja la disponibilidad del nivel; la clasificación se agrega en el paso 4.
+ * Calcula el nivel, la tendencia, el VPD y la ET0 (paso 3) y clasifica el
+ * estado de alerta con histéresis (paso 4). Registra cada cambio de estado.
  */
 void tareaFusion(void*) {
     Snapshot recibida{};
+    EstadoAlerta estadoAnterior = EstadoAlerta::INICIANDO;
+    bool desactivadaAnterior = false;
     for (;;) {
         if (xQueueReceive(qSnapshot, &recibida, portMAX_DELAY) != pdTRUE) {
             continue;
         }
         Derivados d = calcularDerivados(recibida);
         const Lecturas& l = recibida.lecturas;
-        d.estado = !l.iniciadoNivel ? EstadoAlerta::INICIANDO
-                 : (d.nivelValido ? EstadoAlerta::NORMAL : EstadoAlerta::FALLA_NIVEL);
-        d.causas = CAUSA_NINGUNA;
-        d.alarmaDesactivada = false;
+
+        fusion::Entradas e{};
+        e.tiempoS = static_cast<float>(recibida.marcaTiempoUs / 1e6);
+        e.nivelIniciado = l.iniciadoNivel;
+        e.nivelOk = d.nivelValido;
+        e.nivelPct = d.nivelPct;
+        e.tendenciaOk = d.pendienteValida;
+        e.tendenciaCmMin = d.pendienteCmMin;
+        e.temperaturaOk = l.estadoDht == EstadoSensor::OK;
+        e.temperaturaC = l.temperaturaDhtC;
+        e.vpdOk = d.vpdValido;
+        e.vpdKpa = d.vpdKpa;
+        e.uvOk = l.estadoUv == EstadoSensor::OK;
+        e.uvIndice = l.uvIndice;
+        const bool solicitud = solicitudDesactivar.exchange(false);
+        const fusion::Resultado r = clasificador.evaluar(e, solicitud);
+        d.estado = r.estado;
+        d.causas = r.causas;
+        d.alarmaDesactivada = r.alarmaDesactivada;
+        if (solicitud) {
+            registrar("tFusion", "orden de desactivar la alarma física: %s",
+                      r.alarmaDesactivada ? "aceptada" : "ignorada (estado sin alarma sonora)");
+        }
+        if (d.estado != estadoAnterior || d.alarmaDesactivada != desactivadaAnterior) {
+            registrar("tFusion", "estado %s -> %s%s (causas 0x%02X)",
+                      textoAlerta(estadoAnterior), textoAlerta(d.estado),
+                      d.alarmaDesactivada ? " [alarma desactivada]" : "",
+                      static_cast<unsigned>(d.causas));
+            estadoAnterior = d.estado;
+            desactivadaAnterior = d.alarmaDesactivada;
+        }
         const int64_t latenciaUs = esp_timer_get_time() - recibida.marcaTiempoUs;
 
         xSemaphoreTake(mtxDatos, portMAX_DELAY);
@@ -225,25 +280,27 @@ void tareaFusion(void*) {
 /**
  * @brief Tarea de interfaz local (LCD y buzzer), periodo de 250 ms.
  *
- * Paso 1: lee el estado publicado y registra una línea por segundo.
+ * Copia el estado publicado y actualiza la LCD, la retroiluminación y el
+ * patrón del buzzer (hmi.cpp). Registra las filas de la LCD cada 10 s.
  */
 void tareaHmi(void*) {
     TickType_t ultimoDespertar = xTaskGetTickCount();
     const TickType_t periodo = pdMS_TO_TICKS(HMI_PERIODO_MS);
-    const uint32_t iteracionesPorSegundo = 1000 / HMI_PERIODO_MS;
+    const uint32_t iteracionesPorRegistro = 10000 / HMI_PERIODO_MS;
     uint32_t iteracion = 0;
     EstadoPublicado copia{};
 
     for (;;) {
         vTaskDelayUntil(&ultimoDespertar, periodo);
         iteracion++;
-        const bool hayDato = leerEstadoPublicado(copia);
-        if (iteracion % iteracionesPorSegundo == 0) {
-            if (hayDato) {
-                registrar("tHMI", "mostraría el ciclo %" PRIu32, copia.instantanea.ciclo);
-            } else {
-                registrar("tHMI", "sin estado publicado todavía");
-            }
+        if (!leerEstadoPublicado(copia)) {
+            continue;
+        }
+        hmiActualizar(copia, millis());
+        if (iteracion % iteracionesPorRegistro == 0) {
+            char filas[LCD_FILAS][21];
+            hmiComponerFilas(copia, filas);
+            registrar("tHMI", "LCD |%s|%s|%s|%s|", filas[0], filas[1], filas[2], filas[3]);
         }
     }
 }
@@ -346,6 +403,10 @@ bool iniciarTemporizador() {
 // Interfaz pública
 // ---------------------------------------------------------------------------
 
+void tareasSolicitarDesactivarAlarma() {
+    solicitudDesactivar.store(true);
+}
+
 void tareasFijarDiaDelAnio(int dia) {
     if (dia >= 1 && dia <= 366) {
         diaDelAnio = dia;
@@ -374,8 +435,11 @@ bool tareasIniciar() {
         return false;
     }
 
-    // Los sensores se inician antes de crear las tareas.
+    // Los sensores y la interfaz local se inician antes de crear las tareas.
     sensoresIniciar(mtxI2C);
+    if (!hmiIniciar(mtxI2C)) {
+        registrar("tareas", "ERROR: no se pudo configurar el buzzer");
+    }
 
     // Las tareas se crean antes del temporizador para que la ISR encuentre
     // listo el manejador de tSensores.
