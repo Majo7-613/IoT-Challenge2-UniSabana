@@ -8,6 +8,7 @@
  *  - GET  /api/historico?b=…     JSON del búfer rapido (10 min) o lento (24 h)
  *  - POST /api/alarma/desactivar orden de desactivar la alarma física
  *  - WS   /ws                    el mismo JSON de /api/actual, cada 1 s
+ *  - GET  /<archivo>             archivos del frontend (CSS, JS) desde LittleFS
  *
  * Control de acceso, en este orden: dirección IP de la subred de la WLAN
  * (si no, 403), token de un dispositivo autorizado (si no, 403) y

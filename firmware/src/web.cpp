@@ -330,6 +330,31 @@ void manejarDesactivar(AsyncWebServerRequest* request) {
                   "el resultado se ve en /api/actual\"}");
 }
 
+/**
+ * @brief Rutas no registradas: archivos del frontend en LittleFS, o 404.
+ *
+ * Los archivos del tablero (CSS, JS y Chart.js) pasan por el mismo control de
+ * acceso que las demás rutas. Fuera de la subred se responde 403.
+ */
+void manejarOtraRuta(AsyncWebServerRequest* request) {
+    if (!enSubred(request)) {
+        request->send(403, "text/plain", "Acceso solo desde la WLAN local");
+        return;
+    }
+    const String& ruta = request->url();
+    const bool esArchivo = request->method() == HTTP_GET && sistemaArchivos &&
+                           ruta.indexOf("..") < 0 && LittleFS.exists(ruta);
+    if (!esArchivo) {
+        request->send(404, "text/plain", "No encontrado");
+        return;
+    }
+    if (!autorizar(request)) {
+        return;
+    }
+    // Sin tipo explícito: la librería lo deduce de la extensión del archivo.
+    request->send(LittleFS, ruta);
+}
+
 void eventoWs(AsyncWebSocket*, AsyncWebSocketClient* cliente, AwsEventType tipo,
               void*, uint8_t*, size_t) {
     if (tipo == WS_EVT_CONNECT) {
@@ -362,10 +387,7 @@ bool webIniciar() {
     servidor.on("/api/actual", HTTP_GET, manejarActual);
     servidor.on("/api/historico", HTTP_GET, manejarHistorico);
     servidor.on("/api/alarma/desactivar", HTTP_POST, manejarDesactivar);
-    servidor.onNotFound([](AsyncWebServerRequest* request) {
-        request->send(enSubred(request) ? 404 : 403, "text/plain",
-                      enSubred(request) ? "No encontrado" : "Acceso solo desde la WLAN local");
-    });
+    servidor.onNotFound(manejarOtraRuta);
 
     servidor.begin();
     registrar("web", "servidor en http://%s:%u", WiFi.localIP().toString().c_str(),
