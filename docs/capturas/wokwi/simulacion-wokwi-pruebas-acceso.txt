@@ -1,0 +1,23 @@
+SIMULACIÓN — Pruebas de acceso al tablero servido por el ESP32 simulado en Wokwi
+Fecha: 05/10/2026. Extensión de Wokwi para VS Code, reenvío localhost:8180 -> puerto 80. Firmware: commit 52aa808 (entorno wokwi).
+Herramientas: curl (Digest) y un cliente WebSocket en Python. Las credenciales y el token se leyeron de secrets.h y no se registran aquí.
+En el entorno wokwi el filtro de subred está desactivado (ajuste de simulación); no se prueba aquí.
+
+# | Prueba | Esperado | Observado
+1 | GET /api/actual sin token ni Digest | esperado 403 | observado 403 | Dispositivo no autorizado
+2 | GET /api/actual con token no autorizado | esperado 403 | observado 403 | Dispositivo no autorizado
+3 | GET /api/actual con token válido, sin Digest | esperado 401 | observado 401 | WWW-Authenticate: Digest realm="Tablero Sabana Centro", qop=
+4 | GET /api/actual con token válido y clave Digest errónea | esperado 401 | observado 401
+5 | GET /api/actual con token y Digest correctos | esperado 200 | observado 200
+6 | GET /api/historico?b=rapido con credenciales | esperado 200 | observado 200 | 24 registros, "ahora_epoca":1791211094
+7 | GET /api/historico?b=otro con credenciales | esperado 400 | observado 400
+8 | GET /tablero.js sin token | esperado 403 | observado 403
+9 | GET /tablero.js?token=… con Digest | esperado 200 | observado 200 | 21069 bytes
+10 | GET /lib/chart.umd.min.js?token=… con Digest | esperado 200 | observado 200 | 208522 bytes
+11 | POST /api/alarma/desactivar en NORMAL | esperado 202 y alarma_desactivada sin cambio | observado 202
+   /api/actual después de 3 s: 200 "estado":"NORMAL" "alarma_desactivada":false 
+12 | WS /ws sin token (intento 1) | esperado rechazo | observado: HTTP/1.1 401 Unauthorized
+12 | WS /ws sin token (intento 2) | esperado rechazo | observado: HTTP/1.1 401 Unauthorized
+13 | WS /ws con token | esperado 101 y JSON cada 1 s | observado: HTTP/1.1 101 Switching Protocols; 5 mensajes en 4 s
+14 | POST /api/alarma/desactivar sin token en CRÍTICO | esperado 403 | observado 403
+15 | POST /api/alarma/desactivar en CRÍTICO | esperado 202 y alarma_desactivada=true | observado 202; antes: 200"estado":"CRITICO" "alarma_desactivada":false ; después: "estado":"CRITICO" "alarma_desactivada":true (confirmado en ~3.8 s, incluida la latencia del reenvío de Wokwi)
