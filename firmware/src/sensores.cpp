@@ -16,7 +16,7 @@
 
 #include <Adafruit_BMP085.h>
 #include <Arduino.h>
-#include <DHTesp.h>
+#include <DHT.h>
 #include <Wire.h>
 #include <algorithm>
 #include <cmath>
@@ -73,7 +73,7 @@ private:
 // ---------------------------------------------------------------------------
 
 SemaphoreHandle_t mtxBus = nullptr;
-DHTesp            dht;
+DHT               dht(PIN_DHT22_DATA, DHT22);
 Adafruit_BMP085   bmp;
 bool              bmpIniciado = false;
 
@@ -191,24 +191,30 @@ void leerNivel() {
 
 /** Lee temperatura y humedad del DHT22. */
 void leerDht() {
-    const TempAndHumidity valores = dht.getTempAndHumidity();
-    const bool valido = dht.getStatus() == DHTesp::ERROR_NONE &&
-                        enRango(valores.temperature, DHT22_T_MIN_C, DHT22_T_MAX_C) &&
-                        enRango(valores.humidity, 0.0f, 100.0f);
+    // read(true) fuerza una lectura nueva: la librería guarda la anterior
+    // durante 2 s y el DHT22 se lee justo cada 2 s (DHT22_CADA_N_CICLOS).
+    // Las dos llamadas siguientes devuelven los datos de esa misma lectura.
+    const bool leido = dht.read(true);
+    const float temperatura = dht.readTemperature();
+    const float humedad = dht.readHumidity();
+    const bool valido = leido &&
+                        enRango(temperatura, DHT22_T_MIN_C, DHT22_T_MAX_C) &&
+                        enRango(humedad, 0.0f, 100.0f);
     segDht.intento(valido);
     if (valido) {
-        ultimas.temperaturaDhtC = valores.temperature;
-        ultimas.humedadPct = valores.humidity;
+        ultimas.temperaturaDhtC = temperatura;
+        ultimas.humedadPct = humedad;
     }
 
-    // Motivo de la falla, registrado solo cuando cambia, para diagnosticar
-    // sin llenar el registro serie.
-    static DHTesp::DHT_ERROR_t errorAnterior = DHTesp::ERROR_NONE;
-    const DHTesp::DHT_ERROR_t error = dht.getStatus();
-    if (error != errorAnterior) {
-        registrar("sensores", "DHT22: %s (T=%.1f HR=%.1f)", dht.getStatusString(),
-                  static_cast<double>(valores.temperature), static_cast<double>(valores.humidity));
-        errorAnterior = error;
+    // Resultado de la lectura, registrado solo cuando cambia, para
+    // diagnosticar sin llenar el registro serie.
+    // -1: todavía no hay resultado, así que el primero siempre se registra.
+    static int validoAnterior = -1;
+    if (static_cast<int>(valido) != validoAnterior) {
+        registrar("sensores", "DHT22: %s (T=%.1f HR=%.1f)",
+                  valido ? "lectura válida" : (leido ? "fuera de rango" : "sin respuesta"),
+                  static_cast<double>(temperatura), static_cast<double>(humedad));
+        validoAnterior = static_cast<int>(valido);
     }
 }
 
@@ -288,7 +294,7 @@ void sensoresIniciar(SemaphoreHandle_t mtxI2C) {
     digitalWrite(PIN_HCSR04_TRIG, LOW);
     pinMode(PIN_HCSR04_ECHO, INPUT);
 
-    dht.setup(PIN_DHT22_DATA, DHTesp::DHT22);
+    dht.begin();
 
     analogSetPinAttenuation(PIN_GUVA_OUT, GUVA_ATENUACION);
 
