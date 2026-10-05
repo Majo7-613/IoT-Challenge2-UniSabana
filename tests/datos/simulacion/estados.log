@@ -1,0 +1,451 @@
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:1184
+load:0x40078000,len:13232
+load:0x40080400,len:3028
+entry 0x400805e4
+[    1439.417 ms] [main      ] Firmware IoT Challenge #2 — paso 5 (red y tablero web) [SIMULACIÓN]
+[    1441.049 ms] [main      ] Núcleo Arduino ESP32 2.0.17, ESP-IDF v4.4.7-dirty
+[    1452.637 ms] [main      ] Modo de parámetros: DEMOSTRACIÓN
+[    1466.233 ms] [sensores  ] I2C: dispositivo en 0x27
+[    1490.960 ms] [sensores  ] I2C: dispositivo en 0x77
+[    1494.001 ms] [sensores  ] I2C: 2 dispositivo(s); esperados 0x27 (LCD) y 0x77 (BMP180)
+[    1507.327 ms] [sensores  ] BMP180 iniciado
+[    1508.380 ms] [hmi       ] buzzer listo (GPIO 25, patrón cada 50 ms)
+[    1590.060 ms] [hmi       ] LCD iniciada (0x27)
+[    1591.407 ms] [tareas    ] tSensores creada (núcleo 1, prioridad 4, pila 6144 B)
+[    1593.396 ms] [tareas    ] tFusion creada (núcleo 1, prioridad 3, pila 4096 B)
+[    1605.517 ms] [tareas    ] tHMI creada (núcleo 1, prioridad 2, pila 4096 B)
+[    1607.245 ms] [tareas    ] tHistorico creada (núcleo 0, prioridad 1, pila 4096 B)
+[    1619.152 ms] [tareas    ] tRed creada (núcleo 0, prioridad 1, pila 4096 B)
+[    1631.132 ms] [tareas    ] temporizador de adquisición iniciado a 1 Hz
+[    1867.345 ms] [red       ] asociándose a la WLAN "Wokwi-GUEST"
+[    2917.917 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (VIEJO) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[    2929.553 ms] [tSensores ] ciclo 1 (primer ciclo)
+[    2919.564 ms] [tFusion   ] estado INICIANDO -> NORMAL (causas 0x00)
+[    3635.777 ms] [sensores  ] DHT22: TIMEOUT (T=nan HR=nan)
+[    3923.670 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[    3935.838 ms] [tSensores ] ciclo 2 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[    4917.671 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[    4929.910 ms] [tSensores ] ciclo 3 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[    5922.670 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[    5934.825 ms] [tSensores ] ciclo 4 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[    6621.124 ms] [red       ] conectada a la WLAN; IP 10.13.37.2, máscara 255.255.255.0, RSSI -96 dBm
+[    6693.018 ms] [web       ] LittleFS montado; tablero cargado
+[    6698.328 ms] [web       ] servidor en http://10.13.37.2:80
+[    6699.683 ms] [web       ] AVISO: filtro de subred desactivado (ajuste de simulación)
+[    6924.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[    6937.132 ms] [tSensores ] ciclo 5 periodo=999.994 ms desv=-0.006 ms perdidos=0 fuera_tol=0
+[    7922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[    7935.190 ms] [tSensores ] ciclo 6 periodo=1000.007 ms desv=+0.007 ms perdidos=0 fuera_tol=0 [DHT22]
+[    8917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[    8929.943 ms] [tSensores ] ciclo 7 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[    9922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[    9935.204 ms] [tSensores ] ciclo 8 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   10917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   10929.987 ms] [tSensores ] ciclo 9 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   11606.620 ms] [tHMI      ] LCD |N 22.0cm  73%    --|T  ini  HRini  P 750|UV 4.8 VPD  ini|NORMAL|
+[   11619.196 ms] [red       ] hora válida por NTP: 2026-10-05 08:40 (día del año 278)
+[   11923.395 ms] [tSensores ] d=24.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   11935.542 ms] [tSensores ] ciclo 10 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   11925.498 ms] [tFusion   ] estado NORMAL -> ADVERTENCIA (causas 0x02)
+[   11949.624 ms] [tFusion   ] ciclo 10: nivel=10.9 cm (36 %) tendencia=nan cm/min VPD=nan kPa ET0=no disponible (24 h y fecha) latencia=318.319 ms
+[   12918.395 ms] [tSensores ] d=24.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   12930.525 ms] [tSensores ] ciclo 11 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   13923.395 ms] [tSensores ] d=24.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   13935.775 ms] [tSensores ] ciclo 12 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   14918.395 ms] [tSensores ] d=24.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   14930.525 ms] [tSensores ] ciclo 13 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   15922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   15935.167 ms] [tSensores ] ciclo 14 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   15925.161 ms] [tFusion   ] estado ADVERTENCIA -> NORMAL (causas 0x00)
+[   16917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   16930.125 ms] [tSensores ] ciclo 15 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   17922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   17935.377 ms] [tSensores ] ciclo 16 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   18917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   18930.123 ms] [tSensores ] ciclo 17 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   19922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   19935.145 ms] [tSensores ] ciclo 18 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   20917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   20930.011 ms] [tSensores ] ciclo 19 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   21606.620 ms] [tHMI      ] LCD |N 22.0cm  73%    --|T  ini  HRini  P 750|UV 4.8 VPD  ini|NORMAL|
+[   21922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   21935.392 ms] [tSensores ] ciclo 20 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   21926.398 ms] [tFusion   ] ciclo 20: nivel=22.0 cm (73 %) tendencia=nan cm/min VPD=nan kPa ET0=no disponible (24 h y fecha) latencia=295.138 ms
+[   22917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   22930.021 ms] [tSensores ] ciclo 21 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   23922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   23935.082 ms] [tSensores ] ciclo 22 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   24917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   24930.219 ms] [tSensores ] ciclo 23 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   25922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   25935.033 ms] [tSensores ] ciclo 24 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   26917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   26930.016 ms] [tSensores ] ciclo 25 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   27922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   27935.140 ms] [tSensores ] ciclo 26 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   28917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   28930.357 ms] [tSensores ] ciclo 27 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   29922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   29935.145 ms] [tSensores ] ciclo 28 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   30917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   30929.993 ms] [tSensores ] ciclo 29 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   31606.620 ms] [tHMI      ] LCD |N 22.0cm  73%    --|T  ini  HRini  P 750|UV 4.8 VPD  ini|NORMAL|
+[   31922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   31935.159 ms] [tSensores ] ciclo 30 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   31927.171 ms] [tFusion   ] ciclo 30: nivel=22.0 cm (73 %) tendencia=4.73 cm/min VPD=nan kPa ET0=no disponible (24 h y fecha) latencia=295.598 ms
+[   32917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   32930.219 ms] [tSensores ] ciclo 31 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   33922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   33935.079 ms] [tSensores ] ciclo 32 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   34917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   34930.012 ms] [tSensores ] ciclo 33 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   35922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   35935.265 ms] [tSensores ] ciclo 34 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   36917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   36929.988 ms] [tSensores ] ciclo 35 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   37922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   37935.141 ms] [tSensores ] ciclo 36 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   38917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   38929.987 ms] [tSensores ] ciclo 37 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   39922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   39935.382 ms] [tSensores ] ciclo 38 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   40917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   40929.998 ms] [tSensores ] ciclo 39 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   41606.834 ms] [tHMI      ] LCD |N 22.0cm  73%  4.57|T  ini  HRini  P 750|UV 4.8 VPD  ini|NORMAL|
+[   41922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   41935.159 ms] [tSensores ] ciclo 40 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   41927.492 ms] [tFusion   ] ciclo 40: nivel=22.0 cm (73 %) tendencia=4.49 cm/min VPD=nan kPa ET0=no disponible (24 h y fecha) latencia=296.050 ms
+[   42917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   42929.986 ms] [tSensores ] ciclo 41 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   43922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   43935.261 ms] [tSensores ] ciclo 42 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   44917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   44929.992 ms] [tSensores ] ciclo 43 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   45922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   45935.143 ms] [tSensores ] ciclo 44 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   46917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   46930.217 ms] [tSensores ] ciclo 45 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   47922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   47935.007 ms] [tSensores ] ciclo 46 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   48917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   48929.983 ms] [tSensores ] ciclo 47 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   49922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   49935.006 ms] [tSensores ] ciclo 48 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   50917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   50930.219 ms] [tSensores ] ciclo 49 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   51606.827 ms] [tHMI      ] LCD |N 22.0cm  73%  3.66|T  ini  HRini  P 750|UV 4.8 VPD  ini|NORMAL|
+[   51922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   51935.161 ms] [tSensores ] ciclo 50 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   51927.974 ms] [tFusion   ] ciclo 50: nivel=22.0 cm (73 %) tendencia=3.57 cm/min VPD=nan kPa ET0=no disponible (24 h y fecha) latencia=296.373 ms
+[   52917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   52929.983 ms] [tSensores ] ciclo 51 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   53922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   53935.029 ms] [tSensores ] ciclo 52 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   54917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   54930.214 ms] [tSensores ] ciclo 53 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   55922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   55935.142 ms] [tSensores ] ciclo 54 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   56917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   56929.983 ms] [tSensores ] ciclo 55 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   57922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   57935.234 ms] [tSensores ] ciclo 56 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   58917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   58929.983 ms] [tSensores ] ciclo 57 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   59922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   59935.024 ms] [tSensores ] ciclo 58 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   60917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   60929.995 ms] [tSensores ] ciclo 59 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   61606.827 ms] [tHMI      ] LCD |N 22.0cm  73%  2.87|T  ini  HRini  P 750|UV 4.8 VPD  ini|NORMAL|
+[   61619.199 ms] [tRed      ] heap libre: 190548 B, mínimo histórico: 185344 B
+[   61922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   61935.393 ms] [tSensores ] ciclo 60 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   61928.395 ms] [tFusion   ] ciclo 60: nivel=22.0 cm (73 %) tendencia=2.81 cm/min VPD=nan kPa ET0=no disponible (24 h y fecha) latencia=296.862 ms
+[   62917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   62929.985 ms] [tSensores ] ciclo 61 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   63922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   63935.070 ms] [tSensores ] ciclo 62 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   64917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   64930.008 ms] [tSensores ] ciclo 63 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   65922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   65935.380 ms] [tSensores ] ciclo 64 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   66917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   66930.125 ms] [tSensores ] ciclo 65 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   67922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   67935.020 ms] [tSensores ] ciclo 66 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   68917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   68930.022 ms] [tSensores ] ciclo 67 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   69922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   69935.261 ms] [tSensores ] ciclo 68 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   70917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   70930.017 ms] [tSensores ] ciclo 69 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   71606.828 ms] [tHMI      ] LCD |N 22.0cm  73%  4.13|T  ini  HRini  P 750|UV 4.8 VPD  ini|NORMAL|
+[   71922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   71935.167 ms] [tSensores ] ciclo 70 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   71928.396 ms] [tFusion   ] ciclo 70: nivel=22.0 cm (73 %) tendencia=3.16 cm/min VPD=nan kPa ET0=no disponible (24 h y fecha) latencia=296.887 ms
+[   72917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   72930.360 ms] [tSensores ] ciclo 71 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   73922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   73935.140 ms] [tSensores ] ciclo 72 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   74917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   74930.127 ms] [tSensores ] ciclo 73 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   75922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   75935.146 ms] [tSensores ] ciclo 74 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   76917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   76930.360 ms] [tSensores ] ciclo 75 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   77922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   77935.027 ms] [tSensores ] ciclo 76 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   78917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   78930.012 ms] [tSensores ] ciclo 77 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   79922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   79935.032 ms] [tSensores ] ciclo 78 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   80917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   80930.225 ms] [tSensores ] ciclo 79 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   81606.667 ms] [tHMI      ] LCD |N 22.0cm  73%  0.00|T  ini  HRini  P 750|UV 4.8 VPD  ini|NORMAL|
+[   81922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   81935.160 ms] [tSensores ] ciclo 80 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   81928.269 ms] [tFusion   ] ciclo 80: nivel=22.0 cm (73 %) tendencia=0.00 cm/min VPD=nan kPa ET0=no disponible (24 h y fecha) latencia=296.844 ms
+[   82917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   82930.054 ms] [tSensores ] ciclo 81 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   83922.682 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   83935.275 ms] [tSensores ] ciclo 82 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   84917.683 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   84930.125 ms] [tSensores ] ciclo 83 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   85922.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[   85935.144 ms] [tSensores ] ciclo 84 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   86917.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[   86930.136 ms] [tSensores ] ciclo 85 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   87922.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[   87935.377 ms] [tSensores ] ciclo 86 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   88917.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[   88930.126 ms] [tSensores ] ciclo 87 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   89922.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[   89935.144 ms] [tSensores ] ciclo 88 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   90917.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[   90930.133 ms] [tSensores ] ciclo 89 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   91606.906 ms] [tHMI      ] LCD |N 20.9cm  70% -0.55|T  ini  HRini  P 750|UV10.0 VPD  ini|NORMAL|
+[   91922.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[   91935.392 ms] [tSensores ] ciclo 90 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   91928.434 ms] [tFusion   ] ciclo 90: nivel=20.9 cm (70 %) tendencia=-0.63 cm/min VPD=nan kPa ET0=no disponible (24 h y fecha) latencia=296.973 ms
+[   92917.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[   92930.131 ms] [tSensores ] ciclo 91 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   93922.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[   93935.158 ms] [tSensores ] ciclo 92 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   94917.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[   94930.361 ms] [tSensores ] ciclo 93 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   95922.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[   95935.144 ms] [tSensores ] ciclo 94 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   96917.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[   96930.141 ms] [tSensores ] ciclo 95 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   97922.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[   97935.145 ms] [tSensores ] ciclo 96 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   98917.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[   98930.358 ms] [tSensores ] ciclo 97 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   99922.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[   99935.146 ms] [tSensores ] ciclo 98 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  100917.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  100930.147 ms] [tSensores ] ciclo 99 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  101606.902 ms] [tHMI      ] LCD |N 20.9cm  70% -1.20|T  ini  HRini  P 750|UV10.0 VPD  ini|NORMAL|
+[  101922.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  101935.193 ms] [tSensores ] ciclo 100 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  101928.434 ms] [tFusion   ] ciclo 100: nivel=20.9 cm (70 %) tendencia=-1.25 cm/min VPD=nan kPa ET0=no disponible (24 h y fecha) latencia=296.959 ms
+[  102917.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  102930.394 ms] [tSensores ] ciclo 101 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[  103922.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  103935.178 ms] [tSensores ] ciclo 102 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  104917.810 ms] [tSensores ] d=14.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  104930.189 ms] [tSensores ] ciclo 103 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  105922.870 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  105935.397 ms] [tSensores ] ciclo 104 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[  106917.881 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  106930.209 ms] [tSensores ] ciclo 105 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  107922.870 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  107935.227 ms] [tSensores ] ciclo 106 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  108917.881 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  108930.212 ms] [tSensores ] ciclo 107 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  109922.870 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  109935.397 ms] [tSensores ] ciclo 108 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[  110917.881 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  110930.213 ms] [tSensores ] ciclo 109 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  111606.913 ms] [tHMI      ] LCD |N 19.9cm  66% -2.05|T  ini  HRini  P 750|UV10.0 VPD  ini|NORMAL|
+[  111922.870 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  111935.259 ms] [tSensores ] ciclo 110 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  111928.503 ms] [tFusion   ] ciclo 110: nivel=19.9 cm (66 %) tendencia=-2.14 cm/min VPD=nan kPa ET0=no disponible (24 h y fecha) latencia=296.995 ms
+[  112917.881 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  112930.212 ms] [tSensores ] ciclo 111 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  113922.870 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  113935.397 ms] [tSensores ] ciclo 112 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[  114917.881 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  114930.213 ms] [tSensores ] ciclo 113 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  115922.870 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  115935.252 ms] [tSensores ] ciclo 114 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  116917.881 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  116930.251 ms] [tSensores ] ciclo 115 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  117922.870 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  117935.397 ms] [tSensores ] ciclo 116 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[  118917.881 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  118930.251 ms] [tSensores ] ciclo 117 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  119922.870 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  119935.258 ms] [tSensores ] ciclo 118 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  120917.881 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  120930.397 ms] [tSensores ] ciclo 119 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[  121606.929 ms] [tHMI      ] LCD |N 19.9cm  66% -2.64|T  ini  HRini  P 750|UV10.0 VPD  ini|NORMAL|
+[  121619.199 ms] [tRed      ] heap libre: 190548 B, mínimo histórico: 185344 B
+[  121922.870 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  121935.259 ms] [tSensores ] ciclo 120 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  121928.486 ms] [tFusion   ] ciclo 120: nivel=19.9 cm (66 %) tendencia=-2.67 cm/min VPD=nan kPa ET0=no disponible (24 h y fecha) latencia=296.968 ms
+[  122917.881 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  122930.239 ms] [tSensores ] ciclo 121 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  123922.870 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  123935.258 ms] [tSensores ] ciclo 122 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  124917.881 ms] [tSensores ] d=15.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  124930.397 ms] [tSensores ] ciclo 123 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[  125922.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  125935.296 ms] [tSensores ] ciclo 124 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  126917.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  126930.287 ms] [tSensores ] ciclo 125 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  127922.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  127935.306 ms] [tSensores ] ciclo 126 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  127927.339 ms] [tFusion   ] estado NORMAL -> ALERTA (causas 0x24)
+[  128917.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  128930.398 ms] [tSensores ] ciclo 127 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[  129922.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  129935.298 ms] [tSensores ] ciclo 128 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  130917.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  130930.276 ms] [tSensores ] ciclo 129 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  131606.888 ms] [tHMI      ] LCD |N 18.9cm  63% -3.12|T  ini  HRini  P 750|UV10.0 VPD  ini|ALERTA|
+[  131922.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  131935.405 ms] [tSensores ] ciclo 130 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[  131928.502 ms] [tFusion   ] ciclo 130: nivel=18.9 cm (63 %) tendencia=-3.15 cm/min VPD=nan kPa ET0=no disponible (24 h y fecha) latencia=297.015 ms
+[  132917.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  132930.286 ms] [tSensores ] ciclo 131 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  133922.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  133935.296 ms] [tSensores ] ciclo 132 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  134917.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  134930.287 ms] [tSensores ] ciclo 133 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  135922.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  135935.407 ms] [tSensores ] ciclo 134 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[  136917.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  136930.283 ms] [tSensores ] ciclo 135 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  137922.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  137935.295 ms] [tSensores ] ciclo 136 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  138917.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  138930.275 ms] [tSensores ] ciclo 137 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  139922.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  139935.407 ms] [tSensores ] ciclo 138 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[  140917.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  140930.278 ms] [tSensores ] ciclo 139 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  141606.887 ms] [tHMI      ] LCD |N 18.9cm  63% -3.02|T  ini  HRini  P 750|UV10.0 VPD  ini|ALERTA|
+[  141922.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  141935.291 ms] [tSensores ] ciclo 140 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  141928.519 ms] [tFusion   ] ciclo 140: nivel=18.9 cm (63 %) tendencia=-2.95 cm/min VPD=nan kPa ET0=no disponible (24 h y fecha) latencia=297.034 ms
+[  142917.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  142930.398 ms] [tSensores ] ciclo 141 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[  143922.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  143935.293 ms] [tSensores ] ciclo 142 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  144917.922 ms] [tSensores ] d=16.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  144930.279 ms] [tSensores ] ciclo 143 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  145922.984 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  145935.348 ms] [tSensores ] ciclo 144 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  146917.993 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  146930.428 ms] [tSensores ] ciclo 145 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[  147922.984 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  147935.357 ms] [tSensores ] ciclo 146 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  148917.993 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  148930.349 ms] [tSensores ] ciclo 147 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  149922.984 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  149935.358 ms] [tSensores ] ciclo 148 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  150917.993 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  150930.422 ms] [tSensores ] ciclo 149 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[  151606.903 ms] [tHMI      ] LCD |N 17.9cm  60% -3.11|T  ini  HRini  P 750|UV10.0 VPD  ini|ALERTA|
+[  151922.984 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  151935.357 ms] [tSensores ] ciclo 150 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  151928.689 ms] [tFusion   ] ciclo 150: nivel=17.9 cm (60 %) tendencia=-3.15 cm/min VPD=nan kPa ET0=no disponible (24 h y fecha) latencia=297.193 ms
+[  152917.993 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  152930.348 ms] [tSensores ] ciclo 151 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  153922.984 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  153935.445 ms] [tSensores ] ciclo 152 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[  154917.993 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  154930.365 ms] [tSensores ] ciclo 153 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  155922.984 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  155935.364 ms] [tSensores ] ciclo 154 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  156917.993 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  156930.347 ms] [tSensores ] ciclo 155 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  157922.984 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  157935.439 ms] [tSensores ] ciclo 156 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[  158917.993 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  158930.356 ms] [tSensores ] ciclo 157 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  159922.984 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  159935.370 ms] [tSensores ] ciclo 158 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  160917.993 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  160930.338 ms] [tSensores ] ciclo 159 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  161606.890 ms] [tHMI      ] LCD |N 17.9cm  60% -3.01|T  ini  HRini  P 750|UV10.0 VPD  ini|ALERTA|
+[  161922.984 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  161935.480 ms] [tSensores ] ciclo 160 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[  161928.749 ms] [tFusion   ] ciclo 160: nivel=17.9 cm (60 %) tendencia=-2.95 cm/min VPD=nan kPa ET0=no disponible (24 h y fecha) latencia=297.251 ms
+[  162917.993 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  162930.348 ms] [tSensores ] ciclo 161 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  163922.984 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  163935.367 ms] [tSensores ] ciclo 162 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  164917.993 ms] [tSensores ] d=17.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  164930.343 ms] [tSensores ] ciclo 163 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  165923.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  165935.518 ms] [tSensores ] ciclo 164 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[  166918.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  166930.389 ms] [tSensores ] ciclo 165 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  167923.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  167935.395 ms] [tSensores ] ciclo 166 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  168918.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  168930.494 ms] [tSensores ] ciclo 167 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[  169923.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  169935.395 ms] [tSensores ] ciclo 168 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  170918.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  170930.385 ms] [tSensores ] ciclo 169 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  171606.905 ms] [tHMI      ] LCD |N 16.9cm  56% -3.12|T  ini  HRini  P 750|UV10.0 VPD  ini|ALERTA|
+[  171923.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  171935.395 ms] [tSensores ] ciclo 170 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  171928.908 ms] [tFusion   ] ciclo 170: nivel=16.9 cm (56 %) tendencia=-3.15 cm/min VPD=nan kPa ET0=no disponible (24 h y fecha) latencia=297.293 ms
+[  172918.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  172930.494 ms] [tSensores ] ciclo 171 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[  173923.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  173935.395 ms] [tSensores ] ciclo 172 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  174918.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  174930.394 ms] [tSensores ] ciclo 173 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  175923.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  175935.395 ms] [tSensores ] ciclo 174 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  176918.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  176930.502 ms] [tSensores ] ciclo 175 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[  177923.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  177935.395 ms] [tSensores ] ciclo 176 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  178918.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  178930.394 ms] [tSensores ] ciclo 177 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  179923.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  179935.515 ms] [tSensores ] ciclo 178 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[  180918.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  180930.389 ms] [tSensores ] ciclo 179 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  181606.904 ms] [tHMI      ] LCD |N 16.9cm  56% -3.02|T  ini  HRini  P 750|UV10.0 VPD  ini|ALERTA|
+[  181619.199 ms] [tRed      ] heap libre: 190548 B, mínimo histórico: 185344 B
+[  181923.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  181935.394 ms] [tSensores ] ciclo 180 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  181928.821 ms] [tFusion   ] ciclo 180: nivel=16.9 cm (56 %) tendencia=-2.95 cm/min VPD=nan kPa ET0=no disponible (24 h y fecha) latencia=297.263 ms
+[  182918.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  182930.389 ms] [tSensores ] ciclo 181 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  183923.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  183935.527 ms] [tSensores ] ciclo 182 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[  184918.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  184930.390 ms] [tSensores ] ciclo 183 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  185923.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  185935.395 ms] [tSensores ] ciclo 184 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  186918.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  186930.390 ms] [tSensores ] ciclo 185 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  187923.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  187935.518 ms] [tSensores ] ciclo 186 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[  188918.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  188930.394 ms] [tSensores ] ciclo 187 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  189923.065 ms] [tSensores ] d=18.1 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (FALLA) | P=750.0 hPa T=18.0 C (OK) | UV=1004 mV ~10.0 (OK)
+[  189935.394 ms] [tSensores ] ciclo 188 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]

@@ -7,6 +7,9 @@
 #   wokwi-cli simulation/wokwi --diagram-file diagram-falla-nivel.json \
 #     --scenario simulation/wokwi/escenarios/falla-nivel.yaml \
 #     --timeout 120000 --serial-log-file tests/datos/simulacion/falla-nivel.log
+# Nota: las capturas de la LCD con wokwi-cli no muestran los caracteres (probado
+# también con la librería LiquidCrystal_I2C), así que no se toman; el contenido
+# de la LCD queda en el registro serie (líneas "tHMI LCD |...|").
 name: 'SIMULACIÓN: FALLA NIVEL por desconexión del ECHO'
 version: 1
 author: 'Equipo 7'
@@ -27,9 +30,6 @@ steps:
       value: 0
   - wait-serial: '-> FALLA NIVEL'
   - delay: 3000ms
-  - take-screenshot:
-      part-id: lcd
-      save-to: ../../../docs/capturas/wokwi/06-falla-nivel-lcd.png
 
   # Reconexión: el nivel vuelve a evaluarse.
   - set-control:
@@ -38,6 +38,3 @@ steps:
       value: 1
   - wait-serial: '-> NORMAL'
   - delay: 3000ms
-  - take-screenshot:
-      part-id: lcd
-      save-to: ../../../docs/capturas/wokwi/07-recuperacion-lcd.png

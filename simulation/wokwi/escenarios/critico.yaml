@@ -1,0 +1,30 @@
+# SIMULACIÓN — Escenario de Wokwi: CRÍTICO con los parámetros de demostración
+# de config.h (montaje 35 cm, altura útil 30 cm; nivel = 35 − distancia).
+#
+# Ejecutar desde la raíz del repositorio:
+#   wokwi-cli simulation/wokwi --scenario simulation/wokwi/escenarios/critico.yaml #     --timeout 120000 --serial-log-file tests/datos/simulacion/critico.log
+# El contenido de la LCD queda en el registro serie (líneas "tHMI LCD |...|").
+name: 'SIMULACIÓN: CRÍTICO'
+version: 1
+author: 'Equipo 7'
+
+steps:
+  # Arranque en NORMAL: distancia 13 cm → nivel 22 cm (73 %).
+  - wait-serial: '-> NORMAL'
+  - delay: 5000ms
+
+  # CRÍTICO: distancia 30 cm → nivel 5 cm (17 %, umbral crítico 20 %).
+  - set-control:
+      part-id: nivel
+      control: distance
+      value: 30
+  - wait-serial: '-> CRITICO'
+  - delay: 12000ms
+
+  # Salida de CRÍTICO por histéresis: nivel 7 cm (23 %) sigue en CRÍTICO
+  # (sale por encima de 25 %); nivel 11 cm (37 %) pasa a ADVERTENCIA.
+  - set-control: { part-id: nivel, control: distance, value: 28 }
+  - delay: 5000ms
+  - set-control: { part-id: nivel, control: distance, value: 24 }
+  - wait-serial: '-> ADVERTENCIA'
+  - delay: 3000ms
