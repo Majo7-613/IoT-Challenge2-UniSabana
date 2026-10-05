@@ -24,6 +24,7 @@
 #include "fusion.h"
 #include "lcd.h"
 #include "registro.h"
+#include "texto_lcd.h"
 
 namespace {
 
@@ -184,11 +185,11 @@ void hmiComponerFilas(const EstadoPublicado& estado, char filas[][21]) {
     if (textoCampo(a, sizeof(a), 5, 1, d.nivelCm, l.estadoNivel, l.iniciadoNivel)) {
         textoCampo(b, sizeof(b), 4, 0, d.nivelPct, l.estadoNivel, l.iniciadoNivel);
         if (d.pendienteValida) {
-            snprintf(c, sizeof(c), "%6.2f", d.pendienteCmMin);
+            texto_lcd::tendencia(c, sizeof(c), d.pendienteCmMin);
         } else {
-            snprintf(c, sizeof(c), "%6s", "--");
+            snprintf(c, sizeof(c), "--");
         }
-        snprintf(fila, sizeof(fila), "N%scm%s%%%s", a, b, c);
+        texto_lcd::filaNivel(fila, sizeof(fila), a, b, c);
     } else {
         snprintf(fila, sizeof(fila), "N%s", a);
     }
