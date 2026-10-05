@@ -17,6 +17,7 @@
 #include "evaporacion.h"
 #include "nivel.h"
 
+/** Caso 1: nivel y fracción con la geometría de demostración. */
 void test_caso1_nivel() {
     const nivel::Geometria g{35.0f, 30.0f};
     const float n = nivel::nivelCm(13.0f, g);
@@ -24,6 +25,7 @@ void test_caso1_nivel() {
     TEST_ASSERT_FLOAT_WITHIN(0.0001f, 22.0f / 30.0f, nivel::nivelFraccion(n, g));
 }
 
+/** Caso 2: recta que baja 1 cm por minuto → −1.00 cm/min. */
 void test_caso2_tendencia() {
     nivel::Tendencia t(60);
     for (int s = 0; s < 60; s++) {
@@ -34,15 +36,18 @@ void test_caso2_tendencia() {
     TEST_ASSERT_FLOAT_WITHIN(0.001f, -1.0f, pendiente);
 }
 
+/** Caso 3: VPD a 25 °C y 60 %, con e°(25 °C) de la tabla de FAO-56. */
 void test_caso3_vpd() {
     TEST_ASSERT_FLOAT_WITHIN(0.002f, 3.168f, evaporacion::presionSaturacionKpa(25.0f));
     TEST_ASSERT_FLOAT_WITHIN(0.002f, 1.267f, evaporacion::vpdKpa(25.0f, 60.0f));
 }
 
+/** Caso 4: Ra del ejemplo 8 de FAO-56. */
 void test_caso4_radiacion_extraterrestre() {
     TEST_ASSERT_FLOAT_WITHIN(0.05f, 32.2f, evaporacion::radiacionExtraterrestreMJ(-20.0f, 246));
 }
 
+/** Caso 5: ET0 de Hargreaves-Samani calculada a mano. */
 void test_caso5_et0_hargreaves() {
     TEST_ASSERT_FLOAT_WITHIN(0.01f, 4.375f, evaporacion::et0HargreavesMmDia(30.0f, 18.0f, 32.2f));
 }

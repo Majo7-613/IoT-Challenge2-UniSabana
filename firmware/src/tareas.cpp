@@ -422,12 +422,14 @@ void tareasSolicitarDesactivarAlarma() {
     solicitudDesactivar.store(true);
 }
 
+/** Informa el día del año a la tarea de fusión, para la ET0. */
 void tareasFijarDiaDelAnio(int dia) {
     if (dia >= 1 && dia <= 366) {
         diaDelAnio = dia;
     }
 }
 
+/** Copia el último estado publicado por tFusion; false si todavía no hay uno. */
 bool leerEstadoPublicado(EstadoPublicado& destino) {
     if (mtxDatos == nullptr) {
         return false;
@@ -441,6 +443,7 @@ bool leerEstadoPublicado(EstadoPublicado& destino) {
     return hay;
 }
 
+/** Crea la cola, los mutex y las tareas, y arranca el temporizador. */
 bool tareasIniciar() {
     qSnapshot = xQueueCreate(1, sizeof(Snapshot));
     mtxDatos = xSemaphoreCreateMutex();

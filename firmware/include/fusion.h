@@ -76,6 +76,7 @@ bool tieneAlarmaSonora(EstadoAlerta estado);
  */
 class Clasificador {
 public:
+    /** @param parametros Umbrales, histéresis y tiempos que usa la clasificación. */
     explicit Clasificador(const Parametros& parametros);
 
     /**

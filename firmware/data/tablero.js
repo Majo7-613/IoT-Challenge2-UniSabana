@@ -57,10 +57,12 @@
 
   const $ = (id) => document.getElementById(id);
 
+  /** Número con los decimales dados, o «—» si no hay dato. */
   function numero(valor, decimales) {
     return valor === null || valor === undefined ? '—' : Number(valor).toFixed(decimales);
   }
 
+  /** Duración legible (s, min o h y min) a partir de segundos. */
   function duracion(segundos) {
     const s = Math.max(0, Math.round(segundos));
     if (s < 60) return s + ' s';
@@ -77,10 +79,12 @@
     hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23', timeZone: ZONA_HORARIA,
   });
 
+  /** Consulta la API del tablero con el token del dispositivo en el encabezado X-Token. */
   function api(ruta, opciones) {
     return fetch(ruta, Object.assign({ cache: 'no-store', headers: { 'X-Token': TOKEN } }, opciones));
   }
 
+  /** Mensaje para el usuario según el código HTTP de una respuesta fallida. */
   function mensajeError(estadoHttp) {
     if (estadoHttp === 401) return 'Se requiere iniciar sesión (usuario y clave del tablero).';
     if (estadoHttp === 403) return 'Dispositivo no autorizado o fuera de la WLAN local.';
@@ -132,6 +136,7 @@
     },
   ];
 
+  /** Crea una tarjeta por variable en la sección de valores actuales. */
   function crearTarjetas() {
     const contenedor = $('tarjetas');
     for (const t of TARJETAS) {
@@ -159,6 +164,7 @@
     return 'Dato válido de hace ' + duracion(sensor.edad_s + transcurrido);
   }
 
+  /** Actualiza el valor, el detalle y la insignia de estado de cada tarjeta. */
   function actualizarTarjetas(j) {
     for (const t of TARJETAS) {
       const el = t.el;
@@ -178,6 +184,7 @@
     actualizarEdades();
   }
 
+  /** Actualiza la antigüedad mostrada de cada dato; se llama cada segundo. */
   function actualizarEdades() {
     if (!ultimo) return;
     for (const t of TARJETAS) {
@@ -191,6 +198,7 @@
 
   let orden = null;  // { enviadaMs } mientras se espera la confirmación.
 
+  /** Muestra el estado de alerta, sus causas y el estado del botón de desactivar. */
   function actualizarEstado(j) {
     const seccion = $('estado');
     seccion.className = 'estado estado--' + j.estado.replace(' ', '_');
@@ -228,6 +236,7 @@
     }
   }
 
+  /** Conecta el botón y el diálogo de confirmación con la orden de desactivar la alarma física. */
   function configurarDesactivacion() {
     const dialogo = $('dialogo-desactivar');
     $('boton-desactivar').addEventListener('click', () => dialogo.showModal());
@@ -261,6 +270,7 @@
   let wsAbierto = false;
   let sondeo = null;
 
+  /** Procesa un JSON del estado actual recibido por WebSocket o por consulta. */
   function procesar(j) {
     ultimo = j;
     recibidoMs = Date.now();
@@ -276,6 +286,7 @@
     actualizarConexion();
   }
 
+  /** Consulta /api/actual; es el respaldo mientras no hay WebSocket. */
   async function consultarActual() {
     try {
       const r = await api('/api/actual');
@@ -289,15 +300,18 @@
     }
   }
 
+  /** Inicia la consulta periódica de respaldo, si no está activa. */
   function iniciarSondeo() {
     if (sondeo === null) sondeo = setInterval(consultarActual, SONDEO_MS);
   }
 
+  /** Detiene la consulta periódica de respaldo. */
   function detenerSondeo() {
     if (sondeo !== null) clearInterval(sondeo);
     sondeo = null;
   }
 
+  /** Abre el WebSocket /ws con el token y se reconecta solo si se cierra. */
   function conectarWs() {
     const protocolo = location.protocol === 'https:' ? 'wss://' : 'ws://';
     ws = new WebSocket(protocolo + location.host + '/ws?token=' + encodeURIComponent(TOKEN));
@@ -313,6 +327,7 @@
     };
   }
 
+  /** Actualiza el indicador de conexión: en vivo, reconectando o sin datos. */
   function actualizarConexion() {
     const el = $('conexion');
     const texto = $('conexion-texto');
@@ -348,6 +363,7 @@
     eje.ticks = marcas;
   }
 
+  /** Rótulo del eje x: hora local si hay hora NTP, o tiempo relativo («hace X min»). */
   function formatoEje(valor) {
     if (usaHora) return formatoHora.format(new Date(valor * 1000));
     const minutos = Math.round(-valor);
@@ -356,6 +372,7 @@
     return 'hace ' + duracion(minutos * 60);
   }
 
+  /** Opciones comunes de Chart.js para las gráficas del histórico. */
   function opcionesGrafica(ejes) {
     const scales = {
       x: {
@@ -382,6 +399,7 @@
     };
   }
 
+  /** Serie de datos de una gráfica de líneas. */
   function serie(etiqueta, color, eje, extra) {
     return Object.assign({
       label: etiqueta, data: [], borderColor: color, backgroundColor: color,
@@ -389,10 +407,12 @@
     }, extra || {});
   }
 
+  /** Serie punteada para dibujar un umbral horizontal. */
   function umbral(etiqueta, color) {
     return serie(etiqueta, color, 'y', { borderDash: [6, 4], borderWidth: 1.5, tension: 0 });
   }
 
+  /** Crea las gráficas de nivel, de temperatura y humedad, y de VPD y UV. */
   function crearGraficas() {
     Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
     Chart.defaults.color = '#57606a';
@@ -433,6 +453,7 @@
     });
   }
 
+  /** Dibuja el histórico recibido en las tres gráficas. */
   function dibujarHistorico(h) {
     usaHora = h.ahora_epoca !== null && h.ahora_epoca !== undefined;
     // x: hora de época si es válida; si no, minutos relativos (negativos) al momento actual.
@@ -472,6 +493,7 @@
       ' Los huecos son lecturas sin dato válido. Los umbrales de nivel son los de demostración.';
   }
 
+  /** Pide el búfer del histórico de la pestaña activa y lo dibuja. */
   async function cargarHistorico() {
     try {
       const r = await api('/api/historico?b=' + buferActivo);
@@ -486,6 +508,7 @@
     }
   }
 
+  /** Cambia de pestaña (10 min o 24 h) y programa la recarga del histórico. */
   function seleccionarBufer(bufer) {
     buferActivo = bufer;
     for (const b of document.querySelectorAll('.pestanas button')) {

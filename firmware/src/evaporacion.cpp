@@ -14,10 +14,12 @@ constexpr float GSC_MJ_M2_MIN = 0.0820f;  ///< Constante solar (FAO-56).
 constexpr float MJ_A_MM = 0.408f;         ///< 1 MJ m⁻² d⁻¹ = 0.408 mm/d (FAO-56).
 }  // namespace
 
+/** Presión de vapor de saturación e°(T) en kPa (FAO-56, ec. 11). */
 float presionSaturacionKpa(float temperaturaC) {
     return 0.6108f * std::exp(17.27f * temperaturaC / (temperaturaC + 237.3f));
 }
 
+/** Déficit de presión de vapor en kPa; NAN si la temperatura o la humedad no son válidas. */
 float vpdKpa(float temperaturaC, float humedadPct) {
     if (std::isnan(temperaturaC) || std::isnan(humedadPct) ||
         humedadPct < 0.0f || humedadPct > 100.0f) {
@@ -28,6 +30,7 @@ float vpdKpa(float temperaturaC, float humedadPct) {
     return es - ea;
 }
 
+/** Radiación extraterrestre diaria Ra en MJ m⁻² d⁻¹ (FAO-56, ec. 21 a 25). */
 float radiacionExtraterrestreMJ(float latitudGrados, int diaDelAnio) {
     const float phi = latitudGrados * PI_F / 180.0f;
     const float x = 2.0f * PI_F * static_cast<float>(diaDelAnio) / 365.0f;
@@ -39,6 +42,7 @@ float radiacionExtraterrestreMJ(float latitudGrados, int diaDelAnio) {
             std::cos(phi) * std::cos(delta) * std::sin(omegaS));
 }
 
+/** ET0 diaria por Hargreaves-Samani en mm/d (FAO-56, ec. 52); NAN si los datos no son válidos. */
 float et0HargreavesMmDia(float tMaxC, float tMinC, float raMJ) {
     if (std::isnan(tMaxC) || std::isnan(tMinC) || std::isnan(raMJ) || tMaxC < tMinC) {
         return NAN;
@@ -66,6 +70,7 @@ void ExtremosDiarios::avanzar(uint32_t tiempoS) {
     }
 }
 
+/** Registra una temperatura válida en el intervalo de 5 min que le corresponde. */
 void ExtremosDiarios::agregar(uint32_t tiempoS, float temperaturaC) {
     avanzar(tiempoS);
     if (std::isnan(temperaturaC)) {
@@ -82,6 +87,7 @@ void ExtremosDiarios::agregar(uint32_t tiempoS, float temperaturaC) {
     }
 }
 
+/** Entrega la máxima y la mínima de 24 h; false mientras la ventana no esté completa. */
 bool ExtremosDiarios::extremos(float& tMaxC, float& tMinC) const {
     // La ventana está completa cuando ya pasaron al menos 24 h desde el arranque.
     if (!iniciado_ || intervaloActual_ + 1 < INTERVALOS) {

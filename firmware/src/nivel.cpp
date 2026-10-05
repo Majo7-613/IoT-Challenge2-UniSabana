@@ -8,6 +8,7 @@
 
 namespace nivel {
 
+/** Nivel de agua en cm: altura de montaje − distancia; NAN si falta un dato. */
 float nivelCm(float distanciaCm, const Geometria& geometria) {
     if (std::isnan(distanciaCm) || std::isnan(geometria.alturaMontajeCm)) {
         return NAN;
@@ -15,6 +16,7 @@ float nivelCm(float distanciaCm, const Geometria& geometria) {
     return geometria.alturaMontajeCm - distanciaCm;
 }
 
+/** Nivel como fracción de la altura útil, sin recortar; NAN si falta un dato. */
 float nivelFraccion(float nivelCm, const Geometria& geometria) {
     if (std::isnan(nivelCm) || std::isnan(geometria.alturaUtilCm) ||
         geometria.alturaUtilCm <= 0.0f) {
@@ -23,6 +25,7 @@ float nivelFraccion(float nivelCm, const Geometria& geometria) {
     return nivelCm / geometria.alturaUtilCm;
 }
 
+/** Crea la ventana de la regresión, acotada a MAX_MUESTRAS. */
 Tendencia::Tendencia(uint16_t muestrasVentana)
     : ventana_(muestrasVentana > MAX_MUESTRAS ? MAX_MUESTRAS : muestrasVentana) {
     if (ventana_ < 2) {
@@ -30,6 +33,7 @@ Tendencia::Tendencia(uint16_t muestrasVentana)
     }
 }
 
+/** Agrega la muestra del ciclo; si no es válida, ocupa su lugar sin dato. */
 void Tendencia::agregar(float tiempoS, float nivelCm, bool valida) {
     tiempo_[siguiente_] = tiempoS;
     valor_[siguiente_] = nivelCm;
@@ -40,6 +44,7 @@ void Tendencia::agregar(float tiempoS, float nivelCm, bool valida) {
     }
 }
 
+/** Pendiente por mínimos cuadrados en cm/min; false si no hay suficientes muestras válidas. */
 bool Tendencia::pendienteCmMin(float& pendiente) const {
     // Se centra el tiempo en la primera muestra válida para conservar precisión
     // en float con tiempos grandes desde el arranque.

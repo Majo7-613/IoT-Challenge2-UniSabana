@@ -92,6 +92,7 @@ class Simulador:
     """Estado del equipo simulado."""
 
     def __init__(self, escenario, con_hora):
+        """Estado inicial: escenario, hora NTP simulada y alarma sin desactivar."""
         self.escenario_fijo = escenario
         self.con_hora = con_hora
         self.inicio = time.time()
@@ -100,15 +101,18 @@ class Simulador:
         self.lock = threading.Lock()
 
     def uptime_s(self):
+        """Tiempo simulado desde el arranque del equipo, en segundos."""
         return int(ARRANQUE_SIMULADO_S + time.time() - self.inicio)
 
     def nombre_escenario(self):
+        """Escenario actual: el fijo o, en el modo ciclo, el que corresponde al tiempo."""
         if self.escenario_fijo != "ciclo":
             return self.escenario_fijo
         indice = int((time.time() - self.inicio) // SEGUNDOS_POR_ESCENARIO) % len(ORDEN_CICLO)
         return ORDEN_CICLO[indice]
 
     def epoca(self):
+        """Hora de época actual, o None si se simula un equipo sin NTP."""
         return int(time.time()) if self.con_hora else None
 
     def _actualizar_alarma(self, estado):
@@ -121,12 +125,14 @@ class Simulador:
         self.estado_anterior = estado
 
     def desactivar(self):
+        """Orden de desactivar la alarma física: solo se aplica en ALERTA o CRITICO."""
         with self.lock:
             esc = ESCENARIOS[self.nombre_escenario()]
             if esc["estado"] in GRAVEDAD:
                 self.alarma_desactivada = True
 
     def actual(self):
+        """JSON de /api/actual con los valores del escenario y una pequeña variación."""
         with self.lock:
             esc = ESCENARIOS[self.nombre_escenario()]
             self._actualizar_alarma(esc["estado"])
@@ -134,6 +140,7 @@ class Simulador:
             ruido = random.Random(ahora)  # Pequeña variación entre segundos.
 
             def sensor(nombre, edad_normal):
+                """Estado y antigüedad de un sensor del escenario."""
                 estado = esc["sensores"].get(nombre, "OK")
                 edad = edad_normal if estado == "OK" else 12 + ahora % 60
                 return {"sensor": estado, "edad_s": edad}
@@ -232,13 +239,16 @@ class Manejador(BaseHTTPRequestHandler):
     tokens = ()
 
     def log_message(self, formato, *args):
+        """Registra cada petición con el prefijo [simulado]."""
         print("[simulado] " + (formato % args))
 
     def _token_valido(self, consulta):
+        """true si la petición trae un token autorizado (encabezado o parámetro)."""
         token = self.headers.get("X-Token") or (consulta.get("token") or [""])[0]
         return token in self.tokens
 
     def _enviar(self, codigo, cuerpo, tipo="application/json; charset=utf-8"):
+        """Envía una respuesta HTTP completa."""
         datos = cuerpo.encode("utf-8") if isinstance(cuerpo, str) else cuerpo
         self.send_response(codigo)
         self.send_header("Content-Type", tipo)
@@ -248,9 +258,11 @@ class Manejador(BaseHTTPRequestHandler):
         self.wfile.write(datos)
 
     def _json(self, codigo, objeto):
+        """Envía un objeto como JSON."""
         self._enviar(codigo, json.dumps(objeto, ensure_ascii=False))
 
     def do_GET(self):
+        """Atiende las rutas GET: WebSocket, API y archivos del tablero."""
         url = urlparse(self.path)
         consulta = parse_qs(url.query)
         if not self._token_valido(consulta):
@@ -270,6 +282,7 @@ class Manejador(BaseHTTPRequestHandler):
             self._archivo(url.path)
 
     def do_POST(self):
+        """Atiende la orden de desactivar la alarma física."""
         url = urlparse(self.path)
         if not self._token_valido(parse_qs(url.query)):
             self._enviar(403, "Dispositivo no autorizado", "text/plain; charset=utf-8")
@@ -282,6 +295,7 @@ class Manejador(BaseHTTPRequestHandler):
             self._enviar(404, "No encontrado", "text/plain; charset=utf-8")
 
     def _archivo(self, ruta):
+        """Sirve un archivo de firmware/data/, sin salir de esa carpeta."""
         if ruta == "/":
             ruta = "/index.html"
         destino = (DIR_DATA / ruta.lstrip("/")).resolve()
@@ -294,6 +308,7 @@ class Manejador(BaseHTTPRequestHandler):
         self._enviar(200, destino.read_bytes(), tipo)
 
     def _websocket(self):
+        """Saludo de WebSocket (RFC 6455) y envío del estado cada 1 s."""
         clave = self.headers.get("Sec-WebSocket-Key")
         if not clave or self.headers.get("Upgrade", "").lower() != "websocket":
             self._enviar(400, "Se esperaba un WebSocket", "text/plain; charset=utf-8")
@@ -321,6 +336,7 @@ class Manejador(BaseHTTPRequestHandler):
 
 
 def main():
+    """Lee los argumentos y arranca el servidor simulado."""
     parser = argparse.ArgumentParser(description="Servidor simulado del tablero (DATOS SIMULADOS).")
     parser.add_argument("--puerto", type=int, default=8080)
     parser.add_argument("--escenario", default="ciclo", choices=["ciclo"] + ORDEN_CICLO)

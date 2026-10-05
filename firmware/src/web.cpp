@@ -42,6 +42,7 @@ class Json {
 public:
     Json(char* bufer, size_t tamano) : b_(bufer), t_(tamano) { b_[0] = '\0'; }
 
+    /** Agrega texto con formato al final del búfer; marca el desbordamiento si no cabe. */
     void agregar(const char* formato, ...) __attribute__((format(printf, 2, 3))) {
         if (n_ + 1 >= t_) {
             desbordado_ = true;
@@ -247,6 +248,7 @@ const char PAGINA_SIN_TABLERO[] =
     "<p>Datos disponibles: <code>/api/actual</code>, "
     "<code>/api/historico?b=rapido</code>, <code>/api/historico?b=lento</code>.</p></html>";
 
+/** GET /: entrega el frontend del tablero o la página mínima. */
 void manejarRaiz(AsyncWebServerRequest* request) {
     if (!autorizar(request)) {
         return;
@@ -258,6 +260,7 @@ void manejarRaiz(AsyncWebServerRequest* request) {
     }
 }
 
+/** GET /api/actual: JSON del estado actual. */
 void manejarActual(AsyncWebServerRequest* request) {
     if (!autorizar(request)) {
         return;
@@ -275,6 +278,7 @@ void manejarActual(AsyncWebServerRequest* request) {
     request->send(200, "application/json", json);
 }
 
+/** GET /api/historico: JSON del búfer rápido o lento. */
 void manejarHistorico(AsyncWebServerRequest* request) {
     if (!autorizar(request)) {
         return;
@@ -336,6 +340,7 @@ void manejarHistorico(AsyncWebServerRequest* request) {
     request->send(respuesta);
 }
 
+/** POST /api/alarma/desactivar: envía la orden a la tarea de fusión. */
 void manejarDesactivar(AsyncWebServerRequest* request) {
     if (!autorizar(request)) {
         return;
@@ -416,6 +421,7 @@ bool webIniciar() {
     return true;
 }
 
+/** Envía el estado actual a los clientes WebSocket y libera los desconectados. */
 void webDifundir() {
     ws.cleanupClients(WEB_MAX_CLIENTES_WS);
     if (ws.count() == 0) {

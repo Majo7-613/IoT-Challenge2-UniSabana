@@ -66,6 +66,7 @@ bool enviarNibble(uint8_t nibbleAlto) {
 
 }  // namespace
 
+/** Inicializa la pantalla con la secuencia de 4 bits del HD44780 y la borra. */
 bool iniciar(uint8_t direccion) {
     dir = direccion;
     luz = BIT_LUZ;
@@ -92,6 +93,7 @@ bool iniciar(uint8_t direccion) {
     return ok;
 }
 
+/** Escribe una fila completa, rellenada con espacios hasta LCD_COLUMNAS. */
 bool escribirFila(uint8_t fila, const char* texto) {
     if (fila >= LCD_FILAS) {
         return false;
@@ -107,6 +109,7 @@ bool escribirFila(uint8_t fila, const char* texto) {
     return ok;
 }
 
+/** Enciende o apaga la retroiluminación. */
 bool retroiluminacion(bool encendida) {
     luz = encendida ? BIT_LUZ : 0;
     return escribirExpansor(0);

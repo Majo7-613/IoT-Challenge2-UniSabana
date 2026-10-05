@@ -46,6 +46,7 @@ void actualizarFecha() {
 
 }  // namespace
 
+/** Configura el Wi-Fi en modo estación e inicia la asociación a la WLAN. */
 void redIniciar() {
     if (CREDENCIALES_DE_EJEMPLO) {
         registrar("red", "AVISO: no existe secrets.h; se usan las credenciales de ejemplo");
@@ -56,10 +57,12 @@ void redIniciar() {
     registrar("red", "asociándose a la WLAN \"%s\"", RED_SSID);
 }
 
+/** true si el ESP32 está asociado a la WLAN y tiene dirección IP. */
 bool redConectada() {
     return WiFi.status() == WL_CONNECTED;
 }
 
+/** Hora de época UTC, si el NTP ya fijó una hora válida. */
 bool redHoraEpoca(uint32_t& epoca) {
     const time_t ahora = time(nullptr);
     struct tm utc {};
@@ -71,6 +74,7 @@ bool redHoraEpoca(uint32_t& epoca) {
     return true;
 }
 
+/** Supervisa la conexión: reconexión, inicio del servidor, NTP y día del año. */
 void redSupervisar(uint32_t ahoraMs) {
     const bool conectada = redConectada();
 

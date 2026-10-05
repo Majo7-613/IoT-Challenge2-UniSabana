@@ -12,6 +12,7 @@
 
 namespace {
 
+/** Parámetros de demostración de config.h (Wiki 4.4). */
 fusion::Parametros parametrosDemo() {
     fusion::Parametros p{};
     p.nivelCriticoPct = 20.0f;
@@ -58,6 +59,7 @@ EstadoAlerta tendenciaDurante(fusion::Clasificador& c, int t0, int t1, float ten
     return estado;
 }
 
+/** Verifica que el estado obtenido sea el esperado. */
 void verificarEstado(EstadoAlerta esperado, EstadoAlerta obtenido) {
     TEST_ASSERT_EQUAL_STRING(textoAlerta(esperado), textoAlerta(obtenido));
 }
@@ -76,6 +78,7 @@ void test_sin_primera_lectura_es_iniciando() {
     verificarEstado(EstadoAlerta::INICIANDO, c.evaluar(e, false).estado);
 }
 
+/** Si el sensor de nivel falla, el estado es FALLA NIVEL y nunca NORMAL. */
 void test_nivel_en_falla_es_falla_nivel_y_nunca_normal() {
     fusion::Clasificador c(parametrosDemo());
     fusion::Entradas e = normales(0);
@@ -83,6 +86,7 @@ void test_nivel_en_falla_es_falla_nivel_y_nunca_normal() {
     verificarEstado(EstadoAlerta::FALLA_NIVEL, c.evaluar(e, false).estado);
 }
 
+/** Sin condiciones de riesgo, el estado es NORMAL. */
 void test_sin_condiciones_es_normal() {
     fusion::Clasificador c(parametrosDemo());
     const fusion::Resultado r = c.evaluar(normales(0), false);
@@ -144,6 +148,7 @@ void test_descenso_sostenido_y_alerta() {
     verificarEstado(EstadoAlerta::ADVERTENCIA, c.evaluar(e, false).estado);
 }
 
+/** Salida del descenso por histéresis y condición inactiva sin tendencia. */
 void test_salida_del_descenso_y_tendencia_no_disponible() {
     fusion::Clasificador c(parametrosDemo());
     verificarEstado(EstadoAlerta::ADVERTENCIA, tendenciaDurante(c, 0, 30, -1.2f));

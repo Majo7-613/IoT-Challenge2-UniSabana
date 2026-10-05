@@ -34,11 +34,13 @@ SEGMENTOS = [
 
 
 def ejecutar(comando):
+    """Muestra y ejecuta un comando; se detiene si falla."""
     print("$ " + " ".join(str(c) for c in comando))
     subprocess.run([str(c) for c in comando], check=True)
 
 
 def main():
+    """Compila, genera LittleFS y une la imagen de flash completa."""
     pio = PIO_HOME / "penv" / "Scripts" / "pio.exe"
     python = PIO_HOME / "penv" / "Scripts" / "python.exe"
     if not pio.exists():  # Linux o macOS

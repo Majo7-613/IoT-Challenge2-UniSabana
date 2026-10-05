@@ -19,6 +19,7 @@ struct Circular {
     size_t siguiente = 0;
     size_t ocupados = 0;
 
+    /** Agrega un registro; si el búfer está lleno, reemplaza el más antiguo. */
     void agregar(const RegistroHistorico& r) {
         registros[siguiente] = r;
         siguiente = (siguiente + 1) % N;
@@ -27,6 +28,7 @@ struct Circular {
         }
     }
 
+    /** Copia los registros del más antiguo al más reciente. @return cantidad copiada. */
     size_t copiar(RegistroHistorico* destino) const {
         // El más antiguo está en `siguiente` cuando el búfer está lleno, y en 0 si no.
         const size_t inicio = (ocupados == N) ? siguiente : 0;
@@ -48,6 +50,7 @@ float siOk(EstadoSensor estado, float valor) {
 
 }  // namespace
 
+/** Crea el mutex de los búferes; se llama una vez, antes de crear las tareas. */
 bool historicoIniciar() {
     if (mtxHistorico == nullptr) {
         mtxHistorico = xSemaphoreCreateMutex();
@@ -55,6 +58,7 @@ bool historicoIniciar() {
     return mtxHistorico != nullptr;
 }
 
+/** Agrega al búfer indicado un registro con los valores del estado publicado. */
 void historicoAgregar(Bufer bufer, const EstadoPublicado& estado) {
     const Lecturas&  l = estado.instantanea.lecturas;
     const Derivados& d = estado.derivados;
@@ -79,6 +83,7 @@ void historicoAgregar(Bufer bufer, const EstadoPublicado& estado) {
     xSemaphoreGive(mtxHistorico);
 }
 
+/** Copia los registros del búfer, del más antiguo al más reciente. */
 size_t historicoCopiar(Bufer bufer, RegistroHistorico* destino) {
     xSemaphoreTake(mtxHistorico, portMAX_DELAY);
     const size_t n = (bufer == Bufer::RAPIDO) ? rapido.copiar(destino) : lento.copiar(destino);
@@ -86,10 +91,12 @@ size_t historicoCopiar(Bufer bufer, RegistroHistorico* destino) {
     return n;
 }
 
+/** Capacidad del búfer, en registros. */
 size_t historicoCapacidad(Bufer bufer) {
     return bufer == Bufer::RAPIDO ? HISTORICO_RAPIDO_REGISTROS : HISTORICO_LENTO_REGISTROS;
 }
 
+/** Periodo entre registros del búfer, en segundos. */
 uint32_t historicoPeriodoS(Bufer bufer) {
     return (bufer == Bufer::RAPIDO ? HISTORICO_RAPIDO_PERIODO_MS : HISTORICO_LENTO_PERIODO_MS) / 1000;
 }

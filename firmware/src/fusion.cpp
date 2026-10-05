@@ -53,6 +53,7 @@ int gravedad(EstadoAlerta estado) {
 
 }  // namespace
 
+/** true si el estado tiene alarma hídrica sonora (ALERTA o CRÍTICO). */
 bool tieneAlarmaSonora(EstadoAlerta estado) {
     return estado == EstadoAlerta::ALERTA || estado == EstadoAlerta::CRITICO;
 }
@@ -60,6 +61,7 @@ bool tieneAlarmaSonora(EstadoAlerta estado) {
 Clasificador::Clasificador(const Parametros& parametros)
     : p_(parametros), descensoDesdeS_(NAN) {}
 
+/** Actualiza la condición de descenso sostenido, con su histéresis temporal. */
 void Clasificador::actualizarDescenso(const Entradas& e) {
     // Tendencia no disponible: la condición cuenta como inactiva.
     if (!e.tendenciaOk || std::isnan(e.tendenciaCmMin)) {
@@ -85,6 +87,7 @@ void Clasificador::actualizarDescenso(const Entradas& e) {
     }
 }
 
+/** Clasifica un ciclo y aplica la orden de desactivar la alarma física, si la hay. */
 Resultado Clasificador::evaluar(const Entradas& e, bool solicitudDesactivacion) {
     Resultado r{EstadoAlerta::NORMAL, CAUSA_NINGUNA, false};
 

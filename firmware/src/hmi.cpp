@@ -214,6 +214,7 @@ void hmiComponerFilas(const EstadoPublicado& estado, char filas[][21]) {
              d.alarmaDesactivada ? " (DESACT.)" : "");
 }
 
+/** Configura el buzzer (LEDC y temporizador del patrón) e inicializa la LCD. */
 bool hmiIniciar(SemaphoreHandle_t mtxI2C) {
     mtxBus = mtxI2C;
 
@@ -240,6 +241,7 @@ bool hmiIniciar(SemaphoreHandle_t mtxI2C) {
     return ok;
 }
 
+/** Actualiza la LCD, la retroiluminación y el patrón del buzzer según el estado publicado. */
 void hmiActualizar(const EstadoPublicado& estado, uint32_t ahoraMs) {
     const Derivados& d = estado.derivados;
 

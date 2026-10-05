@@ -32,15 +32,18 @@ void verificarFila(float cmMin, const char* tendenciaEsperada, const char* filaE
 
 }  // namespace
 
+/** Tendencias de una cifra: espacio antes de la tendencia. */
 void test_tendencia_de_una_cifra() {
     verificarFila(-0.40f, "-0.40", "N  4.8cm  16%  -0.40");
     verificarFila(0.0f, "0.00", "N  4.8cm  16%   0.00");
 }
 
+/** Caso observado en Wokwi: −19.73 cm/min. */
 void test_tendencia_de_dos_cifras_negativa() {
     verificarFila(-19.73f, "-19.73", "N  4.8cm  16% -19.73");
 }
 
+/** Tendencias grandes: se reducen los decimales en lugar de cortar el texto. */
 void test_tendencias_grandes_reducen_decimales() {
     verificarFila(-99.999f, "-100.0", "N  4.8cm  16% -100.0");
     verificarFila(-123.46f, "-123.5", "N  4.8cm  16% -123.5");
@@ -48,6 +51,7 @@ void test_tendencias_grandes_reducen_decimales() {
     verificarFila(-1.0e6f, "-9999", "N  4.8cm  16%  -9999");  // acotada
 }
 
+/** Sin tendencia disponible se muestra «--». */
 void test_tendencia_no_disponible() {
     char fila[32];
     texto_lcd::filaNivel(fila, sizeof(fila), " 22.0", "  73", "--");

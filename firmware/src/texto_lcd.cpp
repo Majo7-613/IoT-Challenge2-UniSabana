@@ -9,6 +9,7 @@
 
 namespace texto_lcd {
 
+/** Tendencia con a lo sumo ANCHO_TENDENCIA caracteres (ver texto_lcd.h). */
 void tendencia(char* salida, size_t tamano, float cmMin) {
     // Se acota a ±9999 cm/min: valores mayores no son físicos en el recipiente.
     const float v = std::fmax(-9999.0f, std::fmin(9999.0f, cmMin));
@@ -17,6 +18,7 @@ void tendencia(char* salida, size_t tamano, float cmMin) {
     snprintf(salida, tamano, "%.*f", decimales, static_cast<double>(v));
 }
 
+/** Fila de nivel con un espacio fijo antes de la tendencia (ver texto_lcd.h). */
 void filaNivel(char* salida, size_t tamano, const char* nivel, const char* pct, const char* tend) {
     snprintf(salida, tamano, "N%scm%s%% %*s", nivel, pct, ANCHO_TENDENCIA, tend);
 }

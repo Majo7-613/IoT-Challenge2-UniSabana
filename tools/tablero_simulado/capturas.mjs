@@ -76,6 +76,7 @@ async function conectarCdp(url) {
   };
 }
 
+/** Abre el tablero en una vista (computador o celular) y guarda la página completa. */
 async function capturar(cdp, vista, archivo, url) {
   await cdp.enviar('Emulation.setDeviceMetricsOverride', {
     width: vista.width, height: vista.height, deviceScaleFactor: vista.deviceScaleFactor, mobile: vista.mobile,

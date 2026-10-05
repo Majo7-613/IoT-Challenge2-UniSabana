@@ -21,12 +21,14 @@ SemaphoreHandle_t mtxSerial = nullptr;
 
 }  // namespace
 
+/** Crea el mutex del registro; se llama una vez, después de Serial.begin(). */
 void registroIniciar() {
     if (mtxSerial == nullptr) {
         mtxSerial = xSemaphoreCreateMutex();
     }
 }
 
+/** Escribe en el puerto serie una línea con marca de tiempo y origen, protegida por el mutex. */
 void registrar(const char* etiqueta, const char* formato, ...) {
     // Se formatea antes de tomar el mutex para ocuparlo el menor tiempo posible.
     char mensaje[LONGITUD_MENSAJE];

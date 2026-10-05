@@ -278,6 +278,7 @@ const char* textoEstado(EstadoSensor estado) {
     return "?";
 }
 
+/** Texto corto de la fuente de compensación térmica. */
 const char* textoCompensacion(FuenteCompensacion fuente) {
     switch (fuente) {
         case FuenteCompensacion::DHT22:       return "T DHT22";
@@ -287,6 +288,7 @@ const char* textoCompensacion(FuenteCompensacion fuente) {
     return "?";
 }
 
+/** Inicializa los pines, el bus I2C y los sensores, y registra las direcciones I2C encontradas. */
 void sensoresIniciar(SemaphoreHandle_t mtxI2C) {
     mtxBus = mtxI2C;
 
@@ -307,6 +309,7 @@ void sensoresIniciar(SemaphoreHandle_t mtxI2C) {
     registrar("sensores", "BMP180 %s", bmpIniciado ? "iniciado" : "no responde (FALLA)");
 }
 
+/** Lee los sensores que corresponden al ciclo y actualiza sus estados. */
 void sensoresLeer(bool leerDht22, Lecturas& salida) {
     // El DHT22 y el BMP180 se leen antes que el nivel para que la
     // compensación térmica use la temperatura más reciente.
