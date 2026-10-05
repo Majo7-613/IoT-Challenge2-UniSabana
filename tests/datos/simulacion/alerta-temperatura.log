@@ -1,0 +1,272 @@
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:1184
+load:0x40078000,len:13232
+load:0x40080400,len:3028
+entry 0x400805e4
+[    1438.127 ms] [main      ] Firmware IoT Challenge #2 — paso 5 (red y tablero web) [SIMULACIÓN]
+[    1439.777 ms] [main      ] Núcleo Arduino ESP32 2.0.17, ESP-IDF v4.4.7-dirty
+[    1451.382 ms] [main      ] Modo de parámetros: DEMOSTRACIÓN
+[    1465.218 ms] [sensores  ] I2C: dispositivo en 0x27
+[    1489.939 ms] [sensores  ] I2C: dispositivo en 0x77
+[    1492.950 ms] [sensores  ] I2C: 2 dispositivo(s); esperados 0x27 (LCD) y 0x77 (BMP180)
+[    1506.478 ms] [sensores  ] BMP180 iniciado
+[    1507.511 ms] [hmi       ] buzzer listo (GPIO 25, patrón cada 50 ms)
+[    1589.964 ms] [hmi       ] LCD iniciada (0x27)
+[    1591.407 ms] [tareas    ] tSensores creada (núcleo 1, prioridad 4, pila 6144 B)
+[    1593.385 ms] [tareas    ] tFusion creada (núcleo 1, prioridad 3, pila 4096 B)
+[    1605.595 ms] [tareas    ] tHMI creada (núcleo 1, prioridad 2, pila 4096 B)
+[    1607.182 ms] [tareas    ] tHistorico creada (núcleo 0, prioridad 1, pila 4096 B)
+[    1618.963 ms] [tareas    ] tRed creada (núcleo 0, prioridad 1, pila 4096 B)
+[    1630.978 ms] [tareas    ] temporizador de adquisición iniciado a 1 Hz
+[    1867.369 ms] [red       ] asociándose a la WLAN "Wokwi-GUEST"
+[    2917.941 ms] [tSensores ] d=13.0 cm (OK, 5/5 ecos, T BMP180) | T=nan C HR=nan % (VIEJO) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[    2929.445 ms] [tSensores ] ciclo 1 (primer ciclo)
+[    2919.597 ms] [tFusion   ] estado INICIANDO -> NORMAL (causas 0x00)
+[    3637.138 ms] [sensores  ] DHT22: lectura válida (T=31.0 HR=40.0)
+[    3925.966 ms] [tSensores ] d=13.3 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[    3938.239 ms] [tSensores ] ciclo 2 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[    4917.966 ms] [tSensores ] d=13.3 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[    4929.991 ms] [tSensores ] ciclo 3 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[    5924.966 ms] [tSensores ] d=13.3 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[    5937.007 ms] [tSensores ] ciclo 4 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[    6620.692 ms] [red       ] conectada a la WLAN; IP 10.13.37.2, máscara 255.255.255.0, RSSI -68 dBm
+[    6692.542 ms] [web       ] LittleFS montado; tablero cargado
+[    6697.675 ms] [web       ] servidor en http://10.13.37.2:80
+[    6699.216 ms] [web       ] AVISO: filtro de subred desactivado (ajuste de simulación)
+[    6924.966 ms] [tSensores ] d=13.3 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[    6937.257 ms] [tSensores ] ciclo 5 periodo=1000.084 ms desv=+0.084 ms perdidos=0 fuera_tol=0
+[    7924.966 ms] [tSensores ] d=13.3 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[    7937.310 ms] [tSensores ] ciclo 6 periodo=999.917 ms desv=-0.083 ms perdidos=0 fuera_tol=0 [DHT22]
+[    8917.966 ms] [tSensores ] d=13.3 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[    8929.994 ms] [tSensores ] ciclo 7 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[    9924.966 ms] [tSensores ] d=13.3 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[    9937.008 ms] [tSensores ] ciclo 8 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   10917.966 ms] [tSensores ] d=13.3 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   10930.284 ms] [tSensores ] ciclo 9 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   11607.786 ms] [tHMI      ] LCD |N 21.7cm  72%    --|T 31.0C HR 40% P 750|UV 4.8 VPD 2.70kPa|NORMAL|
+[   11924.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   11937.129 ms] [tSensores ] ciclo 10 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   11928.479 ms] [tFusion   ] ciclo 10: nivel=20.6 cm (69 %) tendencia=nan cm/min VPD=2.70 kPa ET0=no disponible (24 h y fecha) latencia=297.081 ms
+[   12917.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   12930.100 ms] [tSensores ] ciclo 11 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   13924.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   13937.390 ms] [tSensores ] ciclo 12 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   14917.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   14930.094 ms] [tSensores ] ciclo 13 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   15924.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   15937.127 ms] [tSensores ] ciclo 14 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   16917.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   16930.102 ms] [tSensores ] ciclo 15 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   17924.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   17937.351 ms] [tSensores ] ciclo 16 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   18917.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   18930.106 ms] [tSensores ] ciclo 17 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   19924.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   19937.123 ms] [tSensores ] ciclo 18 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   20917.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   20930.105 ms] [tSensores ] ciclo 19 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   21607.787 ms] [tHMI      ] LCD |N 20.6cm  69%    --|T 31.0C HR 40% P 750|UV 4.8 VPD 2.70kPa|NORMAL|
+[   21924.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   21937.345 ms] [tSensores ] ciclo 20 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   21928.876 ms] [tFusion   ] ciclo 20: nivel=20.6 cm (69 %) tendencia=nan cm/min VPD=2.70 kPa ET0=no disponible (24 h y fecha) latencia=297.455 ms
+[   22917.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   22930.097 ms] [tSensores ] ciclo 21 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   23924.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   23937.130 ms] [tSensores ] ciclo 22 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   24917.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   24930.329 ms] [tSensores ] ciclo 23 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   25924.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   25937.117 ms] [tSensores ] ciclo 24 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   26917.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   26930.097 ms] [tSensores ] ciclo 25 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   27924.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   27937.111 ms] [tSensores ] ciclo 26 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   28917.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   28930.340 ms] [tSensores ] ciclo 27 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   29924.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   29937.133 ms] [tSensores ] ciclo 28 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   30917.976 ms] [tSensores ] d=14.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   30930.102 ms] [tSensores ] ciclo 29 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   31607.787 ms] [tHMI      ] LCD |N 20.6cm  69%    --|T 31.0C HR 40% P 750|UV 4.8 VPD 2.70kPa|NORMAL|
+[   31925.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   31937.195 ms] [tSensores ] ciclo 30 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   31929.684 ms] [tFusion   ] ciclo 30: nivel=19.6 cm (65 %) tendencia=-3.16 cm/min VPD=2.70 kPa ET0=no disponible (24 h y fecha) latencia=298.076 ms
+[   32918.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   32930.481 ms] [tSensores ] ciclo 31 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   33925.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   33937.231 ms] [tSensores ] ciclo 32 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   34918.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   34930.234 ms] [tSensores ] ciclo 33 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   35925.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   35937.241 ms] [tSensores ] ciclo 34 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   36918.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   36930.486 ms] [tSensores ] ciclo 35 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   37925.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   37937.243 ms] [tSensores ] ciclo 36 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   38918.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   38930.235 ms] [tSensores ] ciclo 37 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   39925.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   39937.516 ms] [tSensores ] ciclo 38 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   40918.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   40930.182 ms] [tSensores ] ciclo 39 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   41607.964 ms] [tHMI      ] LCD |N 19.6cm  65% -3.58|T 31.0C HR 40% P 750|UV 4.8 VPD 2.70kPa|NORMAL|
+[   41925.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   41937.191 ms] [tSensores ] ciclo 40 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   41929.966 ms] [tFusion   ] ciclo 40: nivel=19.6 cm (65 %) tendencia=-3.54 cm/min VPD=2.70 kPa ET0=no disponible (24 h y fecha) latencia=298.443 ms
+[   42918.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   42930.218 ms] [tSensores ] ciclo 41 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   43925.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   43937.488 ms] [tSensores ] ciclo 42 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   44918.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   44930.226 ms] [tSensores ] ciclo 43 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   45925.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   45937.235 ms] [tSensores ] ciclo 44 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   46918.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   46930.226 ms] [tSensores ] ciclo 45 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   47925.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   47937.501 ms] [tSensores ] ciclo 46 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   48918.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   48930.210 ms] [tSensores ] ciclo 47 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   49925.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   49937.235 ms] [tSensores ] ciclo 48 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   50918.063 ms] [tSensores ] d=15.4 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   50930.438 ms] [tSensores ] ciclo 49 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   51607.964 ms] [tHMI      ] LCD |N 19.6cm  65% -3.00|T 31.0C HR 40% P 750|UV 4.8 VPD 2.70kPa|NORMAL|
+[   51925.204 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   51937.381 ms] [tSensores ] ciclo 50 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   51930.636 ms] [tFusion   ] ciclo 50: nivel=18.5 cm (62 %) tendencia=-3.09 cm/min VPD=2.70 kPa ET0=no disponible (24 h y fecha) latencia=299.068 ms
+[   52918.161 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   52930.341 ms] [tSensores ] ciclo 51 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   53925.204 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   53937.393 ms] [tSensores ] ciclo 52 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   54918.161 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   54930.607 ms] [tSensores ] ciclo 53 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   55925.204 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   55937.456 ms] [tSensores ] ciclo 54 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   56918.161 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   56930.306 ms] [tSensores ] ciclo 55 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   57925.204 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   57937.456 ms] [tSensores ] ciclo 56 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   58918.161 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   58930.569 ms] [tSensores ] ciclo 57 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   59925.204 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   59937.497 ms] [tSensores ] ciclo 58 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   60918.161 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   60930.302 ms] [tSensores ] ciclo 59 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   61607.964 ms] [tHMI      ] LCD |N 18.5cm  62% -3.31|T 31.0C HR 40% P 750|UV 4.8 VPD 2.70kPa|NORMAL|
+[   61618.455 ms] [tRed      ] heap libre: 190592 B, mínimo histórico: 185372 B
+[   61925.204 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   61937.621 ms] [tSensores ] ciclo 60 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   61929.542 ms] [tFusion   ] estado NORMAL -> ALERTA (causas 0x1C)
+[   61951.966 ms] [tFusion   ] ciclo 60: nivel=18.5 cm (62 %) tendencia=-3.30 cm/min VPD=2.70 kPa ET0=no disponible (24 h y fecha) latencia=320.445 ms
+[   62918.161 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   62930.346 ms] [tSensores ] ciclo 61 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   63925.204 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   63937.443 ms] [tSensores ] ciclo 62 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   64918.161 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   64930.350 ms] [tSensores ] ciclo 63 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   65925.204 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   65937.695 ms] [tSensores ] ciclo 64 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   66918.161 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   66930.314 ms] [tSensores ] ciclo 65 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   67925.204 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   67937.492 ms] [tSensores ] ciclo 66 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   68918.161 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   68930.327 ms] [tSensores ] ciclo 67 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   69925.204 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   69937.736 ms] [tSensores ] ciclo 68 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   70918.161 ms] [tSensores ] d=16.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   70930.307 ms] [tSensores ] ciclo 69 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   71607.963 ms] [tHMI      ] LCD |N 18.5cm  62% -2.75|T 31.0C HR 40% P 750|UV 4.8 VPD 2.70kPa|ALERTA|
+[   71925.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   71937.737 ms] [tSensores ] ciclo 70 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   71931.172 ms] [tFusion   ] ciclo 70: nivel=17.5 cm (58 %) tendencia=-2.85 cm/min VPD=2.70 kPa ET0=no disponible (24 h y fecha) latencia=299.672 ms
+[   72918.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   72930.934 ms] [tSensores ] ciclo 71 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   73925.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   73937.717 ms] [tSensores ] ciclo 72 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   74918.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   74930.699 ms] [tSensores ] ciclo 73 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   75925.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   75937.715 ms] [tSensores ] ciclo 74 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   76918.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   76930.934 ms] [tSensores ] ciclo 75 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   77925.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   77937.714 ms] [tSensores ] ciclo 76 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   78918.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   78930.705 ms] [tSensores ] ciclo 77 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   79925.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   79937.720 ms] [tSensores ] ciclo 78 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   80918.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   80930.940 ms] [tSensores ] ciclo 79 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   81607.962 ms] [tHMI      ] LCD |N 17.5cm  58% -3.27|T 31.0C HR 40% P 750|UV 4.8 VPD 2.70kPa|ALERTA|
+[   81925.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   81937.740 ms] [tSensores ] ciclo 80 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   81931.204 ms] [tFusion   ] ciclo 80: nivel=17.5 cm (58 %) tendencia=-3.26 cm/min VPD=2.70 kPa ET0=no disponible (24 h y fecha) latencia=299.701 ms
+[   82918.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   82930.694 ms] [tSensores ] ciclo 81 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   83925.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   83937.715 ms] [tSensores ] ciclo 82 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   84918.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   84930.939 ms] [tSensores ] ciclo 83 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   85925.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   85937.714 ms] [tSensores ] ciclo 84 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   86918.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   86930.705 ms] [tSensores ] ciclo 85 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   87925.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   87937.949 ms] [tSensores ] ciclo 86 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   88918.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   88930.699 ms] [tSensores ] ciclo 87 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   89925.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   89937.718 ms] [tSensores ] ciclo 88 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   90918.266 ms] [tSensores ] d=17.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   90930.705 ms] [tSensores ] ciclo 89 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   91607.963 ms] [tHMI      ] LCD |N 17.5cm  58% -2.75|T 31.0C HR 40% P 750|UV 4.8 VPD 2.70kPa|ALERTA|
+[   91925.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   91937.963 ms] [tSensores ] ciclo 90 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   91931.231 ms] [tFusion   ] ciclo 90: nivel=16.5 cm (55 %) tendencia=-2.85 cm/min VPD=2.70 kPa ET0=no disponible (24 h y fecha) latencia=299.745 ms
+[   92918.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   92930.692 ms] [tSensores ] ciclo 91 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   93925.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   93937.718 ms] [tSensores ] ciclo 92 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   94918.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   94930.693 ms] [tSensores ] ciclo 93 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   95925.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   95937.951 ms] [tSensores ] ciclo 94 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[   96918.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   96930.699 ms] [tSensores ] ciclo 95 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[   97925.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   97937.719 ms] [tSensores ] ciclo 96 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[   98918.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   98930.934 ms] [tSensores ] ciclo 97 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[   99925.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[   99937.710 ms] [tSensores ] ciclo 98 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  100918.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[  100930.699 ms] [tSensores ] ciclo 99 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  101607.963 ms] [tHMI      ] LCD |N 16.5cm  55% -3.27|T 31.0C HR 40% P 750|UV 4.8 VPD 2.70kPa|ALERTA|
+[  101925.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[  101937.752 ms] [tSensores ] ciclo 100 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  101931.216 ms] [tFusion   ] ciclo 100: nivel=16.5 cm (55 %) tendencia=-3.27 cm/min VPD=2.70 kPa ET0=no disponible (24 h y fecha) latencia=299.741 ms
+[  102918.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[  102930.958 ms] [tSensores ] ciclo 101 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[  103925.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[  103937.752 ms] [tSensores ] ciclo 102 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  104918.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[  104930.715 ms] [tSensores ] ciclo 103 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  105925.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[  105937.729 ms] [tSensores ] ciclo 104 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  106918.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[  106930.963 ms] [tSensores ] ciclo 105 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0
+[  107925.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[  107937.731 ms] [tSensores ] ciclo 106 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0 [DHT22]
+[  108918.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[  108930.736 ms] [tSensores ] ciclo 107 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0
+[  109925.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[  109937.961 ms] [tSensores ] ciclo 108 periodo=1000.001 ms desv=+0.001 ms perdidos=0 fuera_tol=0 [DHT22]
+[  110918.300 ms] [tSensores ] d=18.5 cm (OK, 5/5 ecos, T DHT22) | T=31.0 C HR=40.0 % (OK) | P=750.0 hPa T=18.0 C (OK) | UV=479 mV ~4.8 (OK)
+[  110930.736 ms] [tSensores ] ciclo 109 periodo=1000.000 ms desv=+0.000 ms perdidos=0 fuera_tol=0

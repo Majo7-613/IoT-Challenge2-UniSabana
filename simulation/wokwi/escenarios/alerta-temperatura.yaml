@@ -1,0 +1,30 @@
+# SIMULACIÓN — Escenario de Wokwi: ALERTA por temperatura y VPD altos con el
+# DHT22 (librería de Adafruit), con los parámetros de demostración de config.h.
+# DHT22 a 31 °C (≥ 30 °C) y 40 % de humedad (VPD ≈ 2.7 kPa ≥ 1.5 kPa); UV sin
+# cambios (índice ≈ 4.8 < 6); descenso del nivel de 1 cm cada 20 s.
+#
+# Ejecutar desde la raíz del repositorio:
+#   wokwi-cli simulation/wokwi --scenario simulation/wokwi/escenarios/alerta-temperatura.yaml \
+#     --timeout 300000 --serial-log-file tests/datos/simulacion/alerta-temperatura.log
+# El contenido de la LCD queda en el registro serie (líneas "tHMI LCD |...|").
+name: 'SIMULACIÓN: ALERTA por temperatura y VPD'
+version: 1
+author: 'Equipo 7'
+
+steps:
+  - set-control: { part-id: dht, control: temperature, value: 31 }
+  - set-control: { part-id: dht, control: humidity, value: 40 }
+  - wait-serial: '-> NORMAL'
+  - delay: 8000ms
+
+  # Descenso sostenido: 1 cm cada 20 s (−3 cm/min), sin llegar al preventivo.
+  - set-control: { part-id: nivel, control: distance, value: 14 }
+  - delay: 20000ms
+  - set-control: { part-id: nivel, control: distance, value: 15 }
+  - delay: 20000ms
+  - set-control: { part-id: nivel, control: distance, value: 16 }
+  - delay: 20000ms
+  - set-control: { part-id: nivel, control: distance, value: 17 }
+  - delay: 20000ms
+  - set-control: { part-id: nivel, control: distance, value: 18 }
+  - delay: 20000ms
