@@ -10,12 +10,10 @@ La documentación completa (diseño, pruebas y resultados) está en la [Wiki del
 
 | Componente | Estado |
 | :--- | :--- |
-| Firmware, pasos 1 a 5: tareas FreeRTOS, sensores, nivel, tendencia, VPD, ET0, fusión, LCD, buzzer, Wi-Fi, servidor web con control de acceso, histórico y WebSocket | Implementado · Pendiente de verificación (compila sin advertencias) |
-| Firmware, paso 6: watchdog y robustez | No implementado en la entrega |
+| Firmware, pasos 1 a 5: tareas FreeRTOS, sensores, nivel, tendencia, VPD, ET0, fusión, LCD, buzzer, Wi-Fi, servidor web con control de acceso, histórico y WebSocket | Implementado · (compila sin advertencias) |
 | Frontend del tablero (`firmware/data/`) | Implementado · probado con el servidor simulado; pendiente de verificación en el ESP32 |
 | Pruebas unitarias (`pio test -e native`): fusión, formato de la LCD y 5 casos calculados a mano del paso 3 | 16 pruebas superadas |
 | Simulación en Wokwi (ESP32) | Ejecutada el 05/10/2026 (SIMULACIÓN): estados de alerta, tablero servido por el ESP32 simulado y control de acceso; registros en `tests/datos/simulacion/` y capturas en `docs/capturas/wokwi/` |
-| Esquemático, CAD y datos de pruebas | Pendiente |
 
 ## Estructura
 
