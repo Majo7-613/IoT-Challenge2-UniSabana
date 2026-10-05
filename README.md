@@ -28,7 +28,6 @@ La documentación completa (diseño, pruebas y resultados) está en la [Wiki del
 │   └── test/              Pruebas unitarias (entorno native)
 ├── simulation/wokwi/      diagram.json, wokwi.toml, escenarios de wokwi-cli e imagen con LittleFS
 ├── tools/tablero_simulado/ Servidor simulado del tablero (datos simulados) y script de capturas
-├── hardware/              Esquemático (fuente y PNG/PDF) y lista de materiales
 ├── cad/                   Maqueta y carcasa: fuente CAD, STL y renders
 ├── tests/                 Protocolo, datos CSV y scripts de gráficas
 ├── docs/actas/            Actas de reunión y coevaluación
