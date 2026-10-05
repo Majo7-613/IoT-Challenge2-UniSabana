@@ -14,7 +14,7 @@ La documentación completa (diseño, pruebas y resultados) está en la [Wiki del
 | Firmware, paso 6: watchdog y robustez | No implementado en la entrega |
 | Frontend del tablero (`firmware/data/`) | Implementado · probado con el servidor simulado; pendiente de verificación en el ESP32 |
 | Prueba unitaria de la fusión (`pio test -e native`) | 7 pruebas superadas |
-| Simulación en Wokwi (ESP32) | Ejecutada el 05/10/2026 (SIMULACIÓN): registros en `tests/datos/simulacion/`; el DHT22 falla en el simulador con la librería DHTesp |
+| Simulación en Wokwi (ESP32) | Ejecutada el 05/10/2026 (SIMULACIÓN): estados de alerta, tablero servido por el ESP32 simulado y control de acceso; registros en `tests/datos/simulacion/` y capturas en `docs/capturas/wokwi/` |
 | Esquemático, CAD y datos de pruebas | Pendiente |
 
 ## Estructura
