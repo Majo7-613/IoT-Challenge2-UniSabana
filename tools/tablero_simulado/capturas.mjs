@@ -11,10 +11,10 @@
 // Modo Wokwi (SIMULACIÓN): captura el tablero que sirve el ESP32 simulado en
 // la extensión de VS Code, por el reenvío de puertos de wokwi.toml
 // (localhost:8180). No arranca el servidor simulado y responde la
-// autenticación Digest con TABLERO_USUARIO y TABLERO_CLAVE (por defecto, las
-// de secrets.example.h).
+// autenticación Digest con TABLERO_USUARIO y TABLERO_CLAVE, y usa el token de
+// TABLERO_TOKEN (por defecto, los valores de secrets.example.h).
 //      node capturas.mjs --wokwi <nombre> [carpeta de salida]
-//      (por defecto, docs/capturas/wokwi/; archivos wokwi-tablero-<nombre>-*.png)
+//      (por defecto, docs/capturas/wokwi/; archivos simulacion-wokwi-tablero-<nombre>-*.png)
 
 import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
@@ -27,7 +27,7 @@ const MODO_WOKWI = process.argv[2] === '--wokwi';
 const NOMBRE_WOKWI = MODO_WOKWI ? (process.argv[3] || 'tablero') : null;
 const SALIDA = resolve((MODO_WOKWI ? process.argv[4] : process.argv[2]) ||
   join(AQUI, '..', '..', 'docs', 'capturas', MODO_WOKWI ? 'wokwi' : 'tablero'));
-const URL_WOKWI = 'http://localhost:8180/?token=token-dispositivo-1';
+const URL_WOKWI = 'http://localhost:8180/?token=' + encodeURIComponent(process.env.TABLERO_TOKEN || 'token-dispositivo-1');
 const USUARIO = process.env.TABLERO_USUARIO || 'operador';
 const CLAVE = process.env.TABLERO_CLAVE || 'cambiar-esta-clave';
 const EDGE = [
@@ -83,7 +83,24 @@ async function capturar(cdp, vista, archivo, url) {
   await cdp.enviar('Page.navigate', {
     url: url || `http://127.0.0.1:${PUERTO_SIMULADOR}/?token=token-dispositivo-1`,
   });
-  await esperar(MODO_WOKWI ? 3 * ESPERA_MS : ESPERA_MS);  // El ESP32 simulado es más lento.
+  if (MODO_WOKWI) {
+    // El ESP32 simulado sirve los archivos despacio (Chart.js tarda unos 10 s):
+    // se espera a que el tablero tenga datos, histórico y gráficas, hasta 120 s.
+    const listo = "document.querySelectorAll('.tarjeta').length > 0 && " +
+      "document.getElementById('estado-nombre').textContent !== 'INICIANDO' && " +
+      "document.getElementById('historico-nota').textContent.includes('registros')";
+    const inicio = Date.now();
+    for (;;) {
+      const r = await cdp.enviar('Runtime.evaluate', { expression: listo, returnByValue: true });
+      if (r.result && r.result.value === true) break;
+      if (Date.now() - inicio > 120000) { console.log('  aviso: el tablero no terminó de cargar en 120 s'); break; }
+      await esperar(1000);
+    }
+    console.log(`  tablero listo en ${((Date.now() - inicio) / 1000).toFixed(1)} s`);
+    await esperar(2000);
+  } else {
+    await esperar(ESPERA_MS);
+  }
   // Página completa: se amplía la ventana al alto del contenido.
   const { cssContentSize } = await cdp.enviar('Page.getLayoutMetrics');
   const alto = Math.ceil(cssContentSize.height);
@@ -125,7 +142,7 @@ async function main() {
       }));
       await cdp.enviar('Fetch.enable', { handleAuthRequests: true, patterns: [{ urlPattern: '*' }] });
       for (const vista of VISTAS) {
-        await capturar(cdp, vista, join(SALIDA, `wokwi-tablero-${NOMBRE_WOKWI}-${vista.nombre}.png`), URL_WOKWI);
+        await capturar(cdp, vista, join(SALIDA, `simulacion-wokwi-tablero-${NOMBRE_WOKWI}-${vista.nombre}.png`), URL_WOKWI);
       }
       cdp.cerrar();
       return;
