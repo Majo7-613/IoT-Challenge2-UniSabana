@@ -200,6 +200,16 @@ void leerDht() {
         ultimas.temperaturaDhtC = valores.temperature;
         ultimas.humedadPct = valores.humidity;
     }
+
+    // Motivo de la falla, registrado solo cuando cambia, para diagnosticar
+    // sin llenar el registro serie.
+    static DHTesp::DHT_ERROR_t errorAnterior = DHTesp::ERROR_NONE;
+    const DHTesp::DHT_ERROR_t error = dht.getStatus();
+    if (error != errorAnterior) {
+        registrar("sensores", "DHT22: %s (T=%.1f HR=%.1f)", dht.getStatusString(),
+                  static_cast<double>(valores.temperature), static_cast<double>(valores.humidity));
+        errorAnterior = error;
+    }
 }
 
 /** Lee presión y temperatura del BMP180, con el bus I2C protegido. */
