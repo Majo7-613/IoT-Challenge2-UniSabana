@@ -1,0 +1,43 @@
+# SIMULACIÓN — Escenario de Wokwi: FALLA NIVEL por desconexión del ECHO del
+# HC-SR04. Usa diagram-falla-nivel.json, donde el ECHO pasa por un pulsador
+# ("corte"): presionado = conectado; suelto = ECHO desconectado, el eco no
+# llega y cada medición agota su tiempo de espera (25 ms).
+#
+# Ejecutar desde la raíz del repositorio:
+#   wokwi-cli simulation/wokwi --diagram-file diagram-falla-nivel.json \
+#     --scenario simulation/wokwi/escenarios/falla-nivel.yaml \
+#     --timeout 120000 --serial-log-file tests/datos/simulacion/falla-nivel.log
+name: 'SIMULACIÓN: FALLA NIVEL por desconexión del ECHO'
+version: 1
+author: 'Equipo 7'
+
+steps:
+  # ECHO conectado desde el inicio.
+  - set-control:
+      part-id: corte
+      control: pressed
+      value: 1
+  - wait-serial: '-> NORMAL'
+  - delay: 3000ms
+
+  # Desconexión del ECHO.
+  - set-control:
+      part-id: corte
+      control: pressed
+      value: 0
+  - wait-serial: '-> FALLA NIVEL'
+  - delay: 3000ms
+  - take-screenshot:
+      part-id: lcd
+      save-to: ../../../docs/capturas/wokwi/06-falla-nivel-lcd.png
+
+  # Reconexión: el nivel vuelve a evaluarse.
+  - set-control:
+      part-id: corte
+      control: pressed
+      value: 1
+  - wait-serial: '-> NORMAL'
+  - delay: 3000ms
+  - take-screenshot:
+      part-id: lcd
+      save-to: ../../../docs/capturas/wokwi/07-recuperacion-lcd.png

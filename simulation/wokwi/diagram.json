@@ -4,7 +4,7 @@
   "editor": "wokwi",
   "parts": [
     { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} },
-    { "type": "wokwi-hc-sr04", "id": "nivel", "top": -160, "left": -180, "attrs": { "distance": "100" } },
+    { "type": "wokwi-hc-sr04", "id": "nivel", "top": -160, "left": -180, "attrs": { "distance": "13" } },
     { "type": "wokwi-dht22", "id": "dht", "top": -150, "left": 160, "attrs": { "temperature": "18", "humidity": "70" } },
     { "type": "board-bmp180", "id": "bmp", "top": 140, "left": 220, "attrs": { "temperature": "18", "pressure": "75000" } },
     { "type": "wokwi-potentiometer", "id": "guva", "top": 190, "left": -190, "attrs": { "value": "100" } },

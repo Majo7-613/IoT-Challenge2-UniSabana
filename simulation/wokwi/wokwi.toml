@@ -1,7 +1,14 @@
 # Simulación en Wokwi del firmware (entorno "wokwi" de PlatformIO).
-# Compilar antes con:  pio run -d firmware -e wokwi
+# Preparar antes la imagen (aplicación + LittleFS con el tablero):
+#   python simulation/wokwi/preparar_imagen.py
 # y abrir diagram.json con la extensión de Wokwi para VS Code.
 [wokwi]
 version = 1
-firmware = "../../firmware/.pio/build/wokwi/firmware.bin"
+firmware = "../../firmware/.pio/build/wokwi/flash-completa.bin"
 elf = "../../firmware/.pio/build/wokwi/firmware.elf"
+
+# Reenvío de puertos (solo extensión de VS Code): el tablero del ESP32
+# simulado queda en http://localhost:8180/?token=... desde el computador.
+[[net.forward]]
+from = "localhost:8180"
+to = "target:80"

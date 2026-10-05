@@ -1,0 +1,81 @@
+# SIMULACIÓN — Escenario de Wokwi: arranque y estados NORMAL, ADVERTENCIA,
+# ALERTA y CRÍTICO con los parámetros de demostración de config.h
+# (montaje 35 cm, altura útil 30 cm; nivel = 35 − distancia).
+#
+# Ejecutar desde la raíz del repositorio:
+#   wokwi-cli simulation/wokwi --scenario simulation/wokwi/escenarios/estados.yaml \
+#     --timeout 480000 --serial-log-file tests/datos/simulacion/estados.log
+name: 'SIMULACIÓN: arranque y estados de alerta'
+version: 1
+author: 'Equipo 7'
+
+steps:
+  # Arranque: distancia 13 cm → nivel 22 cm (73 %), T 18 °C, HR 70 %.
+  - wait-serial: 'paso 5'
+  - delay: 1500ms
+  - take-screenshot:
+      part-id: lcd
+      save-to: ../../../docs/capturas/wokwi/01-arranque-lcd.png
+
+  # NORMAL (la transición INICIANDO -> NORMAL ocurre en los primeros ciclos).
+  - delay: 8000ms
+  - take-screenshot:
+      part-id: lcd
+      save-to: ../../../docs/capturas/wokwi/02-normal-lcd.png
+
+  # ADVERTENCIA: distancia 24 cm → nivel 11 cm (37 %, umbral preventivo 40 %).
+  - set-control:
+      part-id: nivel
+      control: distance
+      value: 24
+  - wait-serial: '-> ADVERTENCIA'
+  - delay: 3000ms
+  - take-screenshot:
+      part-id: lcd
+      save-to: ../../../docs/capturas/wokwi/03-advertencia-lcd.png
+
+  # Regreso a NORMAL (sale del preventivo por encima de 45 %) y espera a que
+  # la ventana de la tendencia (60 s) ya no contenga el cambio brusco.
+  - set-control:
+      part-id: nivel
+      control: distance
+      value: 13
+  - delay: 70000ms
+
+  # ALERTA: temperatura 31 °C (≥ 30 °C) y descenso sostenido del nivel de
+  # 1 cm cada 20 s (−3 cm/min), sin llegar al umbral preventivo.
+  - set-control:
+      part-id: dht
+      control: temperature
+      value: 31
+  - set-control: { part-id: nivel, control: distance, value: 14 }
+  - delay: 20000ms
+  - set-control: { part-id: nivel, control: distance, value: 15 }
+  - delay: 20000ms
+  - set-control: { part-id: nivel, control: distance, value: 16 }
+  - delay: 20000ms
+  - set-control: { part-id: nivel, control: distance, value: 17 }
+  - delay: 20000ms
+  - set-control: { part-id: nivel, control: distance, value: 18 }
+  - delay: 20000ms
+  - set-control: { part-id: nivel, control: distance, value: 19 }
+  - delay: 20000ms
+  - set-control: { part-id: nivel, control: distance, value: 20 }
+  - delay: 20000ms
+  - set-control: { part-id: nivel, control: distance, value: 21 }
+  - delay: 2000ms
+  - take-screenshot:
+      part-id: lcd
+      save-to: ../../../docs/capturas/wokwi/04-alerta-lcd.png
+
+  # CRÍTICO: distancia 30 cm → nivel 5 cm (17 %, umbral crítico 20 %).
+  - set-control:
+      part-id: nivel
+      control: distance
+      value: 30
+  - wait-serial: '-> CRITICO'
+  - delay: 3000ms
+  - take-screenshot:
+      part-id: lcd
+      save-to: ../../../docs/capturas/wokwi/05-critico-lcd.png
+  - delay: 5000ms
