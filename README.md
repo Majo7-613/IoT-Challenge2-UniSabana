@@ -11,7 +11,7 @@ La documentación completa (diseño, pruebas y resultados) está en la [Wiki del
 | Componente | Estado |
 | :--- | :--- |
 | Firmware, pasos 1 a 5: tareas FreeRTOS, sensores, nivel, tendencia, VPD, ET0, fusión, LCD, buzzer, Wi-Fi, servidor web con control de acceso, histórico y WebSocket | Implementado · Pendiente de verificación (compila sin advertencias) |
-| Firmware, paso 6: robustez | Pendiente |
+| Firmware, paso 6: watchdog y robustez | No implementado en la entrega |
 | Frontend del tablero (`firmware/data/`) | Implementado · probado con el servidor simulado; pendiente de verificación en el ESP32 |
 | Prueba unitaria de la fusión (`pio test -e native`) | 7 pruebas superadas |
 | Simulación en Wokwi (ESP32) | Proyecto y escenarios listos; aún sin ejecutar |
