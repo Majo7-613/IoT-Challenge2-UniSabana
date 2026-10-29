@@ -1,6 +1,6 @@
 # Diseño de la comunicación MQTT — Challenge #3
 
-Propuesta del 29/10/2026. Define los tópicos, los mensajes y las frecuencias de publicación entre el nodo (ESP32), el gateway
+Diseño aprobado el 29/10/2026. Define los tópicos, los mensajes y las frecuencias de publicación entre el nodo (ESP32), el gateway
 (Raspberry Pi 5 con Mosquitto) y la plataforma en la nube (Ubidots). Parte del diseño de tópicos de la
 [Actividad de refuerzo 2.3](../../refuerzo-2.3/PAGINA_WIKI_REFUERZO.md).
 
@@ -147,9 +147,9 @@ Queda un margen de unos 780 datos por día (≈ 20 %). Con envíos cada 10 min e
 - Notificaciones: correo electrónico (100 por mes); los SMS gratuitos no llegan a Colombia.
 - La retención de 1 mes en la nube no afecta el histórico completo, que queda en SQLite en el gateway.
 
-## 7. Decisiones que requieren aprobación
+## 7. Decisiones aprobadas (29/10/2026)
 
-1. Tópicos y mensajes de las secciones 2 y 3, incluido el tópico nuevo `cmd/respuesta`.
-2. Telemetría cada 5 s hacia el gateway y promedios cada 5 min hacia Ubidots (o cada 10 min, para más margen).
+1. Tópicos y mensajes de las secciones 2 y 3, incluido el tópico `cmd/respuesta`.
+2. Telemetría cada 5 s hacia el gateway y promedios cada 5 min hacia Ubidots. Se elige 5 min sobre 10 min porque conserva más detalle en el tablero global y deja un margen de ≈ 20 % del límite diario; si las pruebas muestran que el margen no alcanza, el periodo pasa a 10 min sin cambiar el firmware.
 3. Acceso al tablero global solo con inicio de sesión en la cuenta del equipo, sin enlaces públicos.
 4. Notificaciones por correo electrónico.
