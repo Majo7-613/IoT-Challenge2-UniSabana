@@ -1,8 +1,10 @@
-# Monitoreo IoT de Recursos Hídricos en Sabana Centro — Challenge #2
+# Monitoreo IoT de Recursos Hídricos en Sabana Centro — Challenge #3
 
-Repositorio de código del **Equipo 7** para el Challenge #2 del curso Internet de las Cosas (2026-2), Universidad de La Sabana.
+Repositorio de código del **Equipo 7** para el Challenge #3 del curso Internet de las Cosas (2026-2), Universidad de La Sabana.
 
-Nodo de bajo costo basado en un **ESP32-DevKitC V4 (ESP32-WROOM-32E)** que está diseñado para medir el nivel de agua (HC-SR04), la temperatura y la humedad relativa (DHT22), la presión atmosférica (BMP180) y la radiación ultravioleta (GUVA-S12SD) en un punto de almacenamiento de agua, clasificar el riesgo en cuatro estados de alerta y notificarlo en el sitio (LCD 20×4 y buzzer) y en un tablero de control web alojado en el propio ESP32 dentro de la WLAN local, sin MQTT.
+Nodo de bajo costo basado en un **ESP32-DevKitC V4 (ESP32-WROOM-32E)** que está diseñado para medir el nivel de agua (HC-SR04), la temperatura y la humedad relativa (DHT22), la presión atmosférica (BMP180) y la radiación ultravioleta (GUVA-S12SD) en un punto de almacenamiento de agua, clasificar el riesgo en cuatro estados de alerta y notificarlo en el sitio (LCD 20×4 y buzzer) y en un tablero de control web alojado en el propio ESP32 dentro de la WLAN local.
+
+El Challenge #3 extiende ese nodo con comunicación MQTT hacia un gateway en una Raspberry Pi 5 (Mosquitto y SQLite), un tablero global en Ubidots y un módulo de inteligencia artificial.
 
 La documentación completa (diseño, pruebas y resultados) está en la [Wiki del proyecto](https://github.com/Majo7-613/IoT-Challenge2-UniSabana/wiki).
 
@@ -13,6 +15,7 @@ La documentación completa (diseño, pruebas y resultados) está en la [Wiki del
 | Firmware, pasos 1 a 5: tareas FreeRTOS, sensores, nivel, tendencia, VPD, ET0, fusión, LCD, buzzer, Wi-Fi, servidor web con control de acceso, histórico y WebSocket | Implementado · (compila sin advertencias) |
 | Frontend del tablero (`firmware/data/`) | Implementado · probado con el servidor simulado; pendiente de verificación en el ESP32 |
 | Pruebas unitarias (`pio test -e native`): fusión, formato de la LCD y 5 casos calculados a mano del paso 3 | 16 pruebas superadas |
+| Comunicación MQTT, gateway en la Raspberry Pi, tablero en Ubidots y módulo de IA (Challenge #3) | En desarrollo |
 | Simulación en Wokwi (ESP32) | Ejecutada el 05/10/2026 (SIMULACIÓN): estados de alerta, tablero servido por el ESP32 simulado y control de acceso; registros en `tests/datos/simulacion/` y capturas en `docs/capturas/wokwi/` |
 
 ## Estructura
@@ -28,7 +31,6 @@ La documentación completa (diseño, pruebas y resultados) está en la [Wiki del
 ├── tools/tablero_simulado/ Servidor simulado del tablero (datos simulados) y script de capturas
 ├── cad/                   Maqueta y carcasa: fuente CAD, STL y renders
 ├── tests/                 Protocolo, datos CSV y scripts de gráficas
-├── docs/actas/            Actas de reunión y coevaluación
 ├── docs/capturas/         Capturas del tablero y de la simulación
 ├── refuerzo-2.3/          Actividad de refuerzo 2.3 (Packet Tracer)
 └── legacy-ch1/            Código y simulación del Challenge #1 (Arduino Uno), solo como referencia

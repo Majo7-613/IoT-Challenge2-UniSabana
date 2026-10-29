@@ -1,6 +1,6 @@
 /**
  * @file main.cpp
- * @brief Punto de entrada del firmware — IoT Challenge #2, Equipo 7.
+ * @brief Punto de entrada del firmware — IoT Challenge #3, Equipo 7.
  *
  * Nodo de monitoreo del nivel de agua y de variables meteorológicas para un
  * punto de almacenamiento en Sabana Centro (ESP32-DevKitC V4).
@@ -24,7 +24,7 @@ void setup() {
     Serial.begin(SERIAL_BAUDIOS);
     registroIniciar();
 
-    registrar("main", "Firmware IoT Challenge #2 — paso 5 (red y tablero web)%s",
+    registrar("main", "Firmware IoT Challenge #3 — paso 5 (red y tablero web)%s",
 #ifdef SIMULACION
               " [SIMULACIÓN]"
 #else
