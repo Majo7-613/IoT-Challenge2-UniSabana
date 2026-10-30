@@ -173,6 +173,23 @@ constexpr const char* NTP_SERVIDOR_2 = "time.google.com";
 constexpr int HORA_VALIDA_DESDE_ANIO = 2026;
 
 // ============================================================================
+// MQTT con el gateway (Challenge #3; docs/diseno/comunicacion-mqtt.md)
+// ============================================================================
+
+/** Tópicos: {MQTT_RAIZ}/{MQTT_MUNICIPIO}/{MQTT_NODO}/{tipo}. */
+constexpr const char* MQTT_RAIZ      = "sabana";
+constexpr const char* MQTT_MUNICIPIO = "chia";
+constexpr const char* MQTT_NODO      = "chia-01";
+
+/** Intervalo de keepalive: el broker publica la última voluntad tras 1.5 veces este tiempo sin noticias del nodo. */
+constexpr int MQTT_KEEPALIVE_S = 30;
+
+/** Estado del nodo (retenido): "online" al conectarse; "offline" como última voluntad. */
+constexpr const char* MQTT_ESTADO_EN_LINEA       = "online";
+constexpr const char* MQTT_ESTADO_FUERA_DE_LINEA = "offline";
+constexpr int         MQTT_QOS_ESTADO            = 1;
+
+// ============================================================================
 // Servidor web del tablero
 // ============================================================================
 

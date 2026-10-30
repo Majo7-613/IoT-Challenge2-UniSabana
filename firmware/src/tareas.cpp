@@ -30,6 +30,7 @@
 #include "fusion.h"
 #include "historico.h"
 #include "hmi.h"
+#include "mqtt.h"
 #include "nivel.h"
 #include "red.h"
 #include "registro.h"
@@ -371,9 +372,9 @@ void tareaRed(void*) {
  *
  * Challenge #3. Separada de la medición y de tRed: si el broker no responde,
  * la adquisición, la fusión, la alarma in situ y el tablero local siguen
- * funcionando. Por ahora solo marca su ritmo; la conexión al broker, la
- * publicación de la telemetría y las alertas, y la recepción de órdenes se
- * agregan sobre este ciclo (docs/diseno/comunicacion-mqtt.md).
+ * funcionando. Atiende la conexión con el broker; la publicación de la
+ * telemetría y las alertas, y la recepción de órdenes se agregan sobre este
+ * ciclo (docs/diseno/comunicacion-mqtt.md).
  */
 void tareaMqtt(void*) {
     TickType_t ultimoDespertar = xTaskGetTickCount();
@@ -384,8 +385,10 @@ void tareaMqtt(void*) {
     for (;;) {
         vTaskDelayUntil(&ultimoDespertar, periodo);
         tick++;
+        mqttCiclo(redConectada());
         if (tick % ticksPorRegistro == 0) {
-            registrar("tMqtt", "activa; pila libre mínima: %" PRIu32 " B",
+            registrar("tMqtt", "%s; pila libre mínima: %" PRIu32 " B",
+                      mqttConectado() ? "conectada al broker" : "sin conexión al broker",
                       static_cast<uint32_t>(uxTaskGetStackHighWaterMark(nullptr)));
         }
     }
