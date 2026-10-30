@@ -153,3 +153,15 @@ Queda un margen de unos 780 datos por día (≈ 20 %). Con envíos cada 10 min e
 2. Telemetría cada 5 s hacia el gateway y promedios cada 5 min hacia Ubidots. Se elige 5 min sobre 10 min porque conserva más detalle en el tablero global y deja un margen de ≈ 20 % del límite diario; si las pruebas muestran que el margen no alcanza, el periodo pasa a 10 min sin cambiar el firmware.
 3. Acceso al tablero global solo con inicio de sesión en la cuenta del equipo, sin enlaces públicos.
 4. Notificaciones por correo electrónico.
+
+## 8. Cliente MQTT del firmware
+
+| Opción | Ventajas | Desventajas |
+| :--- | :--- | :--- |
+| Cliente MQTT de ESP-IDF (`mqtt_client.h`), incluido en el núcleo Arduino ESP32 2.0.17 | Sin librería adicional; mantenido por Espressif; corre en su propia tarea; QoS 0, 1 y 2; última voluntad; reconexión automática; admite TLS | API de C basada en eventos |
+| PubSubClient | Muy difundido y simple | Publica solo con QoS 0 (la alerta y la respuesta requieren QoS 1); llamadas bloqueantes |
+| espMqttClient | QoS 0 a 2, versión asíncrona | Dependencia externa adicional junto al servidor web asíncrono |
+
+Se elige el cliente de ESP-IDF: cumple QoS 1 y la última voluntad sin agregar dependencias. La tarea `tMqtt` (núcleo 0,
+prioridad 1, como `tRed`) prepara los mensajes y el cliente de ESP-IDF los transmite en su propia tarea, así que un broker
+caído no bloquea la medición ni el tablero local.
