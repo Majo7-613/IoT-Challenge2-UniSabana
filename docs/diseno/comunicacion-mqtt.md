@@ -71,6 +71,7 @@ Los nombres de los campos son cortos y planos para reducir el tamaño del mensaj
 | `vpd_kpa`, `et0_mm_dia` | `Derivados` | kPa, mm/día |
 | `sensores` | Estado de cada sensor: `OK`, `VIEJO`, `FALLA` o `INICIANDO` | — |
 | `rssi` | Intensidad de la señal Wi-Fi | dBm |
+| `origen` | Solo en mensajes del publicador de prueba (`gateway/herramientas/publicador_prueba.py`): `"simulado"`. El firmware no lo envía | — |
 
 Tamaño estimado: unos 330 B de carga útil.
 

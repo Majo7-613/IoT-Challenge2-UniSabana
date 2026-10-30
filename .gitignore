@@ -9,3 +9,9 @@ secrets.h
 *.bak
 *.tmp
 ~$*
+
+# Gateway (Python): entorno virtual, credenciales y base de datos local
+gateway/.venv/
+.env
+*.db
+__pycache__/
