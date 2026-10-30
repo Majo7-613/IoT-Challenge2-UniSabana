@@ -11,6 +11,8 @@
  *  - tHistorico: cada 5 s y cada 5 min guarda registros en los búferes.
  *  - tRed:       cada 1 s difunde el estado por WebSocket; cada 5 s supervisa
  *                el Wi-Fi (reconexión, servidor web y hora por NTP).
+ *  - tMqtt:      cada 1 s atiende la comunicación MQTT con el gateway
+ *                (Challenge #3).
  *
  * Paso 5: tSensores lee los sensores; tFusion calcula el nivel, la tendencia,
  * el VPD, la ET0 y el estado de alerta; tHMI maneja la LCD y el buzzer;

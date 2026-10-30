@@ -47,6 +47,7 @@ TaskHandle_t hFusion    = nullptr;
 TaskHandle_t hHmi       = nullptr;
 TaskHandle_t hHistorico = nullptr;
 TaskHandle_t hRed       = nullptr;
+TaskHandle_t hMqtt      = nullptr;
 
 QueueHandle_t     qSnapshot = nullptr;  ///< tSensores → tFusion (longitud 1).
 SemaphoreHandle_t mtxDatos  = nullptr;  ///< Protege estadoPublicado.
@@ -366,6 +367,31 @@ void tareaRed(void*) {
 }
 
 /**
+ * @brief Tarea de comunicación MQTT con el gateway, cada MQTT_TICK_MS (1 s).
+ *
+ * Challenge #3. Separada de la medición y de tRed: si el broker no responde,
+ * la adquisición, la fusión, la alarma in situ y el tablero local siguen
+ * funcionando. Por ahora solo marca su ritmo; la conexión al broker, la
+ * publicación de la telemetría y las alertas, y la recepción de órdenes se
+ * agregan sobre este ciclo (docs/diseno/comunicacion-mqtt.md).
+ */
+void tareaMqtt(void*) {
+    TickType_t ultimoDespertar = xTaskGetTickCount();
+    const TickType_t periodo = pdMS_TO_TICKS(MQTT_TICK_MS);
+    const uint32_t ticksPorRegistro = 60000 / MQTT_TICK_MS;
+    uint32_t tick = 0;
+
+    for (;;) {
+        vTaskDelayUntil(&ultimoDespertar, periodo);
+        tick++;
+        if (tick % ticksPorRegistro == 0) {
+            registrar("tMqtt", "activa; pila libre mínima: %" PRIu32 " B",
+                      static_cast<uint32_t>(uxTaskGetStackHighWaterMark(nullptr)));
+        }
+    }
+}
+
+/**
  * @brief Crea una tarea fijada a un núcleo y registra el resultado.
  */
 bool crearTarea(TaskFunction_t funcion, const char* nombre, uint32_t pila,
@@ -472,6 +498,8 @@ bool tareasIniciar() {
                      PRIORIDAD_HISTORICO, &hHistorico, NUCLEO_RED);
     ok &= crearTarea(tareaRed, "tRed", PILA_RED,
                      PRIORIDAD_RED, &hRed, NUCLEO_RED);
+    ok &= crearTarea(tareaMqtt, "tMqtt", PILA_MQTT,
+                     PRIORIDAD_MQTT, &hMqtt, NUCLEO_RED);
     if (!ok) {
         return false;
     }

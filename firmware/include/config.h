@@ -143,16 +143,19 @@ constexpr UBaseType_t PRIORIDAD_FUSION    = 3;
 constexpr UBaseType_t PRIORIDAD_HMI       = 2;
 constexpr UBaseType_t PRIORIDAD_HISTORICO = 1;
 constexpr UBaseType_t PRIORIDAD_RED       = 1;
+constexpr UBaseType_t PRIORIDAD_MQTT      = 1;  ///< Igual que tRed: la red nunca adelanta a la medición.
 
 constexpr uint32_t PILA_SENSORES  = 6144;  ///< Mayor: sensores y formato de la línea de lecturas.
 constexpr uint32_t PILA_FUSION    = 4096;
 constexpr uint32_t PILA_HMI       = 4096;
 constexpr uint32_t PILA_HISTORICO = 4096;
 constexpr uint32_t PILA_RED       = 4096;
+constexpr uint32_t PILA_MQTT      = 4096;  ///< Formato de los mensajes JSON (el cliente MQTT de ESP-IDF tiene su propia tarea).
 
 constexpr uint32_t HMI_PERIODO_MS = 250;   ///< Ciclo de la interfaz local (LCD, retroiluminación y patrón del buzzer).
 constexpr uint32_t RED_TICK_MS    = 1000;  ///< Ciclo de tRed: difusión por WebSocket.
 constexpr uint32_t RED_PERIODO_MS = 5000;  ///< Supervisión del Wi-Fi (múltiplo de RED_TICK_MS).
+constexpr uint32_t MQTT_TICK_MS   = 1000;  ///< Ciclo de tMqtt: conexión al broker y publicación (Challenge #3).
 
 // ============================================================================
 // Red (Wi-Fi en modo estación) y hora
