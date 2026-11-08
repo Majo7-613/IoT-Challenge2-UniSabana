@@ -23,6 +23,7 @@
 #include "config.h"
 #include "credenciales.h"
 #include "historico.h"
+#include "mqtt.h"
 #include "red.h"
 #include "registro.h"
 #include "tareas.h"
@@ -162,8 +163,9 @@ bool jsonActual(const EstadoPublicado& e, char* bufer, size_t tamano) {
     j.numero("vpd_kpa", d.vpdValido ? d.vpdKpa : NAN, 2);
     j.agregar(",");
     j.numero("et0_mm_dia", d.et0Disponible ? d.et0MmDia : NAN, 1);
-    j.agregar(",\"et0\":\"%s\",\"wifi_rssi\":%d}",
-              d.et0Disponible ? "disponible" : "no disponible", static_cast<int>(WiFi.RSSI()));
+    j.agregar(",\"et0\":\"%s\",\"wifi_rssi\":%d,\"mqtt\":\"%s\"}",
+              d.et0Disponible ? "disponible" : "no disponible", static_cast<int>(WiFi.RSSI()),
+              mqttConectado() ? "conectado" : "sin conexión");
     return !j.desbordado();
 }
 

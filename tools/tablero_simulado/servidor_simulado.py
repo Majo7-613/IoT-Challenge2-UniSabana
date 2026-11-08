@@ -174,6 +174,7 @@ class Simulador:
                 "et0_mm_dia": 3.8 if self.con_hora else None,
                 "et0": "disponible" if self.con_hora else "no disponible",
                 "wifi_rssi": -58,
+                "mqtt": "conectado",
             }
 
     def historico(self, bufer):

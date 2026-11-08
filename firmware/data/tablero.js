@@ -278,6 +278,8 @@
     actualizarEstado(j);
     actualizarTarjetas(j);
     $('wifi').textContent = 'Wi-Fi: ' + (j.wifi_rssi === null || j.wifi_rssi === undefined ? '—' : j.wifi_rssi + ' dBm');
+    // Conexión MQTT del nodo con el broker del gateway (Challenge #3).
+    $('mqtt').textContent = 'Gateway: ' + (j.mqtt === undefined ? '—' : j.mqtt);
     $('pie-ciclo').textContent = 'Ciclo ' + j.ciclo;
     $('pie-arranque').textContent = 'Equipo encendido hace ' + duracion(j.t_s);
     $('pie-hora').textContent = j.epoca === null
