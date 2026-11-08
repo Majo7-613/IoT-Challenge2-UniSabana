@@ -372,9 +372,9 @@ void tareaRed(void*) {
  *
  * Challenge #3. Separada de la medición y de tRed: si el broker no responde,
  * la adquisición, la fusión, la alarma in situ y el tablero local siguen
- * funcionando. Atiende la conexión con el broker; la publicación de la
- * telemetría y las alertas, y la recepción de órdenes se agregan sobre este
- * ciclo (docs/diseno/comunicacion-mqtt.md).
+ * funcionando. Atiende la conexión con el broker y publica la telemetría y
+ * las alertas a partir del último estado publicado por tFusion; la recepción
+ * de órdenes se agrega sobre este ciclo (docs/diseno/comunicacion-mqtt.md).
  */
 void tareaMqtt(void*) {
     TickType_t ultimoDespertar = xTaskGetTickCount();
@@ -385,7 +385,9 @@ void tareaMqtt(void*) {
     for (;;) {
         vTaskDelayUntil(&ultimoDespertar, periodo);
         tick++;
-        mqttCiclo(redConectada());
+        EstadoPublicado copia;
+        const bool hayEstado = leerEstadoPublicado(copia);
+        mqttCiclo(redConectada(), hayEstado ? &copia : nullptr);
         if (tick % ticksPorRegistro == 0) {
             registrar("tMqtt", "%s; pila libre mínima: %" PRIu32 " B",
                       mqttConectado() ? "conectada al broker" : "sin conexión al broker",

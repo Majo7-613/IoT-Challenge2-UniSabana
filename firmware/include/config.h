@@ -189,6 +189,14 @@ constexpr const char* MQTT_ESTADO_EN_LINEA       = "online";
 constexpr const char* MQTT_ESTADO_FUERA_DE_LINEA = "offline";
 constexpr int         MQTT_QOS_ESTADO            = 1;
 
+/** Telemetría hacia el gateway (QoS 0) y alerta en cada cambio de estado (QoS 1). */
+constexpr uint32_t MQTT_TELEMETRIA_PERIODO_MS = 5000;
+constexpr int      MQTT_QOS_TELEMETRIA        = 0;
+constexpr int      MQTT_QOS_ALERTA            = 1;
+
+/** Búfer de un mensaje JSON (la telemetría ocupa unos 330 B). */
+constexpr size_t   MQTT_TAM_MENSAJE           = 512;
+
 // ============================================================================
 // Servidor web del tablero
 // ============================================================================

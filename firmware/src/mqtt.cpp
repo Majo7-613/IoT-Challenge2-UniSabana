@@ -1,17 +1,21 @@
 /**
  * @file mqtt.cpp
- * @brief Comunicación MQTT con el gateway: conexión, última voluntad y estado
- *        del nodo (Challenge #3).
+ * @brief Comunicación MQTT con el gateway: conexión, última voluntad, estado
+ *        del nodo, telemetría y alertas (Challenge #3).
  */
 #include "mqtt.h"
 
 #include <Arduino.h>
+#include <WiFi.h>
 #include <atomic>
+#include <cmath>
 #include <cstdio>
 #include <mqtt_client.h>
 
 #include "config.h"
 #include "credenciales.h"
+#include "mensajes_mqtt.h"
+#include "red.h"
 #include "registro.h"
 
 namespace {
@@ -22,6 +26,15 @@ std::atomic<uint32_t> conexiones{0};
 std::atomic<uint32_t> desconectadoDesdeMs{0};  ///< 0 si nunca se ha desconectado.
 
 char topicoEstado[64];
+char topicoTelemetria[64];
+char topicoAlerta[64];
+
+// Solo los usa tMqtt (mqttCiclo).
+uint32_t     contadorMensajes = 0;  ///< Campo "id" de cada mensaje.
+uint32_t     ultimaTelemetriaMs = 0;
+bool         hayEstadoPrevio = false;
+EstadoAlerta estadoPrevio = EstadoAlerta::INICIANDO;
+uint32_t     fallosEncolado = 0;
 
 /** Arma "sabana/{municipio}/{nodo}/{tipo}". */
 void armarTopico(char* destino, size_t tamano, const char* tipo) {
@@ -74,6 +87,8 @@ void alEvento(void*, esp_event_base_t, int32_t idEvento, void* datos) {
 /** Crea el cliente con la última voluntad y lo inicia. @return true si arrancó. */
 bool iniciarCliente() {
     armarTopico(topicoEstado, sizeof(topicoEstado), "estado");
+    armarTopico(topicoTelemetria, sizeof(topicoTelemetria), "telemetria");
+    armarTopico(topicoAlerta, sizeof(topicoAlerta), "alerta");
 
     esp_mqtt_client_config_t cfg = {};
     cfg.uri         = MQTT_URI_BROKER;
@@ -103,12 +118,106 @@ bool iniciarCliente() {
     return true;
 }
 
+/** Estado de un sensor para el mensaje: INICIANDO mientras no haya primera lectura válida. */
+const char* textoSensor(EstadoSensor estado, bool iniciado) {
+    return iniciado ? textoEstado(estado) : "INICIANDO";
+}
+
+/** Encola un mensaje; registra los fallos (bandeja de salida llena o sin memoria). */
+void encolar(const char* topico, const char* datos, size_t longitud, int qos) {
+    if (esp_mqtt_client_enqueue(cliente, topico, datos, static_cast<int>(longitud), qos, 0, true) < 0) {
+        fallosEncolado++;
+        registrar("mqtt", "ERROR: no se pudo encolar en %s (fallos acumulados: %" PRIu32 ")",
+                  topico, fallosEncolado);
+    }
+}
+
+/** Publica la telemetría del estado actual (QoS 0). */
+void publicarTelemetria(const EstadoPublicado& e) {
+    const Lecturas&  l = e.instantanea.lecturas;
+    const Derivados& d = e.derivados;
+    mensajes_mqtt::Telemetria t{};
+    t.id                = ++contadorMensajes;
+    t.ciclo             = e.instantanea.ciclo;
+    t.epocaValida       = redHoraEpoca(t.epoca);
+    t.estado            = d.estado;
+    t.causas            = d.causas;
+    t.alarmaDesactivada = d.alarmaDesactivada;
+    t.nivelCm           = d.nivelValido ? d.nivelCm : NAN;
+    t.nivelPct          = d.nivelValido ? d.nivelPct : NAN;
+    t.tendCmMin         = d.pendienteValida ? d.pendienteCmMin : NAN;
+    t.tC                = l.temperaturaDhtC;
+    t.hrPct             = l.humedadPct;
+    t.pHpa              = l.presionHpa;
+    t.uvIdx             = l.uvIndice;
+    t.vpdKpa            = d.vpdValido ? d.vpdKpa : NAN;
+    t.et0MmDia          = d.et0Disponible ? d.et0MmDia : NAN;
+    t.sensorNivel       = textoSensor(l.estadoNivel, l.iniciadoNivel);
+    t.sensorDht         = textoSensor(l.estadoDht, l.iniciadoDht);
+    t.sensorBmp         = textoSensor(l.estadoBmp, l.iniciadoBmp);
+    t.sensorUv          = textoSensor(l.estadoUv, l.iniciadoUv);
+    t.rssi              = WiFi.RSSI();
+
+    char json[MQTT_TAM_MENSAJE];
+    const size_t n = mensajes_mqtt::telemetria(t, json, sizeof(json));
+    if (n == 0) {
+        registrar("mqtt", "ERROR: la telemetría no cupo en %u B", static_cast<unsigned>(sizeof(json)));
+        return;
+    }
+    encolar(topicoTelemetria, json, n, MQTT_QOS_TELEMETRIA);
+}
+
+/** Publica una alerta por cambio de estado (QoS 1). */
+void publicarAlerta(const EstadoPublicado& e, EstadoAlerta anterior) {
+    const Derivados& d = e.derivados;
+    mensajes_mqtt::Alerta a{};
+    a.id          = ++contadorMensajes;
+    a.ciclo       = e.instantanea.ciclo;
+    a.epocaValida = redHoraEpoca(a.epoca);
+    a.anterior    = anterior;
+    a.estado      = d.estado;
+    a.causas      = d.causas;
+    a.nivelPct    = d.nivelValido ? d.nivelPct : NAN;
+    a.tendCmMin   = d.pendienteValida ? d.pendienteCmMin : NAN;
+
+    char json[MQTT_TAM_MENSAJE];
+    const size_t n = mensajes_mqtt::alerta(a, json, sizeof(json));
+    if (n == 0) {
+        registrar("mqtt", "ERROR: la alerta no cupo en %u B", static_cast<unsigned>(sizeof(json)));
+        return;
+    }
+    encolar(topicoAlerta, json, n, MQTT_QOS_ALERTA);
+    registrar("mqtt", "alerta %s -> %s encolada (id %" PRIu32 "%s)", textoAlerta(anterior),
+              textoAlerta(d.estado), a.id, conectado.load() ? "" : ", se envía al reconectar");
+}
+
 }  // namespace
 
-void mqttCiclo(bool wifiConectado) {
+void mqttCiclo(bool wifiConectado, const EstadoPublicado* estado) {
     // El cliente se crea con la primera conexión Wi-Fi; desde ahí reconecta solo.
-    if (cliente == nullptr && wifiConectado) {
-        iniciarCliente();
+    if (cliente == nullptr) {
+        if (!wifiConectado || !iniciarCliente()) {
+            return;
+        }
+    }
+    if (estado == nullptr) {
+        return;
+    }
+
+    // Alerta en cada cambio de estado, aunque el broker no esté disponible: el
+    // cliente la guarda en su bandeja de salida (QoS 1) y la envía al reconectar.
+    const EstadoAlerta actual = estado->derivados.estado;
+    if (hayEstadoPrevio && actual != estadoPrevio) {
+        publicarAlerta(*estado, estadoPrevio);
+    }
+    estadoPrevio = actual;
+    hayEstadoPrevio = true;
+
+    // Telemetría solo con la sesión abierta: con QoS 0 no tiene sentido acumularla.
+    const uint32_t ahora = millis();
+    if (conectado.load() && ahora - ultimaTelemetriaMs >= MQTT_TELEMETRIA_PERIODO_MS) {
+        ultimaTelemetriaMs = ahora;
+        publicarTelemetria(*estado);
     }
 }
 
