@@ -4,9 +4,11 @@
  */
 #include "mensajes_mqtt.h"
 
+#include <cctype>
 #include <cmath>
 #include <cstdarg>
 #include <cstdio>
+#include <cstring>
 
 namespace mensajes_mqtt {
 
@@ -83,7 +85,64 @@ private:
     bool   desbordado_ = false;
 };
 
+/** true si el carácter puede formar parte de un identificador de orden. */
+bool caracterDeId(char c) {
+    return std::isalnum(static_cast<unsigned char>(c)) || c == '-' || c == '_' || c == '.';
+}
+
 }  // namespace
+
+bool leerOrden(const char* datos, size_t n, char* ordenId) {
+    static const char CLAVE[] = "\"orden_id\"";
+    const size_t largoClave = sizeof(CLAVE) - 1;
+    for (size_t i = 0; i + largoClave <= n; ++i) {
+        if (std::memcmp(datos + i, CLAVE, largoClave) != 0) {
+            continue;
+        }
+        size_t k = i + largoClave;
+        while (k < n && (datos[k] == ' ' || datos[k] == '\t')) {
+            ++k;
+        }
+        if (k >= n || datos[k] != ':') {
+            return false;
+        }
+        ++k;
+        while (k < n && (datos[k] == ' ' || datos[k] == '\t')) {
+            ++k;
+        }
+        if (k >= n || datos[k] != '"') {
+            return false;
+        }
+        ++k;
+        size_t largo = 0;
+        while (k + largo < n && datos[k + largo] != '"') {
+            if (!caracterDeId(datos[k + largo]) || largo >= MAX_ORDEN_ID) {
+                return false;
+            }
+            ++largo;
+        }
+        if (k + largo >= n || largo == 0) {
+            return false;  // sin comilla de cierre o identificador vacío
+        }
+        std::memcpy(ordenId, datos + k, largo);
+        ordenId[largo] = '\0';
+        return true;
+    }
+    return false;
+}
+
+size_t respuesta(const Respuesta& r, char* bufer, size_t tamano) {
+    Escritor j(bufer, tamano);
+    j.agregar("{\"orden_id\":\"%s\",\"resultado\":\"%s\",", r.ordenId,
+              r.aceptada ? "aceptada" : "rechazada");
+    if (!r.aceptada && r.motivo != nullptr) {
+        j.agregar("\"motivo\":\"%s\",", r.motivo);
+    }
+    j.agregar("\"estado\":\"%s\",", textoAlerta(r.estado));
+    j.epoca(r.epocaValida, r.epoca);
+    j.agregar("}");
+    return j.resultado();
+}
 
 size_t telemetria(const Telemetria& t, char* bufer, size_t tamano) {
     Escritor j(bufer, tamano);

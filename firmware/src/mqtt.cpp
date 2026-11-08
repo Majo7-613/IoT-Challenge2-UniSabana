@@ -1,7 +1,8 @@
 /**
  * @file mqtt.cpp
  * @brief Comunicación MQTT con el gateway: conexión, última voluntad, estado
- *        del nodo, telemetría y alertas (Challenge #3).
+ *        del nodo, telemetría, alertas y orden de desactivar la alarma
+ *        (Challenge #3).
  */
 #include "mqtt.h"
 
@@ -10,6 +11,9 @@
 #include <atomic>
 #include <cmath>
 #include <cstdio>
+#include <cstring>
+#include <freertos/FreeRTOS.h>
+#include <freertos/queue.h>
 #include <mqtt_client.h>
 
 #include "config.h"
@@ -17,6 +21,7 @@
 #include "mensajes_mqtt.h"
 #include "red.h"
 #include "registro.h"
+#include "tareas.h"
 
 namespace {
 
@@ -28,6 +33,14 @@ std::atomic<uint32_t> desconectadoDesdeMs{0};  ///< 0 si nunca se ha desconectad
 char topicoEstado[64];
 char topicoTelemetria[64];
 char topicoAlerta[64];
+char topicoOrden[64];
+char topicoRespuesta[64];
+
+/** Orden recibida: la deja el manejador de eventos y la atiende tMqtt. */
+struct OrdenRecibida {
+    char id[mensajes_mqtt::MAX_ORDEN_ID + 1];
+};
+QueueHandle_t qOrdenes = nullptr;
 
 // Solo los usa tMqtt (mqttCiclo).
 uint32_t     contadorMensajes = 0;  ///< Campo "id" de cada mensaje.
@@ -35,6 +48,11 @@ uint32_t     ultimaTelemetriaMs = 0;
 bool         hayEstadoPrevio = false;
 EstadoAlerta estadoPrevio = EstadoAlerta::INICIANDO;
 uint32_t     fallosEncolado = 0;
+
+/** Orden aceptada en espera de que tFusion confirme la desactivación. */
+bool     ordenPendiente = false;
+char     ordenPendienteId[mensajes_mqtt::MAX_ORDEN_ID + 1];
+uint32_t ordenPendienteDesdeMs = 0;
 
 /** Arma "sabana/{municipio}/{nodo}/{tipo}". */
 void armarTopico(char* destino, size_t tamano, const char* tipo) {
@@ -62,6 +80,25 @@ void alEvento(void*, esp_event_base_t, int32_t idEvento, void* datos) {
             // se suscriba después.
             esp_mqtt_client_enqueue(evento->client, topicoEstado, MQTT_ESTADO_EN_LINEA, 0,
                                     MQTT_QOS_ESTADO, 1, true);
+            // Con sesión limpia, la suscripción se renueva en cada conexión.
+            esp_mqtt_client_subscribe(evento->client, topicoOrden, MQTT_QOS_ORDEN);
+            break;
+        }
+        case MQTT_EVENT_DATA: {
+            // Solo la orden de desactivar; un mensaje fragmentado no es una orden válida.
+            const bool esOrden = evento->topic_len == static_cast<int>(strlen(topicoOrden)) &&
+                                 strncmp(evento->topic, topicoOrden, evento->topic_len) == 0;
+            if (!esOrden || evento->data_len != evento->total_data_len) {
+                break;
+            }
+            OrdenRecibida orden;
+            if (!mensajes_mqtt::leerOrden(evento->data, evento->data_len, orden.id)) {
+                registrar("mqtt", "orden ignorada: sin orden_id válido");
+                break;
+            }
+            if (xQueueSend(qOrdenes, &orden, 0) != pdTRUE) {
+                registrar("mqtt", "orden %s descartada: cola de órdenes llena", orden.id);
+            }
             break;
         }
         case MQTT_EVENT_DISCONNECTED:
@@ -89,6 +126,15 @@ bool iniciarCliente() {
     armarTopico(topicoEstado, sizeof(topicoEstado), "estado");
     armarTopico(topicoTelemetria, sizeof(topicoTelemetria), "telemetria");
     armarTopico(topicoAlerta, sizeof(topicoAlerta), "alerta");
+    armarTopico(topicoOrden, sizeof(topicoOrden), "cmd/desactivar_alarma");
+    armarTopico(topicoRespuesta, sizeof(topicoRespuesta), "cmd/respuesta");
+    if (qOrdenes == nullptr) {
+        qOrdenes = xQueueCreate(4, sizeof(OrdenRecibida));
+        if (qOrdenes == nullptr) {
+            registrar("mqtt", "ERROR: no se pudo crear la cola de órdenes");
+            return false;
+        }
+    }
 
     esp_mqtt_client_config_t cfg = {};
     cfg.uri         = MQTT_URI_BROKER;
@@ -191,6 +237,67 @@ void publicarAlerta(const EstadoPublicado& e, EstadoAlerta anterior) {
               textoAlerta(d.estado), a.id, conectado.load() ? "" : ", se envía al reconectar");
 }
 
+/** Publica la respuesta a una orden (QoS 1) y la registra. */
+void responderOrden(const char* id, bool aceptada, const char* motivo, EstadoAlerta estado) {
+    mensajes_mqtt::Respuesta r{};
+    r.ordenId     = id;
+    r.aceptada    = aceptada;
+    r.motivo      = motivo;
+    r.estado      = estado;
+    r.epocaValida = redHoraEpoca(r.epoca);
+    char json[MQTT_TAM_MENSAJE];
+    const size_t n = mensajes_mqtt::respuesta(r, json, sizeof(json));
+    if (n > 0) {
+        encolar(topicoRespuesta, json, n, MQTT_QOS_ORDEN);
+    }
+    registrar("mqtt", "orden %s %s%s%s", id, aceptada ? "aceptada" : "rechazada",
+              motivo != nullptr ? ": " : "", motivo != nullptr ? motivo : "");
+}
+
+/**
+ * @brief Atiende las órdenes recibidas con las reglas del tablero local.
+ *
+ * En un estado distinto de ALERTA o CRÍTICO la orden se rechaza de inmediato.
+ * En ALERTA o CRÍTICO se pide la desactivación a tFusion y la respuesta espera
+ * a que el estado publicado la confirme (alarma_desactivada), o se rechaza si
+ * no se confirma en MQTT_ORDEN_ESPERA_MS (por ejemplo, porque el estado cambió).
+ */
+void atenderOrdenes(const EstadoPublicado& e) {
+    const Derivados& d = e.derivados;
+    static char motivo[48];
+
+    if (ordenPendiente) {
+        if (d.alarmaDesactivada) {
+            ordenPendiente = false;
+            responderOrden(ordenPendienteId, true, nullptr, d.estado);
+        } else if (millis() - ordenPendienteDesdeMs >= MQTT_ORDEN_ESPERA_MS) {
+            ordenPendiente = false;
+            snprintf(motivo, sizeof(motivo), "sin confirmar; estado %s", textoAlerta(d.estado));
+            responderOrden(ordenPendienteId, false, motivo, d.estado);
+        }
+        return;  // una orden a la vez; las demás esperan en la cola
+    }
+
+    OrdenRecibida orden;
+    if (qOrdenes == nullptr || xQueueReceive(qOrdenes, &orden, 0) != pdTRUE) {
+        return;
+    }
+    if (d.estado != EstadoAlerta::ALERTA && d.estado != EstadoAlerta::CRITICO) {
+        snprintf(motivo, sizeof(motivo), "estado %s", textoAlerta(d.estado));
+        responderOrden(orden.id, false, motivo, d.estado);
+        return;
+    }
+    if (d.alarmaDesactivada) {
+        responderOrden(orden.id, true, nullptr, d.estado);  // ya estaba desactivada
+        return;
+    }
+    tareasSolicitarDesactivarAlarma();
+    ordenPendiente = true;
+    ordenPendienteDesdeMs = millis();
+    strncpy(ordenPendienteId, orden.id, sizeof(ordenPendienteId) - 1);
+    ordenPendienteId[sizeof(ordenPendienteId) - 1] = '\0';
+}
+
 }  // namespace
 
 void mqttCiclo(bool wifiConectado, const EstadoPublicado* estado) {
@@ -212,6 +319,8 @@ void mqttCiclo(bool wifiConectado, const EstadoPublicado* estado) {
     }
     estadoPrevio = actual;
     hayEstadoPrevio = true;
+
+    atenderOrdenes(*estado);
 
     // Telemetría solo con la sesión abierta: con QoS 0 no tiene sentido acumularla.
     const uint32_t ahora = millis();

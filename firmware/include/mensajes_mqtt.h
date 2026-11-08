@@ -49,6 +49,38 @@ struct Alerta {
     float        tendCmMin;
 };
 
+/** Longitud máxima del identificador de una orden (sin el terminador). */
+constexpr size_t MAX_ORDEN_ID = 40;
+
+/** Resultado de una orden de desactivar la alarma (tópico .../cmd/respuesta). */
+struct Respuesta {
+    const char*  ordenId;
+    bool         aceptada;
+    const char*  motivo;        ///< Solo si fue rechazada; nullptr si no aplica.
+    EstadoAlerta estado;        ///< Estado de alerta al responder.
+    bool         epocaValida;
+    uint32_t     epoca;
+};
+
+/**
+ * @brief Lee el campo "orden_id" de una orden recibida.
+ *
+ * Acepta solo identificadores de 1 a MAX_ORDEN_ID caracteres alfanuméricos,
+ * guion, guion bajo o punto, para no reenviar texto arbitrario en la respuesta.
+ *
+ * @param datos   Carga del mensaje (no necesariamente terminada en '\0').
+ * @param n       Longitud de la carga.
+ * @param ordenId Destino, de al menos MAX_ORDEN_ID + 1 bytes.
+ * @return true si el campo existe y es válido.
+ */
+bool leerOrden(const char* datos, size_t n, char* ordenId);
+
+/**
+ * @brief Escribe el JSON de la respuesta a una orden.
+ * @return Longitud escrita, o 0 si no cupo en el búfer.
+ */
+size_t respuesta(const Respuesta& r, char* bufer, size_t tamano);
+
 /**
  * @brief Escribe el JSON de la telemetría.
  * @return Longitud escrita, o 0 si no cupo en el búfer.

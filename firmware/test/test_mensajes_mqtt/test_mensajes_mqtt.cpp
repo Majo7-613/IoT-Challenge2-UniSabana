@@ -4,8 +4,9 @@
  *
  * Se ejecutan en el computador: `pio test -d firmware -e native`.
  * Verifican el contenido exacto de la telemetría y de la alerta definido en
- * docs/diseno/comunicacion-mqtt.md (sección 3), los valores null y el manejo
- * de un búfer demasiado pequeño.
+ * docs/diseno/comunicacion-mqtt.md (sección 3), los valores null, el manejo
+ * de un búfer demasiado pequeño, la lectura de la orden de desactivar y la
+ * respuesta del nodo.
  */
 #include <cmath>
 #include <cstring>
@@ -115,6 +116,54 @@ void test_bufer_pequeno() {
     TEST_ASSERT_EQUAL_size_t(0, mensajes_mqtt::telemetria(telemetriaNormal(), json, sizeof(json)));
 }
 
+/** Orden válida: se extrae orden_id aunque haya espacios y otros campos. */
+void test_leer_orden_valida() {
+    const char* datos = "{\"origen\": \"ubidots\", \"orden_id\" : \"u-20261029-153012\", \"epoca\": 1}";
+    char id[mensajes_mqtt::MAX_ORDEN_ID + 1];
+    TEST_ASSERT_TRUE(mensajes_mqtt::leerOrden(datos, strlen(datos), id));
+    TEST_ASSERT_EQUAL_STRING("u-20261029-153012", id);
+}
+
+/** Órdenes inválidas: sin campo, vacío, caracteres no permitidos, demasiado largo o sin cierre. */
+void test_leer_orden_invalida() {
+    char id[mensajes_mqtt::MAX_ORDEN_ID + 1];
+    const char* casos[] = {
+        "{\"origen\":\"ubidots\"}",
+        "{\"orden_id\":\"\"}",
+        "{\"orden_id\":\"a b\"}",
+        "{\"orden_id\":\"<script>\"}",
+        "{\"orden_id\":12}",
+        "{\"orden_id\":\"abc",
+        "{\"orden_id\":\"12345678901234567890123456789012345678901\"}",  // 41 caracteres
+    };
+    for (const char* c : casos) {
+        TEST_ASSERT_FALSE_MESSAGE(mensajes_mqtt::leerOrden(c, strlen(c), id), c);
+    }
+}
+
+/** Respuesta aceptada (sin motivo) y rechazada (con motivo). */
+void test_respuesta() {
+    mensajes_mqtt::Respuesta r{};
+    r.ordenId = "u-1";
+    r.aceptada = true;
+    r.estado = EstadoAlerta::CRITICO;
+    r.epocaValida = true;
+    r.epoca = 1793287813;
+    char json[256];
+    TEST_ASSERT_NOT_EQUAL(0, mensajes_mqtt::respuesta(r, json, sizeof(json)));
+    TEST_ASSERT_EQUAL_STRING(
+        "{\"orden_id\":\"u-1\",\"resultado\":\"aceptada\",\"estado\":\"CRITICO\",\"epoca\":1793287813}", json);
+
+    r.aceptada = false;
+    r.motivo = "estado NORMAL";
+    r.estado = EstadoAlerta::NORMAL;
+    r.epocaValida = false;
+    TEST_ASSERT_NOT_EQUAL(0, mensajes_mqtt::respuesta(r, json, sizeof(json)));
+    TEST_ASSERT_EQUAL_STRING(
+        "{\"orden_id\":\"u-1\",\"resultado\":\"rechazada\",\"motivo\":\"estado NORMAL\",\"estado\":\"NORMAL\",\"epoca\":null}",
+        json);
+}
+
 void setUp() {}
 void tearDown() {}
 
@@ -125,5 +174,8 @@ int main() {
     RUN_TEST(test_telemetria_causas_y_alarma);
     RUN_TEST(test_alerta);
     RUN_TEST(test_bufer_pequeno);
+    RUN_TEST(test_leer_orden_valida);
+    RUN_TEST(test_leer_orden_invalida);
+    RUN_TEST(test_respuesta);
     return UNITY_END();
 }

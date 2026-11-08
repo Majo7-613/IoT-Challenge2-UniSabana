@@ -15,6 +15,9 @@
  *  - .../alerta: en cada cambio del estado de alerta, con QoS 1. Si el broker
  *    no está disponible, queda en la bandeja de salida del cliente y se envía
  *    al reconectar.
+ *  - .../cmd/desactivar_alarma (suscripción, QoS 1): orden de desactivar la
+ *    alarma física. Se acepta solo en ALERTA o CRÍTICO, con las mismas reglas
+ *    que el tablero local, y se responde en .../cmd/respuesta (QoS 1).
  */
 #pragma once
 

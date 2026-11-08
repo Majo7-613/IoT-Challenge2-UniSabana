@@ -194,6 +194,11 @@ constexpr uint32_t MQTT_TELEMETRIA_PERIODO_MS = 5000;
 constexpr int      MQTT_QOS_TELEMETRIA        = 0;
 constexpr int      MQTT_QOS_ALERTA            = 1;
 
+/** Orden de desactivar la alarma y respuesta del nodo (QoS 1). */
+constexpr int      MQTT_QOS_ORDEN             = 1;
+/** Si tFusion no confirma la desactivación en este tiempo, la orden se responde como rechazada. */
+constexpr uint32_t MQTT_ORDEN_ESPERA_MS       = 3000;
+
 /** Búfer de un mensaje JSON (la telemetría ocupa unos 330 B). */
 constexpr size_t   MQTT_TAM_MENSAJE           = 512;
 
