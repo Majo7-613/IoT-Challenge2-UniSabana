@@ -1,0 +1,25 @@
+# Servicio systemd del gateway: arranca solo al encender la Raspberry Pi y se reinicia si falla.
+# Instalación (docs/guias/raspberry-pi.md):
+#   sudo cp despliegue/gateway.service /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now gateway
+# Registro: journalctl -u gateway -f
+#
+# Supone el repositorio en /home/equipo7/IoT-Challenge2-UniSabana y el usuario equipo7;
+# ajustar User y las rutas si el usuario de la Raspberry Pi es otro.
+
+[Unit]
+Description=Gateway IoT Challenge #3 (MQTT, SQLite, Ubidots)
+After=network-online.target mosquitto.service
+Wants=network-online.target
+Requires=mosquitto.service
+
+[Service]
+Type=simple
+User=equipo7
+WorkingDirectory=/home/equipo7/IoT-Challenge2-UniSabana/gateway
+ExecStart=/home/equipo7/IoT-Challenge2-UniSabana/gateway/.venv/bin/python -m gateway.principal --env .env
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

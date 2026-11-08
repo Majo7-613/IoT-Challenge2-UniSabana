@@ -1,0 +1,19 @@
+# Permisos por tópico de Mosquitto (docs/diseno/gateway.md, sección 4).
+# Copiar en /etc/mosquitto/acl. Las claves se crean en la Raspberry Pi con mosquitto_passwd.
+
+# Nodo ESP32: publica sus mensajes (incluida la última voluntad) y recibe la orden.
+user nodo-chia-01
+topic write sabana/chia/chia-01/telemetria
+topic write sabana/chia/chia-01/alerta
+topic write sabana/chia/chia-01/estado
+topic write sabana/chia/chia-01/cmd/respuesta
+topic read sabana/chia/chia-01/cmd/desactivar_alarma
+
+# Programa del gateway: lee todo el municipio y envía órdenes a los nodos.
+user gw-chia
+topic read sabana/chia/#
+topic write sabana/chia/+/cmd/desactivar_alarma
+
+# Pruebas y diagnóstico: solo lectura.
+user monitor
+topic read sabana/#

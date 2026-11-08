@@ -1,0 +1,21 @@
+# IntegraciÃ³n gateway + Mosquitto local + publicador de prueba (SIMULACIÃ“N: datos del publicador, sin ESP32)
+# 07/11/2026, computador de desarrollo; periodo de promedios de 30 s para la prueba
+
+## Registro del gateway
+2026-11-07 22:40:37,617 gateway WARNING módulo de IA no disponible: cannot import name 'ia' from 'gateway' (C:\IoT\IoT-Challenge2-UniSabana\Repo\gateway\gateway\__init__.py)
+2026-11-07 22:40:37,624 gateway WARNING UBIDOTS_TOKEN vacío: envío a la nube desactivado; las cargas quedan en la cola
+2026-11-07 22:40:37,669 gateway INFO conectado al broker local localhost:1883; suscrito a sabana/chia/+/#
+2026-11-07 22:40:41,538 gateway INFO nodo chia-01 online
+2026-11-07 22:40:52,555 gateway INFO alerta de chia-01: NORMAL -> ADVERTENCIA
+2026-11-07 22:40:59,566 gateway INFO alerta de chia-01: ADVERTENCIA -> CRITICO
+2026-11-07 22:41:00,185 gateway.ordenes INFO orden g-prueba-1 aceptada
+2026-11-07 22:41:00,646 gateway INFO periodo 2026-11-08T03:40:30.000Z: 20 mensajes (0 perdidos), estado más grave CRITICO
+2026-11-07 22:41:30,843 gateway INFO periodo 2026-11-08T03:41:00.000Z: 30 mensajes (0 perdidos), estado más grave CRITICO
+2026-11-07 22:41:51,766 gateway INFO nodo chia-01 offline
+2026-11-07 22:42:00,908 gateway INFO periodo 2026-11-08T03:41:30.000Z: 22 mensajes (0 perdidos), estado más grave CRITICO
+
+## Registro del publicador
+conectado a localhost:1883
+alerta: NORMAL -> ADVERTENCIA
+alerta: ADVERTENCIA -> CRITICO
+orden g-prueba-1: aceptada
