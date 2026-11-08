@@ -14,8 +14,11 @@ La documentación completa (diseño, pruebas y resultados) está en la [Wiki del
 | :--- | :--- |
 | Firmware, pasos 1 a 5: tareas FreeRTOS, sensores, nivel, tendencia, VPD, ET0, fusión, LCD, buzzer, Wi-Fi, servidor web con control de acceso, histórico y WebSocket | Implementado · (compila sin advertencias) |
 | Frontend del tablero (`firmware/data/`) | Implementado · probado con el servidor simulado; pendiente de verificación en el ESP32 |
-| Pruebas unitarias (`pio test -e native`): fusión, formato de la LCD y 5 casos calculados a mano del paso 3 | 16 pruebas superadas |
-| Comunicación MQTT, gateway en la Raspberry Pi, tablero en Ubidots y módulo de IA (Challenge #3) | En desarrollo |
+| Pruebas unitarias del firmware (`pio test -e native`): fusión, formato de la LCD, 5 casos calculados a mano y mensajes MQTT | 24 pruebas superadas |
+| Firmware MQTT (Challenge #3): tarea `tMqtt`, conexión con usuario y clave, estado retenido con última voluntad, telemetría cada 5 s, alertas y orden de desactivar la alarma con respuesta | Implementado · compila sin advertencias; validación con el ESP32 real según [docs/guias/prueba-esp32-mqtt.md](docs/guias/prueba-esp32-mqtt.md) |
+| Gateway (`gateway/`): registro en SQLite, validación, promedios de 5 min, mensajes perdidos, ET0 diaria, cola hacia Ubidots, órdenes y módulo de IA | Implementado · 25 pruebas automáticas superadas; integración con Mosquitto y el publicador de prueba en `tests/datos/gateway/` |
+| Módulo de IA: predicción de horas hasta el nivel crítico, anomalías (Isolation Forest y reglas) y recomendación en texto | Implementado · evaluado con datos sintéticos en `tests/datos/ia/` |
+| Raspberry Pi 5 y tablero en Ubidots | Guías en [docs/guias/](docs/guias) |
 | Simulación en Wokwi (ESP32) | Ejecutada el 05/10/2026 (SIMULACIÓN): estados de alerta, tablero servido por el ESP32 simulado y control de acceso; registros en `tests/datos/simulacion/` y capturas en `docs/capturas/wokwi/` |
 
 ## Estructura
@@ -28,9 +31,12 @@ La documentación completa (diseño, pruebas y resultados) está en la [Wiki del
 │   ├── data/              Archivos del tablero web (HTML, CSS, JS) para LittleFS
 │   └── test/              Pruebas unitarias (entorno native)
 ├── simulation/wokwi/      diagram.json, wokwi.toml, escenarios de wokwi-cli e imagen con LittleFS
+├── gateway/               Gateway en Python para la Raspberry Pi: MQTT, SQLite, Ubidots e IA (ver gateway/README.md)
 ├── tools/tablero_simulado/ Servidor simulado del tablero (datos simulados) y script de capturas
 ├── cad/                   Maqueta y carcasa: fuente CAD, STL y renders
 ├── tests/                 Protocolo, datos CSV y scripts de gráficas
+├── docs/diseno/           Diseño del Challenge #3: arquitectura, MQTT, gateway y módulo de IA
+├── docs/guias/            Guías paso a paso: Raspberry Pi, Ubidots y prueba MQTT del ESP32
 ├── docs/capturas/         Capturas del tablero y de la simulación
 ├── refuerzo-2.3/          Actividad de refuerzo 2.3 (Packet Tracer)
 └── legacy-ch1/            Código y simulación del Challenge #1 (Arduino Uno), solo como referencia
