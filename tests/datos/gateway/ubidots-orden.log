@@ -1,0 +1,72 @@
+# Gateway con Ubidots real y orden desde el tablero global, 09/11/2026
+# Nodo simulado con el publicador de prueba (SIMULACIÃ“N del nodo); Ubidots y la cola de envÃ­o son reales.
+# Periodo de promedios de 60 s para la prueba. Interruptor desactivar_alarma activado desde el tablero de Ubidots.
+
+## Registro del gateway
+2026-11-09 07:45:17,825 gateway INFO conectado al broker local localhost:1883; suscrito a sabana/chia/+/#
+2026-11-09 07:45:17,829 gateway INFO nodo chia-01 online
+2026-11-09 07:45:18,408 gateway.nube INFO conectado a Ubidots (industrial.api.ubidots.com:8883)
+2026-11-09 07:46:00,958 gateway INFO periodo 2026-11-09T12:45:00.000Z: 42 mensajes (0 perdidos), estado más grave CRITICO
+2026-11-09 07:46:07,383 gateway.ordenes INFO orden u-20261109-124607-379 enviada al nodo chia-01
+2026-11-09 07:46:07,388 gateway.ordenes INFO orden u-20261109-124607-379 aceptada
+2026-11-09 07:46:13,189 gateway.ordenes INFO orden u-20261109-124613-168 enviada al nodo chia-01
+2026-11-09 07:46:13,195 gateway.ordenes INFO orden u-20261109-124613-168 aceptada
+2026-11-09 07:47:00,964 gateway INFO periodo 2026-11-09T12:46:00.000Z: 60 mensajes (0 perdidos), estado más grave CRITICO
+2026-11-09 07:47:04,411 gateway INFO nodo chia-01 offline
+2026-11-09 07:47:04,413 gateway INFO nodo chia-01 online
+2026-11-09 07:47:05,409 gateway INFO nodo chia-01 offline
+2026-11-09 07:47:05,413 gateway INFO nodo chia-01 online
+2026-11-09 07:47:06,561 gateway INFO nodo chia-01 offline
+2026-11-09 07:47:06,564 gateway INFO nodo chia-01 online
+2026-11-09 07:47:07,454 gateway INFO nodo chia-01 offline
+2026-11-09 07:47:07,457 gateway INFO nodo chia-01 online
+2026-11-09 07:47:08,475 gateway INFO nodo chia-01 offline
+2026-11-09 07:47:08,479 gateway INFO nodo chia-01 online
+2026-11-09 07:47:09,472 gateway INFO nodo chia-01 offline
+2026-11-09 07:47:09,476 gateway INFO nodo chia-01 online
+2026-11-09 07:47:10,498 gateway INFO nodo chia-01 offline
+2026-11-09 07:47:10,502 gateway INFO nodo chia-01 online
+2026-11-09 07:47:10,505 gateway INFO alerta de chia-01: NORMAL -> ADVERTENCIA
+2026-11-09 07:47:11,490 gateway INFO nodo chia-01 offline
+2026-11-09 07:47:11,493 gateway INFO nodo chia-01 online
+2026-11-09 07:47:12,520 gateway INFO nodo chia-01 offline
+2026-11-09 07:47:12,524 gateway INFO nodo chia-01 online
+2026-11-09 07:47:13,435 gateway INFO alerta de chia-01: ADVERTENCIA -> CRITICO
+2026-11-09 07:47:13,523 gateway INFO nodo chia-01 offline
+2026-11-09 07:47:13,528 gateway INFO nodo chia-01 online
+2026-11-09 07:47:14,549 gateway INFO nodo chia-01 offline
+2026-11-09 07:47:14,553 gateway INFO nodo chia-01 online
+2026-11-09 07:47:15,536 gateway INFO nodo chia-01 offline
+2026-11-09 07:47:15,539 gateway INFO nodo chia-01 online
+2026-11-09 07:47:16,771 gateway INFO nodo chia-01 offline
+2026-11-09 07:47:16,776 gateway INFO nodo chia-01 online
+2026-11-09 07:47:17,564 gateway INFO nodo chia-01 offline
+2026-11-09 07:47:17,568 gateway INFO nodo chia-01 online
+2026-11-09 07:47:18,596 gateway INFO nodo chia-01 offline
+2026-11-09 07:47:18,599 gateway INFO nodo chia-01 online
+2026-11-09 07:47:19,453 gateway INFO nodo chia-01 offline
+2026-11-09 07:47:19,615 gateway INFO nodo chia-01 offline
+2026-11-09 07:47:19,618 gateway INFO nodo chia-01 online
+
+## Registro del publicador
+conectado a localhost:1883
+alerta: NORMAL -> ADVERTENCIA
+alerta: ADVERTENCIA -> CRITICO
+orden u-20261109-124607-379: aceptada
+orden u-20261109-124613-168: aceptada
+conectado a localhost:1883
+conectado a localhost:1883
+conectado a localhost:1883
+conectado a localhost:1883
+conectado a localhost:1883
+conectado a localhost:1883
+conectado a localhost:1883
+conectado a localhost:1883
+
+## Tabla ordenes (gateway.db)
+| orden_id | origen | recibida_utc | respuesta_utc | resultado | estado del nodo | latencia |
+| :--- | :--- | :--- | :--- | :--- | :--- | ---: |
+| u-20261109-124607-379 | ubidots | 2026-11-09T12:46:07.379Z | 2026-11-09T12:46:07.385Z | aceptada | CRITICO | 0.006 s |
+| u-20261109-124613-168 | ubidots | 2026-11-09T12:46:13.168Z | 2026-11-09T12:46:13.191Z | aceptada | CRITICO | 0.023 s |
+
+Cola hacia Ubidots al final: 7 cargas enviadas y confirmadas, 0 pendientes.
