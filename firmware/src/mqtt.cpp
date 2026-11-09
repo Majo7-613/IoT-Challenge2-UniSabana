@@ -7,6 +7,7 @@
 #include "mqtt.h"
 
 #include <Arduino.h>
+#include <ESPmDNS.h>
 #include <WiFi.h>
 #include <atomic>
 #include <cmath>
@@ -53,6 +54,78 @@ uint32_t     fallosEncolado = 0;
 bool     ordenPendiente = false;
 char     ordenPendienteId[mensajes_mqtt::MAX_ORDEN_ID + 1];
 uint32_t ordenPendienteDesdeMs = 0;
+
+// Broker por nombre (.local): la IP del gateway puede cambiar (por ejemplo, con
+// un punto de acceso de celular), así que se busca por mDNS al iniciar y cada
+// vez que la conexión lleva un rato caída.
+bool     brokerPorNombre = false;
+char     esquemaBroker[12];
+char     nombreMdns[48];       ///< Nombre del gateway sin ".local".
+unsigned puertoBroker = 1883;
+char     uriResuelta[96];      ///< URI con la IP encontrada.
+bool     mdnsIniciado = false;
+uint32_t ultimaBusquedaMs = 0;
+uint32_t sinConexionDesdeMs = 0;
+
+/** Separa "esquema://host:puerto". @return false si el formato no es válido. */
+bool separarUri(const char* uri, char* esquema, size_t tamEsquema, char* host, size_t tamHost,
+                unsigned& puerto) {
+    const char* sep = strstr(uri, "://");
+    if (sep == nullptr || static_cast<size_t>(sep - uri) >= tamEsquema) {
+        return false;
+    }
+    memcpy(esquema, uri, sep - uri);
+    esquema[sep - uri] = '\0';
+    const char* inicioHost = sep + 3;
+    const char* dosPuntos = strchr(inicioHost, ':');
+    const size_t largoHost = dosPuntos != nullptr ? static_cast<size_t>(dosPuntos - inicioHost)
+                                                  : strcspn(inicioHost, "/");
+    if (largoHost == 0 || largoHost >= tamHost) {
+        return false;
+    }
+    memcpy(host, inicioHost, largoHost);
+    host[largoHost] = '\0';
+    puerto = dosPuntos != nullptr ? static_cast<unsigned>(atoi(dosPuntos + 1)) : 1883;
+    return puerto > 0;
+}
+
+/** Decide si el broker se busca por mDNS (host terminado en ".local"). */
+void prepararBroker() {
+    char host[64];
+    if (!separarUri(MQTT_URI_BROKER, esquemaBroker, sizeof(esquemaBroker), host, sizeof(host),
+                    puertoBroker)) {
+        return;
+    }
+    const size_t largo = strlen(host);
+    constexpr size_t LARGO_LOCAL = 6;  // ".local"
+    if (largo > LARGO_LOCAL && strcmp(host + largo - LARGO_LOCAL, ".local") == 0 &&
+        largo - LARGO_LOCAL < sizeof(nombreMdns)) {
+        memcpy(nombreMdns, host, largo - LARGO_LOCAL);
+        nombreMdns[largo - LARGO_LOCAL] = '\0';
+        brokerPorNombre = true;
+    }
+}
+
+/** Busca el gateway por mDNS y arma uriResuelta. @return true si lo encontró. */
+bool buscarBroker() {
+    ultimaBusquedaMs = millis();
+    if (!mdnsIniciado) {
+        mdnsIniciado = MDNS.begin(MQTT_ID_CLIENTE);
+        if (!mdnsIniciado) {
+            registrar("mqtt", "ERROR: no se pudo iniciar mDNS");
+            return false;
+        }
+    }
+    const IPAddress ip = MDNS.queryHost(nombreMdns, MQTT_MDNS_ESPERA_MS);
+    if (ip == IPAddress(0, 0, 0, 0)) {
+        registrar("mqtt", "no se encontró %s.local en la red; se reintenta", nombreMdns);
+        return false;
+    }
+    snprintf(uriResuelta, sizeof(uriResuelta), "%s://%u.%u.%u.%u:%u", esquemaBroker, ip[0], ip[1],
+             ip[2], ip[3], puertoBroker);
+    registrar("mqtt", "%s.local encontrado en %s", nombreMdns, ip.toString().c_str());
+    return true;
+}
 
 /** Arma "sabana/{municipio}/{nodo}/{tipo}". */
 void armarTopico(char* destino, size_t tamano, const char* tipo) {
@@ -136,8 +209,13 @@ bool iniciarCliente() {
         }
     }
 
+    prepararBroker();
+    if (brokerPorNombre && !buscarBroker()) {
+        return false;
+    }
+
     esp_mqtt_client_config_t cfg = {};
-    cfg.uri         = MQTT_URI_BROKER;
+    cfg.uri         = brokerPorNombre ? uriResuelta : MQTT_URI_BROKER;
     cfg.client_id   = MQTT_ID_CLIENTE;
     cfg.username    = MQTT_USUARIO_BROKER;
     cfg.password    = MQTT_CLAVE_BROKER;
@@ -159,7 +237,7 @@ bool iniciarCliente() {
         cliente = nullptr;
         return false;
     }
-    registrar("mqtt", "cliente iniciado: %s como %s%s", MQTT_URI_BROKER, MQTT_ID_CLIENTE,
+    registrar("mqtt", "cliente iniciado: %s como %s%s", cfg.uri, MQTT_ID_CLIENTE,
               MQTT_CREDENCIALES_DE_EJEMPLO ? " (credenciales MQTT de ejemplo: completar secrets.h)" : "");
     return true;
 }
@@ -303,8 +381,28 @@ void atenderOrdenes(const EstadoPublicado& e) {
 void mqttCiclo(bool wifiConectado, const EstadoPublicado* estado) {
     // El cliente se crea con la primera conexión Wi-Fi; desde ahí reconecta solo.
     if (cliente == nullptr) {
-        if (!wifiConectado || !iniciarCliente()) {
+        // Sin el gateway encontrado por mDNS, se reintenta cada MQTT_MDNS_REINTENTO_MS.
+        const bool esperarBusqueda = brokerPorNombre &&
+                                     millis() - ultimaBusquedaMs < MQTT_MDNS_REINTENTO_MS;
+        if (!wifiConectado || esperarBusqueda || !iniciarCliente()) {
             return;
+        }
+    }
+
+    // Broker por nombre y conexión caída un rato: la IP del gateway pudo cambiar.
+    if (brokerPorNombre && wifiConectado) {
+        if (conectado.load()) {
+            sinConexionDesdeMs = 0;
+        } else if (sinConexionDesdeMs == 0) {
+            sinConexionDesdeMs = millis();
+        } else if (millis() - sinConexionDesdeMs >= MQTT_MDNS_REINTENTO_MS &&
+                   millis() - ultimaBusquedaMs >= MQTT_MDNS_REINTENTO_MS) {
+            char anterior[sizeof(uriResuelta)];
+            strncpy(anterior, uriResuelta, sizeof(anterior));
+            if (buscarBroker() && strcmp(anterior, uriResuelta) != 0) {
+                esp_mqtt_client_set_uri(cliente, uriResuelta);
+                registrar("mqtt", "el gateway cambió de IP: %s", uriResuelta);
+            }
         }
     }
     if (estado == nullptr) {

@@ -22,7 +22,8 @@
 #define TABLERO_TOKENS {"token-dispositivo-1", "token-dispositivo-2"}
 
 // Broker MQTT del gateway (Mosquitto en la Raspberry Pi) y usuario del nodo
-// (docs/diseno/gateway.md, sección 4).
-#define MQTT_BROKER_URI  "mqtt://192.168.1.50:1883"
+// (docs/diseno/gateway.md, sección 4). Con un nombre .local el ESP32 busca la
+// Raspberry Pi por mDNS, útil si su IP cambia (punto de acceso de un celular).
+#define MQTT_BROKER_URI  "mqtt://gateway-chia.local:1883"
 #define MQTT_USUARIO     "nodo-chia-01"
 #define MQTT_CLAVE       "cambiar-esta-clave"

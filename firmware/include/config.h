@@ -184,6 +184,11 @@ constexpr const char* MQTT_NODO      = "chia-01";
 /** Intervalo de keepalive: el broker publica la última voluntad tras 1.5 veces este tiempo sin noticias del nodo. */
 constexpr int MQTT_KEEPALIVE_S = 30;
 
+/** Broker por nombre (mqtt://gateway-chia.local:1883): espera de cada búsqueda mDNS y
+ *  tiempo entre búsquedas mientras no hay conexión (la IP del gateway puede cambiar). */
+constexpr uint32_t MQTT_MDNS_ESPERA_MS    = 2000;
+constexpr uint32_t MQTT_MDNS_REINTENTO_MS = 30000;
+
 /** Estado del nodo (retenido): "online" al conectarse; "offline" como última voluntad. */
 constexpr const char* MQTT_ESTADO_EN_LINEA       = "online";
 constexpr const char* MQTT_ESTADO_FUERA_DE_LINEA = "offline";
