@@ -131,7 +131,7 @@ En las tareas hechas, la columna Encargado indica quiénes las hicieron; en las 
 | 39 | Grabar Raspberry Pi OS Lite (64 bits) en la microSD con Raspberry Pi Imager, configurando ahí Wi-Fi, usuario y SSH | R8 | Físico | 02/11 | Simón | La microSD está lista | | Pasos en Guía `docs/guias/raspberry-pi.md` |
 | 40 | Encender la Raspberry Pi, entrar por SSH desde el computador y actualizar el sistema | R8 | Físico | 02/11 | Simón | Conexión por SSH funcionando | | Pasos en Guía `docs/guias/raspberry-pi.md` |
 | 41 | Instalar Mosquitto, Python y SQLite en la Raspberry Pi | R8, R9 | Físico | 05/11 | Simón | Los tres programas responden | | Pasos en Guía `docs/guias/raspberry-pi.md` |
-| 42 | Fijar la dirección IP de la Raspberry Pi en la WLAN (para que el ESP32 siempre encuentre el broker) | R5 | Físico | 05/11 | Simón | La IP no cambia al reiniciar | | Pasos en Guía `docs/guias/raspberry-pi.md` |
+| 42 | Conectar la Raspberry Pi al punto de acceso del celular y comprobar su nombre `gateway-chia.local` (el ESP32 la busca por nombre; no se fija la IP) | R5 | Físico | 05/11 | Simón | `avahi-daemon` activo y el ESP32 encuentra `gateway-chia.local` | | Pasos en Guía `docs/guias/raspberry-pi.md` |
 | 43 | Copiar el programa del gateway y la configuración de Mosquitto, y activar el arranque automático | R5, R11 | Físico | 08/11 | Simón | Tras reiniciar la Raspberry Pi, el gateway funciona solo | | Pasos en Guía `docs/guias/raspberry-pi.md`; archivos en `gateway/despliegue/` |
 
 ### 4.8. Hardware e integración física

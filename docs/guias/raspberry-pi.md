@@ -15,7 +15,7 @@ Diseño: [gateway.md](../diseno/gateway.md). Código: [gateway/](../../gateway).
 3. En **Editar ajustes** (o «Personalizar»), antes de grabar:
    - Nombre del equipo: `gateway-chia`.
    - Usuario: `equipo7` y una contraseña (guardarla en un lugar seguro; no va al repositorio).
-   - Wi-Fi: el nombre y la clave de la red donde estará el ESP32. País: CO.
+   - Wi-Fi: el nombre y la clave del punto de acceso del celular (el mismo que usará el ESP32). País: CO.
    - Zona horaria: America/Bogota.
    - Pestaña **Servicios**: activar SSH con autenticación por contraseña.
 4. Grabar y esperar a que termine la verificación.
@@ -30,7 +30,7 @@ Diseño: [gateway.md](../diseno/gateway.md). Código: [gateway/](../../gateway).
    ```
 
    Aceptar la huella la primera vez (`yes`) y escribir la contraseña. Si `gateway-chia.local` no responde, buscar la IP
-   de la Raspberry Pi en el router y usar `ssh equipo7@<IP>`.
+   de la Raspberry Pi en la lista de dispositivos conectados del punto de acceso del celular y usar `ssh equipo7@<IP>`.
 3. Actualizar el sistema:
 
    ```bash
@@ -38,25 +38,20 @@ Diseño: [gateway.md](../diseno/gateway.md). Código: [gateway/](../../gateway).
    sudo reboot
    ```
 
-## 3. Dirección IP fija o nombre `.local`
+## 3. Red: punto de acceso del celular
 
-El ESP32 tiene que encontrar el broker en la Raspberry Pi. Hay dos formas:
+La Raspberry Pi, el ESP32 y el computador se conectan al **mismo punto de acceso del celular** (el mismo de la
+sustentación). Con un punto de acceso la IP de la Raspberry Pi puede cambiar cada vez que se enciende; por eso **no se
+fija la IP**: el ESP32 busca la Raspberry Pi por su nombre, `gateway-chia.local`, y la vuelve a buscar sola si la IP
+cambia.
 
-- **Por nombre (recomendada con el punto de acceso de un celular, donde la IP cambia):** en `secrets.h` se usa
-  `mqtt://gateway-chia.local:1883`. El ESP32 busca la Raspberry Pi por mDNS al conectarse y otra vez si la conexión
-  lleva 30 s caída, así que no importa si la IP cambia. Raspberry Pi OS anuncia el nombre con `avahi-daemon`, que viene
-  activo; se comprueba con `systemctl status avahi-daemon`. No hace falta fijar la IP.
-- **Por IP fija (router propio):** reservar la IP en el router (DHCP estático) para la dirección MAC de la Raspberry Pi
-  (`ip link show wlan0` muestra la MAC), o fijarla en la Raspberry Pi (Raspberry Pi OS usa NetworkManager). Ver el nombre de la conexión con `nmcli con show` y,
-  con los datos de la red del sitio:
+Solo hay que comprobar que la Raspberry Pi anuncia su nombre:
 
-  ```bash
-  sudo nmcli con mod "<nombre-de-la-conexion>" ipv4.method manual ipv4.addresses 192.168.1.50/24 \
-      ipv4.gateway 192.168.1.1 ipv4.dns 192.168.1.1
-  sudo nmcli con up "<nombre-de-la-conexion>"
-  ```
-
-Con IP fija, anotar la IP: va en `MQTT_BROKER_URI` del `secrets.h` del ESP32.
+```bash
+hostname                                         # debe decir gateway-chia
+systemctl status avahi-daemon --no-pager         # debe decir active (running)
+hostname -I                                      # IP actual, solo como referencia
+```
 
 ## 4. Instalar Mosquitto, Python y Git
 
@@ -146,13 +141,13 @@ Si el usuario no es `equipo7`, cambiar `User` y las rutas en `/etc/systemd/syste
 En el computador, en `firmware/include/secrets.h` (no se sube al repositorio):
 
 ```c
-#define MQTT_BROKER_URI  "mqtt://gateway-chia.local:1883"   // o "mqtt://<IP fija>:1883"
+#define MQTT_BROKER_URI  "mqtt://gateway-chia.local:1883"   // por nombre: la IP puede cambiar
 #define MQTT_USUARIO     "nodo-chia-01"
 #define MQTT_CLAVE       "<clave del nodo>"
 ```
 
 Compilar y cargar el firmware (`pio run -d firmware -t upload`), abrir el monitor serie (`pio device monitor`) y
-buscar `[mqtt] gateway-chia.local encontrado en ...` (si se usa el nombre) y `[mqtt] conectado al broker`.
+buscar `[mqtt] gateway-chia.local encontrado en ...` y `[mqtt] conectado al broker`.
 
 ## 9. Consultas útiles a la base de datos
 
@@ -178,9 +173,9 @@ sqlite3 -header -csv gateway.db "SELECT * FROM telemetria;" > telemetria.csv
 
 | Síntoma | Causa probable | Solución |
 | :--- | :--- | :--- |
-| `ssh: Could not resolve hostname gateway-chia.local` | El computador no resuelve nombres `.local` | Usar la IP de la Raspberry Pi (lista de clientes del router) |
+| `ssh: Could not resolve hostname gateway-chia.local` | El computador no resuelve nombres `.local` o no está en el mismo punto de acceso | Usar la IP de la Raspberry Pi (lista de dispositivos conectados del punto de acceso) |
 | Mosquitto no arranca tras copiar la configuración | Error de sintaxis o archivo de claves con permisos incorrectos | `journalctl -u mosquitto -n 30` muestra la línea del error |
 | El ESP32 registra «conexión rechazada por el broker» | Usuario o clave de `secrets.h` distintos de los de `mosquitto_passwd` | Volver a crear la clave del nodo y actualizar `secrets.h` |
-| El ESP32 registra «no se encontró gateway-chia.local» | La Raspberry Pi no está en la misma red, está apagada o `avahi-daemon` está detenido | Revisar que ambos estén en el mismo punto de acceso; `sudo systemctl restart avahi-daemon`; como alternativa, usar la IP de `hostname -I` |
-| El ESP32 registra «error de conexión con el broker» | IP equivocada o la Raspberry Pi no está en la misma red | Revisar la IP con `hostname -I` y la red Wi-Fi |
+| El ESP32 registra «no se encontró gateway-chia.local» | La Raspberry Pi no está en la misma red, está apagada o `avahi-daemon` está detenido | Revisar que ambos estén en el mismo punto de acceso; `sudo systemctl restart avahi-daemon`. Último recurso: poner en `secrets.h` la IP de `hostname -I` (`mqtt://<IP>:1883`) y volver a grabar el ESP32; esa IP puede cambiar al reiniciar el punto de acceso |
+| El ESP32 registra «error de conexión con el broker» | Mosquitto detenido o la Raspberry Pi en otra red | `sudo systemctl status mosquitto`; revisar que ambos estén en el mismo punto de acceso |
 | `gateway` en estado failed | `.env` ausente o con datos incorrectos | `journalctl -u gateway -n 50` |
