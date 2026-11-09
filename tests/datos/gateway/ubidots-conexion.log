@@ -1,0 +1,18 @@
+# Primera conexiÃ³n del gateway con la cuenta real de Ubidots, 09/11/2026
+# Nodo simulado con el publicador de prueba (SIMULACIÃ“N del nodo); conexiÃ³n MQTT con TLS y cuenta de Ubidots reales.
+
+| Medida | Valor |
+| :--- | ---: |
+| Cargas enviadas a Ubidots y confirmadas | 10 |
+| Cargas pendientes | 0 |
+
+## Registro del gateway
+2026-11-09 07:19:27,184 gateway INFO conectado al broker local localhost:1883; suscrito a sabana/chia/+/#
+2026-11-09 07:19:27,187 gateway INFO nodo chia-01 online
+2026-11-09 07:19:27,808 gateway.nube INFO conectado a Ubidots (industrial.api.ubidots.com:8883)
+2026-11-09 07:19:30,290 gateway INFO periodo 2026-11-09T12:19:00.000Z: 3 mensajes (0 perdidos), estado más grave NORMAL
+2026-11-09 07:19:33,785 gateway INFO alerta de chia-01: NORMAL -> ADVERTENCIA
+2026-11-09 07:19:40,794 gateway INFO alerta de chia-01: ADVERTENCIA -> CRITICO
+2026-11-09 07:20:00,849 gateway INFO periodo 2026-11-09T12:19:30.000Z: 32 mensajes (0 perdidos), estado más grave CRITICO
+2026-11-09 07:20:22,851 gateway INFO nodo chia-01 offline
+2026-11-09 07:20:30,264 gateway INFO periodo 2026-11-09T12:20:00.000Z: 23 mensajes (0 perdidos), estado más grave CRITICO

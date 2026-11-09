@@ -1,18 +1,33 @@
-# IntegraciÃ³n gateway + Mosquitto local + publicador de prueba (SIMULACIÃ“N: datos del publicador, sin ESP32)
-# 07/11/2026, computador de desarrollo; periodo de promedios de 30 s para la prueba
+# IntegraciÃ³n gateway + Mosquitto local + publicador de prueba (SIMULACIÃ“N: el publicador imita al nodo, sin ESP32)
+# 09/11/2026, computador de desarrollo; periodo de promedios de 30 s; nube desactivada (UBIDOTS_TOKEN vacÃ­o), las cargas quedan en la cola.
+# Orden de prueba publicada a mano con mosquitto_pub en CRÃTICO.
+
+## Conteo final en la base SQLite
+
+| Tabla | Filas |
+| :--- | ---: |
+| telemetria | 70 |
+| alertas | 2 |
+| conexion_nodo | 3 |
+| ordenes | 1 |
+| agregados_5min | 3 |
+| ia_resultados | 3 |
+| cola_nube | 12 |
+| cola_nube pendiente (UBIDOTS_TOKEN vacío) | 12 |
+| orden g-prueba-1 | aceptada en CRITICO |
 
 ## Registro del gateway
-2026-11-07 22:40:37,617 gateway WARNING módulo de IA no disponible: cannot import name 'ia' from 'gateway' (C:\IoT\IoT-Challenge2-UniSabana\Repo\gateway\gateway\__init__.py)
-2026-11-07 22:40:37,624 gateway WARNING UBIDOTS_TOKEN vacío: envío a la nube desactivado; las cargas quedan en la cola
-2026-11-07 22:40:37,669 gateway INFO conectado al broker local localhost:1883; suscrito a sabana/chia/+/#
-2026-11-07 22:40:41,538 gateway INFO nodo chia-01 online
-2026-11-07 22:40:52,555 gateway INFO alerta de chia-01: NORMAL -> ADVERTENCIA
-2026-11-07 22:40:59,566 gateway INFO alerta de chia-01: ADVERTENCIA -> CRITICO
-2026-11-07 22:41:00,185 gateway.ordenes INFO orden g-prueba-1 aceptada
-2026-11-07 22:41:00,646 gateway INFO periodo 2026-11-08T03:40:30.000Z: 20 mensajes (0 perdidos), estado más grave CRITICO
-2026-11-07 22:41:30,843 gateway INFO periodo 2026-11-08T03:41:00.000Z: 30 mensajes (0 perdidos), estado más grave CRITICO
-2026-11-07 22:41:51,766 gateway INFO nodo chia-01 offline
-2026-11-07 22:42:00,908 gateway INFO periodo 2026-11-08T03:41:30.000Z: 22 mensajes (0 perdidos), estado más grave CRITICO
+2026-11-09 08:32:36,223 gateway WARNING UBIDOTS_TOKEN vacío: envío a la nube desactivado; las cargas quedan en la cola
+2026-11-09 08:32:36,242 gateway INFO conectado al broker local localhost:1883; suscrito a sabana/chia/+/#
+2026-11-09 08:32:36,244 gateway INFO nodo chia-01 offline
+2026-11-09 08:33:02,703 gateway INFO nodo chia-01 online
+2026-11-09 08:33:13,730 gateway INFO alerta de chia-01: NORMAL -> ADVERTENCIA
+2026-11-09 08:33:20,735 gateway INFO alerta de chia-01: ADVERTENCIA -> CRITICO
+2026-11-09 08:33:22,570 gateway.ordenes INFO orden g-prueba-1 aceptada
+2026-11-09 08:33:30,283 gateway INFO periodo 2026-11-09T13:33:00.000Z: 29 mensajes (0 perdidos), estado más grave CRITICO
+2026-11-09 08:34:00,335 gateway INFO periodo 2026-11-09T13:33:30.000Z: 30 mensajes (0 perdidos), estado más grave CRITICO
+2026-11-09 08:34:12,787 gateway INFO nodo chia-01 offline
+2026-11-09 08:34:30,388 gateway INFO periodo 2026-11-09T13:34:00.000Z: 13 mensajes (0 perdidos), estado más grave CRITICO
 
 ## Registro del publicador
 conectado a localhost:1883
