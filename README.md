@@ -13,13 +13,15 @@ La documentación completa (diseño, pruebas y resultados) está en la [Wiki del
 | Componente | Estado |
 | :--- | :--- |
 | Firmware, pasos 1 a 5: tareas FreeRTOS, sensores, nivel, tendencia, VPD, ET0, fusión, LCD, buzzer, Wi-Fi, servidor web con control de acceso, histórico y WebSocket | Implementado · (compila sin advertencias) |
-| Frontend del tablero (`firmware/data/`) | Implementado · probado con el servidor simulado; pendiente de verificación en el ESP32 |
+| Frontend del tablero (`firmware/data/`) | Implementado · probado con el servidor simulado y en Wokwi con la tarea MQTT activa; verificación en el ESP32 real en curso |
 | Pruebas unitarias del firmware (`pio test -e native`): fusión, formato de la LCD, 5 casos calculados a mano y mensajes MQTT | 24 pruebas superadas |
-| Firmware MQTT (Challenge #3): tarea `tMqtt`, conexión con usuario y clave, estado retenido con última voluntad, telemetría cada 5 s, alertas y orden de desactivar la alarma con respuesta | Implementado · compila sin advertencias; validación con el ESP32 real según [docs/guias/prueba-esp32-mqtt.md](docs/guias/prueba-esp32-mqtt.md) |
-| Gateway (`gateway/`): registro en SQLite, validación, promedios de 5 min, mensajes perdidos, ET0 diaria, cola hacia Ubidots, órdenes y módulo de IA | Implementado · 25 pruebas automáticas superadas; integración con Mosquitto y el publicador de prueba en `tests/datos/gateway/` |
+| Firmware MQTT (Challenge #3): tarea `tMqtt`, conexión con usuario y clave, estado retenido con última voluntad, telemetría cada 5 s, alertas y orden de desactivar la alarma con respuesta | Implementado · compila sin advertencias; en Wokwi (SIMULACIÓN) reconecta solo sin afectar el ciclo de 1 s; validación con el ESP32 real según [docs/guias/prueba-esp32-mqtt.md](docs/guias/prueba-esp32-mqtt.md) |
+| Gateway (`gateway/`): registro en SQLite, validación, promedios de 5 min, mensajes perdidos, ET0 diaria, cola hacia Ubidots, órdenes y módulo de IA | Implementado · 25 pruebas automáticas superadas; probado con Mosquitto, permisos por tópico, sesión persistente, cola con corte de Internet y la cuenta real de Ubidots (`tests/datos/gateway/`) |
 | Módulo de IA: predicción de horas hasta el nivel crítico, anomalías (Isolation Forest y reglas) y recomendación en texto | Implementado · evaluado con datos sintéticos en `tests/datos/ia/` |
-| Raspberry Pi 5 y tablero en Ubidots | Guías en [docs/guias/](docs/guias) |
-| Simulación en Wokwi (ESP32) | Ejecutada el 05/10/2026 (SIMULACIÓN): estados de alerta, tablero servido por el ESP32 simulado y control de acceso; registros en `tests/datos/simulacion/` y capturas en `docs/capturas/wokwi/` |
+| Tablero global en Ubidots | Configurado y probado con la cuenta real: datos, desactivación de la alarma desde el tablero y correos de alerta; capturas en `docs/capturas/ubidots/` |
+| Raspberry Pi 5 | Instalación en curso con la guía [docs/guias/raspberry-pi.md](docs/guias/raspberry-pi.md); configuración y servicio en `gateway/despliegue/` |
+| Pruebas con el prototipo físico | Protocolo FIS-01 a FIS-15 en [tests/protocolo-fisico.md](tests/protocolo-fisico.md); plantillas CSV en `tests/datos/fisico/` |
+| Simulación en Wokwi (ESP32) | SIMULACIÓN del 05/10/2026 (estados de alerta, tablero servido por el ESP32 simulado y control de acceso) y del 09/11/2026 (tarea MQTT activa); registros en `tests/datos/simulacion/` y capturas en `docs/capturas/wokwi/` |
 
 ## Estructura
 
