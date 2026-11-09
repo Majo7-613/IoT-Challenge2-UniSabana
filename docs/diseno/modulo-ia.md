@@ -16,7 +16,7 @@ señala lecturas que no son confiables, para no tomar decisiones sobre datos err
 | :--- | :--- | :--- | :--- |
 | Predicción del tiempo hasta el nivel crítico | Regresión lineal por mínimos cuadrados del nivel sobre las últimas 24 h de promedios de 5 min (6 h mientras no haya 24 h), con el error estándar de la pendiente | Tabla `agregados_5min` | Horas hasta el umbral crítico, con un intervalo; nulo si el nivel no baja de forma significativa |
 | Detección de anomalías | Isolation Forest (aprendizaje no supervisado) entrenado con el histórico de operación, con la hora del día como variable, más reglas físicas | Tabla `telemetria` y `agregados_5min` | Indicador de anomalía y su tipo |
-| Recomendación en texto | API de IA generativa (Gemini), solo para redactar a partir de los resultados anteriores | Estado, horas hasta el nivel crítico, anomalías, ET0 | Texto corto de recomendación para las autoridades |
+| Recomendación en texto | Texto armado con reglas a partir de los resultados anteriores; redacción opcional con la API de IA generativa Gemini (implementada, desactivada sin clave en el prototipo) | Estado, horas hasta el nivel crítico, anomalías, ET0 | Texto corto de recomendación para las autoridades |
 
 ### 2.1. Predicción del tiempo hasta el nivel crítico
 
