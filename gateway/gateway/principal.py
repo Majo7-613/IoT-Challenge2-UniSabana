@@ -36,7 +36,10 @@ class Gateway:
         self.con = db.conectar(cfg.bd_ruta)
         self.candado = threading.Lock()   # una sola escritura a la vez en SQLite
         self.registro = Registro(self.con)
-        self.local = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=f"gw-{cfg.municipio}")
+        # Sesión persistente (clean_session=False) con identificador fijo: si el gateway se reinicia, el broker
+        # guarda los mensajes con QoS 1 (alertas, respuestas) y se los entrega al volver.
+        self.local = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=f"gw-{cfg.municipio}",
+                                 clean_session=False)
         if cfg.mqtt_usuario:
             self.local.username_pw_set(cfg.mqtt_usuario, cfg.mqtt_clave)
         self.local.on_connect = self._al_conectar_local
